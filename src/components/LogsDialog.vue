@@ -14,7 +14,7 @@
         />
         <ol class="logs caption">
           <li v-for="(row, i) in logs" :key="i" :class="row.type | typeColor">
-            [{{ row.type | formatType }} {{ row.timestamp / 1000 | formatTimestamp }}] {{ row.message }}
+            [{{ row.type | formatType }} {{ row.timestamp / 1000 | formatTimestamp }}] <span v-html="row.message" />
           </li>
         </ol>
         <div ref="end" />
