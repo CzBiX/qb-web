@@ -20,6 +20,7 @@
                   prepend-icon="mdi-account"
                   label="Username"
                   :rules="[v => !!v || 'Username is required']"
+                  autofocus
                   required
                 />
                 <v-text-field
