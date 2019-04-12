@@ -76,6 +76,7 @@ import FilterGroup from './drawer/FilterGroup.vue';
 import { api } from '../Api';
 import { mapState, mapMutations, mapGetters } from 'vuex';
 import { formatSize } from '../filters';
+import { SiteNameMap } from '../consts';
 
 export default {
   components: {
@@ -138,10 +139,12 @@ export default {
       }
       const filterGroups = [];
       const categories: any[] = _.sortBy(Object.entries(this.torrentGroupByCategory).map(([key, value]) => {
+        const size = formatSize(_.sumBy(value, 'size'));
         const title = key ? key : 'Uncategorized';
-        const append =  `(${value.length})`;
+        const append =  `(${value.length})[${size}]`;
         return { icon: 'mdi-folder-open', title, key, append};
-      }), (o) => o.key);
+      }), 'key');
+      const totalSize = formatSize(_.sumBy(this.allTorrents, 'size'));
       filterGroups.push({
         'icon': 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
@@ -149,21 +152,17 @@ export default {
         'model': false,
         'select': 'category',
         'children': [
-          { icon: 'mdi-folder-open', title: 'All', key: null, append: `(${this.allTorrents.length})` },
+          { icon: 'mdi-folder-open', title: 'All', key: null, append: `(${this.allTorrents.length})[${totalSize}]` },
           ...categories,
         ],
       });
 
-      const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).filter(([key, value]) => {
-        return key;
-      }).map(([key, value]) => {
-        const size = formatSize(value.reduce((acc, v) => {
-          return acc + v.size;
-        }, 0));
-        const title = key;
+      const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
+        const size = formatSize(_.sumBy(value, 'size'));
+        const title = key ? _.get(SiteNameMap, key, key) : 'Others';
         const append =  `(${value.length})[${size}]`;
         return { icon: 'mdi-server', title, key, append };
-      }), (o) => o.title);
+      }), 'title');
       filterGroups.push({
         'icon': 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
@@ -201,4 +200,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.v-list__tile__action {
+  padding-left: 6px;
+}
 </style>

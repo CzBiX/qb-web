@@ -59,3 +59,12 @@ export default Vue.extend({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+::v-deep .v-list__group__header__prepend-icon {
+  margin-left: 4px;
+}
+.v-list__tile__action {
+  padding-left: 6px;
+}
+</style>

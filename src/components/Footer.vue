@@ -9,12 +9,16 @@
       <v-flex>
         API version: {{ app.apiVersion }}
       </v-flex>
+      <v-divider vertical class="mx-2"/>
+      <v-flex>
+        Disk free: {{ info.free_space_on_disk | formatSize }}
+      </v-flex>
     </v-layout>
   </v-flex>
   <v-flex shrink v-if="info">
     <v-layout align-center>
       <v-flex>
-        Disk free: {{ info.free_space_on_disk | formatSize }}
+        Torrents size: {{ allTorrents.length }} ({{ totalSize | formatSize }})
       </v-flex>
       <v-divider vertical class="mx-2"/>
       <v-flex>
@@ -24,7 +28,7 @@
       <v-tooltip top>
         <template v-slot:activator="{ on }">
           <v-flex class="icon_label" v-on="on">
-            <v-icon>mdi-{{ info.connection_status | connectionIcon }}</v-icon>
+            <v-icon :color="info.connection_status | connectionIconColor">mdi-{{ info.connection_status | connectionIcon }}</v-icon>
           </v-flex>
         </template>
         <span>
@@ -33,7 +37,7 @@
       </v-tooltip>
       <v-divider vertical class="mx-2"/>
       <v-flex class="icon_label">
-        <v-icon>mdi-download</v-icon>
+        <v-icon color="success">mdi-download</v-icon>
         <span>
           {{ info.dl_info_speed | formatSize }}/s
           ({{ info.dl_info_data | formatSize }}/{{ info.alltime_dl | formatSize }})
@@ -41,7 +45,7 @@
       </v-flex>
       <v-divider vertical class="mx-2"/>
       <v-flex class="icon_label">
-        <v-icon>mdi-upload</v-icon>
+        <v-icon color="warning">mdi-upload</v-icon>
         <span>
           {{ info.up_info_speed | formatSize }}/s
           ({{ info.up_info_data | formatSize }}/{{ info.alltime_ul | formatSize }})
@@ -73,15 +77,29 @@ export default Vue.extend({
       };
       return statusMap[status];
     },
+    connectionIconColor(status: string) {
+      const statusMap: any = {
+        connected: 'success',
+        firewalled: 'info',
+        disconnected: 'warning',
+      };
+      return statusMap[status];
+    },
   },
 
   computed: {
     ...mapState({
-    info: (state: any) => state.mainData ? state.mainData.server_state : null,
+      info(state: any) {
+        return this.isDataReady ? state.mainData.server_state : null;
+      },
     }),
     ...mapGetters([
       'isDataReady',
+      'allTorrents'
     ]),
+    totalSize() {
+      return _.sumBy(this.allTorrents, 'size');
+    },
   },
 
   methods: {

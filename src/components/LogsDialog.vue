@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" @input="$emit('input', $event)" scrollable width="50%">
+  <v-dialog :value="value" @input="$emit('input', $event)" scrollable :width="dialogWidth">
     <v-card>
       <v-card-title
         class="headline grey lighten-4"
@@ -57,6 +57,11 @@ export default Vue.extend({
         8: 'error--text',
       };
       return map[type];
+    },
+  },
+  computed: {
+    dialogWidth() {
+      return this.$vuetify.breakpoint.smAndDown ? '100%' : '70%';
     },
   },
   methods: {

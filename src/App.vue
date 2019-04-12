@@ -9,7 +9,7 @@
     </v-navigation-drawer>
     <v-toolbar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
-      :scroll-toolbar-off-screen="!$vuetify.breakpoint.lgAndUp"
+      :scroll-off-screen="!$vuetify.breakpoint.lgAndUp"
       app
     >
       <v-toolbar-title class="headline">

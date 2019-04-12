@@ -76,3 +76,9 @@ export default Vue.extend({
   },
 });
 </script>
+
+<style lang="scss" scoped>
+.torrents {
+  overflow: auto;
+}
+</style>

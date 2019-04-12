@@ -16,6 +16,7 @@
         <v-icon>mdi-pause</v-icon>
       </v-btn>
     </v-toolbar>
+    <v-divider />
     <v-data-table
       :headers="headers"
       :items="torrents"
