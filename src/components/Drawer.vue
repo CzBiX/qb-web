@@ -55,7 +55,7 @@
           v-model="filter[child.select]"
         />
       </template>
-      <v-list-tile v-else :key="item.text">
+      <v-list-tile v-else :key="item.text" @click="item.click ? item.click() : null">
         <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
@@ -66,16 +66,6 @@
         </v-list-tile-content>
       </v-list-tile>
     </template>
-    <v-list-tile key="switch_ui" @click="switchUi">
-      <v-list-tile-action>
-        <v-icon>mdi-history</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title>
-          Switch to old UI
-        </v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
   </v-list>
 </template>
 
@@ -92,6 +82,10 @@ export default {
     FilterGroup,
   },
 
+  props: {
+    value: Object,
+  },
+
   data() {
     return {
       filter: {
@@ -99,8 +93,7 @@ export default {
         category: null,
         site: null,
       },
-      basicItems: [
-        { icon: 'mdi-settings', text: 'Settings' },
+      basicItems: null,
         // {
         //   'icon': 'mdi-menu-up',
         //   'icon-alt': 'mdi-menu-down',
@@ -118,11 +111,18 @@ export default {
         //     { icon: 'mdi-alert', text: 'Errored' },
         //   ],
         // },
-      ],
-      endItems: [
-        { icon: 'mdi-help', text: 'Help' },
-      ],
+      endItems: null,
     };
+  },
+
+  created() {
+    this.basicItems = [
+      { icon: 'mdi-settings', text: 'Settings', click: () => alert('TODO') },
+    ];
+    this.endItems = [
+      { icon: 'mdi-delta', text: 'Logs', click: () => this.updateOptions('showLogs', true) },
+      { icon: 'mdi-history', text: 'Switch to old UI', click: this.switchUi },
+    ];
   },
 
   computed: {
@@ -183,6 +183,9 @@ export default {
       await api.switchToOldUi();
 
       location.reload(true);
+    },
+    updateOptions(key: string, value: any) {
+      this.$emit('input', Object.assign({}, this.value, {[key]: value}));
     },
   },
 

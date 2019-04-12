@@ -62,6 +62,10 @@ class Api {
     return this.axios.post('/app/setPreferences', data);
   }
 
+  public getLogs() {
+    return this.axios.get('/log/main').then(this.handleResponse);
+  }
+
   private handleResponse(resp: AxiosResponse) {
     return resp.data;
   }

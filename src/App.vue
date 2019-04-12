@@ -5,7 +5,7 @@
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
     >
-      <drawer />
+      <drawer v-model="drawerOptions" />
     </v-navigation-drawer>
     <v-toolbar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
@@ -34,6 +34,7 @@
 
     <add-form />
     <login-form v-if="needAuth" v-model="needAuth" />
+    <logs-dialog v-if="drawerOptions.showLogs" v-model="drawerOptions.showLogs" />
 
     <v-footer
       app
@@ -53,6 +54,7 @@ import Drawer from './components/Drawer.vue';
 import LoginForm from './components/LoginForm.vue';
 import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
+import LogsDialog from './components/LogsDialog.vue';
 import { api } from './Api';
 import { mapActions, mapState, mapMutations } from 'vuex';
 import Axios, { AxiosError } from 'axios';
@@ -65,11 +67,15 @@ export default Vue.extend({
     LoginForm,
     Torrents,
     AppFooter,
+    LogsDialog,
   },
   data() {
     return {
       needAuth: false,
       drawer: true,
+      drawerOptions: {
+        showLogs: false,
+      },
       task: 0,
     };
   },
