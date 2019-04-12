@@ -37,6 +37,7 @@
                     :rules="[v => !!v || 'URLs is required']"
                     :rows="$vuetify.breakpoint.xsOnly ? 1 : 3"
                     required
+                    autofocus
                   />
                 </v-flex>
                 <v-flex>
@@ -128,6 +129,7 @@ export default Vue.extend({
 
       this.submitting = false;
       this.dialog = false;
+      this.params.urls = null;
     },
   },
 });

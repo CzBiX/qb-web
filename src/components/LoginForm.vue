@@ -48,11 +48,11 @@
         <v-btn
           @click="submit"
           color="primary"
-          :disabled="!valid"
+          :disabled="!valid || submitting"
         >
           <v-progress-circular
             v-if="submitting"
-            :indeterminate="true"
+            indeterminate
           />
           <template v-else>
             Submit

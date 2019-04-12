@@ -38,10 +38,11 @@ class Api {
   }
 
   public getMainData(rid?: number) {
+    const params = {
+      rid,
+    };
     return this.axios.get('/sync/maindata', {
-      params: {
-        rid,
-      },
+      params,
     });
   }
 
@@ -64,6 +65,27 @@ class Api {
 
   public getLogs() {
     return this.axios.get('/log/main').then(this.handleResponse);
+  }
+
+  public deleteTorrents(hashes: string[], deleteFiles: boolean) {
+    return this.actionTorrents('delete', hashes, {deleteFiles});
+  }
+
+  public pauseTorrents(hashes: string[]) {
+    return this.actionTorrents('pause', hashes);
+  }
+
+  public resumeTorrents(hashes: string[]) {
+    return this.actionTorrents('resume', hashes);
+  }
+
+  private actionTorrents(action: string, hashes: string[], extra?: any) {
+    const params: any = {
+      hashes: hashes.join('|'),
+      ...extra,
+    };
+    const data = new URLSearchParams(params);
+    return this.axios.post('/torrents/' + action, data).then(this.handleResponse);
   }
 
   private handleResponse(resp: AxiosResponse) {

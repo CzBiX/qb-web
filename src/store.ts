@@ -24,7 +24,14 @@ export default new Vuex.Store({
       if (payload.full_update) {
         state.mainData = payload;
       } else {
-        state.mainData = _.merge({}, state.mainData, payload);
+        const tmp: any = _.cloneDeep(state.mainData);
+        if (payload.torrents_removed) {
+          for (const hash of payload.torrents_removed) {
+            delete tmp.torrents[hash];
+          }
+          delete payload.torrents_removed;
+        }
+        state.mainData = _.merge(tmp, payload);
       }
     },
     updatePreferences(state, payload) {
