@@ -76,7 +76,7 @@ import FilterGroup from './drawer/FilterGroup.vue';
 import { api } from '../Api';
 import { mapState, mapMutations, mapGetters } from 'vuex';
 import { formatSize } from '../filters';
-import { SiteNameMap } from '../consts';
+import { SiteMap } from '../consts';
 
 export default {
   components: {
@@ -159,9 +159,11 @@ export default {
 
       const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
         const size = formatSize(_.sumBy(value, 'size'));
-        const title = key ? _.get(SiteNameMap, key, key) : 'Others';
+        const site = (SiteMap as any)[key];
+        const title = site ? site.name : 'Others';
+        const icon = _.defaultTo(site ? site.icon : null, 'mdi-server');
         const append =  `(${value.length})[${size}]`;
-        return { icon: 'mdi-server', title, key, append };
+        return { icon, title, key, append };
       }), 'title');
       filterGroups.push({
         'icon': 'mdi-menu-up',
