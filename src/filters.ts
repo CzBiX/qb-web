@@ -17,7 +17,12 @@ export function formatSize(value: number) {
 
 Vue.filter('formatSize', formatSize);
 
-Vue.filter('formatDuration', (value: number) => {
+export interface DurationOptions {
+  dayLimit?: number;
+  maxUnitSize?: number;
+}
+
+export function formatDuration(value: number, options?: DurationOptions) {
   const minute = 60;
   const hour = 3600;
   const day = 3600 * 24;
@@ -29,8 +34,15 @@ Vue.filter('formatDuration', (value: number) => {
   let unitSize = 0;
   const parts = [];
 
+  const defaultOptions: DurationOptions = {
+    maxUnitSize: 1,
+    dayLimit: 0,
+  };
+
+  const opt = options ? Object.assign(defaultOptions, options) : defaultOptions;
+
   while (true) {
-    if (unitSize === 2 || index === durations.length) {
+    if ((opt.maxUnitSize && unitSize === opt.maxUnitSize) || index === durations.length) {
       break;
     }
 
@@ -40,7 +52,7 @@ Vue.filter('formatDuration', (value: number) => {
       continue;
     }
     const result = Math.floor(value / duration);
-    if (index === 0 && result >= 100) {
+    if (index === 0 && opt.dayLimit && result >= opt.dayLimit) {
       return '∞';
     }
     parts.push(result + units[index]);
@@ -50,13 +62,15 @@ Vue.filter('formatDuration', (value: number) => {
     unitSize++;
   }
 
-  if (unitSize < 2 && index !== durations.length) {
-    const result = Math.floor(value / durations[index]);
-    parts.push(result + units[index]);
-  }
+  // if (unitSize < 2 && index !== durations.length) {
+  //   const result = Math.floor(value / durations[index]);
+  //   parts.push(result + units[index]);
+  // }
 
   return parts.join(' ');
-});
+};
+
+Vue.filter('formatDuration', formatDuration);
 
 Vue.filter('formatTimestamp', (timestamp: number) => {
   if (timestamp === null) {
@@ -66,3 +80,10 @@ Vue.filter('formatTimestamp', (timestamp: number) => {
   const m = dayjs.unix(timestamp);
   return m.format('YYYY-MM-DD HH:mm:ss');
 });
+
+export function formatAsDuration(date: number, options?: DurationOptions) {
+    const duration = (Date.now() / 1000) - date;
+    return formatDuration(duration, options);
+};
+
+Vue.filter('formatAsDuration', formatAsDuration);

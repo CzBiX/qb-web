@@ -2,17 +2,25 @@
   <div>
     <v-toolbar
       flat
-      dense
+      v-show="hasSelected"
       color="white"
+      height="57px"
     >
-      <v-btn icon :disabled="!hasSelected" @click="confirmDelete">
+      <v-checkbox class="shrink menu-check"
+        :input-value="hasSelected"
+        :indeterminate="!hasSelectedAll"
+        primary
+        hide-details
+        @click.stop="selectedRows = []"
+      ></v-checkbox>
+      <v-btn icon @click="confirmDelete">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
       <v-divider vertical inset />
-      <v-btn icon :disabled="!hasSelected" @click="resumeTorrents">
+      <v-btn icon @click="resumeTorrents">
         <v-icon>mdi-play</v-icon>
       </v-btn>
-      <v-btn icon :disabled="!hasSelected" @click="pauseTorrents">
+      <v-btn icon @click="pauseTorrents">
         <v-icon>mdi-pause</v-icon>
       </v-btn>
     </v-toolbar>
@@ -22,6 +30,7 @@
       :items="torrents"
       item-key="hash"
       :hide-actions="torrents.length <= pagination.rowsPerPage"
+      v-class:hide-headers="hasSelected"
       select-all
       :pagination.sync="pagination"
       v-model="selectedRows"
@@ -33,7 +42,7 @@
             hide-details
           />
         </td>
-        <td>{{ row.item.name }}</td>
+        <td :title="row.item.name">{{ row.item.name }}</td>
         <td>{{ row.item.size | formatSize }}</td>
         <td>
           <v-progress-linear
@@ -47,11 +56,15 @@
         <td>{{ row.item.state }}</td>
         <td>{{ row.item.num_seeds }}/{{ row.item.num_complete }}</td>
         <td>{{ row.item.num_leechs }}/{{ row.item.num_incomplete }}</td>
-        <td>{{ row.item.dlspeed | formatSize }}/s</td>
-        <td>{{ row.item.upspeed | formatSize }}/s</td>
-        <td>{{ row.item.eta | formatDuration }}</td>
+        <td>{{ formatNetworkSpeed(row.item.dlspeed) }}</td>
+        <td>{{ formatNetworkSpeed(row.item.upspeed) }}</td>
+        <td>{{ row.item.eta | formatDuration({dayLimit: 100}) }}</td>
         <td>{{ row.item.ratio.toFixed(2) }}</td>
-        <td>{{ row.item.added_on | formatTimestamp }}</td>
+        <td>
+          <span :title="row.item.added_on | formatTimestamp">
+            {{ row.item.added_on | formatAsDuration }} ago
+          </span>
+        </td>
       </template>
     </v-data-table>
 
@@ -62,9 +75,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import ConfirmDeleteDialog from './dialogs/ConfirmDeleteDialog.vue';
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 import _ from 'lodash';
 import { api } from '../Api';
+import { formatSize, formatDuration } from '../filters';
 
 export default Vue.extend({
   name: 'torrents',
@@ -75,8 +89,8 @@ export default Vue.extend({
 
   data() {
     const headers = [
-      { text: 'Name', value: 'name', class: 'th-name' },
-      { text: 'Size', value: 'size' },
+      { text: 'Name', value: 'name', width: 'auto', class: 'th-name' },
+      { text: 'Size', value: 'size', width: '54px' },
       { text: 'Progress', value: 'progress' },
       { text: 'Status', value: 'state' },
       { text: 'Seeds', value: 'num_complete' },
@@ -92,22 +106,26 @@ export default Vue.extend({
       headers,
       selectedRows: [],
       deleteDialog: false,
-      pagination: {
-        rowsPerPage: 100,
-      },
+      pagination: null,
     };
   },
 
+  created() {
+    this.pagination = this.$store.getters.config.pagination;
+  },
+
   computed: {
-    ...mapState([
-      'filter',
-    ]),
     ...mapGetters([
       'isDataReady',
       'allTorrents',
       'torrentGroupByCategory',
       'torrentGroupBySite',
     ]),
+    ...mapState({
+      filter(state, getters) {
+        return getters.config.filter;
+      },
+    }),
     hasSelected() {
       return this.selectedRows.length;
     },
@@ -128,6 +146,9 @@ export default Vue.extend({
 
       return list;
     },
+    hasSelectedAll() {
+      return this.hasSelected && this.selectedRows.length === Math.min(this.torrents.length, this.pagination.rowsPerPage)
+    },
   },
 
   filters: {
@@ -141,6 +162,9 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapMutations([
+      'updateConfig',
+    ]),
     confirmDelete() {
       this.deleteDialog = true;
     },
@@ -150,11 +174,38 @@ export default Vue.extend({
     async pauseTorrents() {
       await api.pauseTorrents(this.selectedHashes);
     },
+    formatNetworkSpeed(speed: number) {
+      if (speed === 0) {
+        return null;
+      }
+
+      return formatSize(speed) + '/s';
+    },
+  },
+
+  watch: {
+    pagination: {
+      handler() {
+        this.updateConfig({
+          key: 'pagination',
+          value: this.pagination,
+        });
+      },
+      deep: true,
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
+::v-deep .v-toolbar__content {
+  padding-left: 8px;
+}
+
+.menu-check {
+  padding: 0;
+}
+
 ::v-deep .v-datatable thead th, .v-datatable tbody td {
   padding: 0 2px !important;
   width: auto;
@@ -170,6 +221,14 @@ export default Vue.extend({
   &:last-child {
     padding-right: 8px !important;
   }
+}
+
+::v-deep .v-datatable {
+  // table-layout: fixed;
+}
+
+::v-deep.hide-headers .v-datatable thead {
+  display: none;
 }
 
 ::v-deep .v-datatable thead th.th-name {

@@ -57,7 +57,7 @@ import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/LogsDialog.vue';
 import { api } from './Api';
-import { mapActions, mapState, mapMutations } from 'vuex';
+import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
 import Axios, { AxiosError } from 'axios';
 
 export default Vue.extend({
@@ -88,7 +88,10 @@ export default Vue.extend({
       clearTimeout(this.task);
     }
   },
-  computed: mapState(['mainData', 'rid', 'config']),
+  computed: {
+    ...mapState(['mainData', 'rid']),
+    ...mapGetters(['config']),
+  },
   methods: {
     ...mapMutations([
       'updateMainData',

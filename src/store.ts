@@ -4,18 +4,38 @@ import _ from 'lodash';
 
 Vue.use(Vuex);
 
+const defaultConfig = {
+  updateInterval: 2000,
+  pagination: {
+    rowsPerPage: 100,
+  },
+  filter: {
+    type: null,
+    category: null,
+    site: null,
+  },
+};
+
+const configKey = 'qb-config';
+
+function saveConfig(obj: any) {
+  localStorage[configKey] = JSON.stringify(obj);
+}
+
+function loadConfig() {
+  const tmp = localStorage[configKey];
+  if (!tmp) {
+    return {};
+  }
+
+  return JSON.parse(tmp);
+}
+
 export default new Vuex.Store({
   state: {
     rid: 0,
     mainData: null,
-    filter: {
-      type: null,
-      category: null,
-      site: null,
-    },
-    config: {
-      updateInterval: 2000,
-    },
+    userConfig: loadConfig(),
     preferences: null,
   },
   mutations: {
@@ -37,11 +57,19 @@ export default new Vuex.Store({
     updatePreferences(state, payload) {
       state.preferences = payload;
     },
-    updateFilter(state, payload) {
-      state.filter = _.clone(payload);
+    updateConfig(state, payload) {
+      const key = payload.key;
+      const value = payload.value;
+      const tmp = _.merge({}, state.userConfig[key], value);
+      Vue.set(state.userConfig, key, tmp);
+
+      saveConfig(state.userConfig);
     },
   },
   getters: {
+    config(state) {
+      return _.merge({}, defaultConfig, state.userConfig);
+    },
     isDataReady(state) {
       return !!state.mainData;
     },

@@ -52,7 +52,6 @@
           v-for="(child, i) in item.filterGroups"
           :key="i"
           :group="child"
-          v-model="filter[child.select]"
         />
       </template>
       <v-list-tile v-else :key="item.text" @click="item.click ? item.click() : null">
@@ -89,11 +88,6 @@ export default {
 
   data() {
     return {
-      filter: {
-        type: null,
-        category: null,
-        site: null,
-      },
       basicItems: null,
         // {
         //   'icon': 'mdi-menu-up',
@@ -179,7 +173,6 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['updateFilter']),
     async switchUi() {
       await api.switchToOldUi();
 
@@ -187,15 +180,6 @@ export default {
     },
     updateOptions(key: string, value: any) {
       this.$emit('input', Object.assign({}, this.value, {[key]: value}));
-    },
-  },
-
-  watch: {
-    filter: {
-      handler() {
-        this.updateFilter(this.filter);
-      },
-      deep: true,
     },
   },
 };

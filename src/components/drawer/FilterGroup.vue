@@ -6,7 +6,7 @@
     <template v-slot:activator>
       <v-list-tile>
         <v-list-tile-content>
-          <v-list-tile-title v-class:primary--text="value !== null">
+          <v-list-tile-title v-class:primary--text="selected !== null">
             {{ group.title }}
           </v-list-tile-title>
         </v-list-tile-content>
@@ -15,7 +15,7 @@
     <v-list-tile
       v-for="(child, i) in group.children"
       :key="i"
-      v-class:primary--text="value === child.key"
+      v-class:primary--text="selected === child.key"
       @click.stop="select(child.key)"
     >
       <v-list-tile-action>
@@ -44,20 +44,31 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState, mapMutations } from 'vuex';
 export default Vue.extend({
   props: {
     group: Object,
-    value: String,
   },
   data() {
     return {
-      selected: this.value,
-    };
+      selected: null,
+    }
+  },
+  created() {
+    this.selected = this.$store.getters.config.filter[this.group.select];
   },
   methods: {
+    ...mapMutations([
+      'updateConfig',
+    ]),
     select(key: any) {
       this.selected = this.selected === key ? null : key;
-      this.$emit('input', this.selected);
+      this.updateConfig({
+        key: 'filter',
+        value: {
+          [this.group.select]: this.selected
+        },
+      });
     },
     isFontIcon(icon: string) {
       return icon.startsWith('mdi-');
