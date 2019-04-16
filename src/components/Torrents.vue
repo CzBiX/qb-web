@@ -23,6 +23,43 @@
       <v-btn icon @click="pauseTorrents">
         <v-icon>mdi-pause</v-icon>
       </v-btn>
+      <v-divider vertical inset />
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon>mdi-folder</v-icon>
+          </v-btn>
+        </template>
+        <v-list class="category-actions">
+          <v-list-tile-sub-title
+            class="px-3 py-1"
+            @click.stop=""
+            >
+            Set category
+          </v-list-tile-sub-title>
+          <v-list-tile
+            v-for="(item, i) in categories"
+            :key="i"
+            @click="setTorrentsCategory(item)"
+            >
+            <v-list-tile-action>
+              <v-icon>mdi-folder-open</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>
+              {{ item }}
+            </v-list-tile-title>
+          </v-list-tile>
+          <v-divider />
+          <v-list-tile @click="setTorrentsCategory('')">
+            <v-list-tile-action>
+              <v-icon>mdi-folder-remove</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>
+              Reset
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-toolbar>
     <v-divider />
     <v-data-table
@@ -125,6 +162,9 @@ export default Vue.extend({
       filter(state, getters) {
         return getters.config.filter;
       },
+      categories(state, getters) {
+        return Object.keys(getters.torrentGroupByCategory).filter(_.identity);
+      },
     }),
     hasSelected() {
       return this.selectedRows.length;
@@ -174,6 +214,9 @@ export default Vue.extend({
     async pauseTorrents() {
       await api.pauseTorrents(this.selectedHashes);
     },
+    async setTorrentsCategory(category: string) {
+      await api.setTorrentsCategory(this.selectedHashes, category);
+    },
     formatNetworkSpeed(speed: number) {
       if (speed === 0) {
         return null;
@@ -200,6 +243,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 ::v-deep .v-toolbar__content {
   padding-left: 8px;
+}
+
+.category-actions .v-list__tile__action {
+  min-width: 40px;
 }
 
 .menu-check {

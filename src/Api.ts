@@ -79,6 +79,10 @@ class Api {
     return this.actionTorrents('resume', hashes);
   }
 
+  public setTorrentsCategory(hashes: string[], category: string) {
+    return this.actionTorrents('setCategory', hashes, {category});
+  }
+
   private actionTorrents(action: string, hashes: string[], extra?: any) {
     const params: any = {
       hashes: hashes.join('|'),

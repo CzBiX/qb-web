@@ -6,20 +6,19 @@
       color="primary"
       fixed
       right
-      :disabled="!prefs"
       @click="dialog = !dialog"
       class="btn-add"
       :class="{'with-footer': $vuetify.breakpoint.smAndUp}"
     >
       <v-icon>mdi-link-plus</v-icon>
     </v-btn>
-    <v-dialog v-model="dialog" persistent width="50em" v-if="prefs">
+    <v-dialog v-model="dialog" persistent width="50em">
       <v-card>
         <v-card-title
           class="headline grey lighten-4"
         >
           <v-icon class="mr-2">mdi-link-plus</v-icon>
-          <span>Add Torrents from URLs</span>
+          <span>Add Torrents</span>
         </v-card-title>
         <v-card-text>
           <v-form
@@ -30,7 +29,6 @@
                 <v-flex xs12>
                   <v-textarea
                     name="urls"
-                    v-model="params.urls"
                     label="URLs"
                     hint="One link per line"
                     prepend-icon="mdi-link"
@@ -38,6 +36,19 @@
                     :rows="$vuetify.breakpoint.xsOnly ? 1 : 3"
                     required
                     autofocus
+                    :value="params.urls"
+                    @input="setParams('urls', $event)"
+                  />
+                </v-flex>
+                <v-flex>
+                  <v-combobox
+                    label="Category"
+                    prepend-icon="mdi-folder"
+                    clearable
+                    hide-no-data
+                    :items="categories"
+                    :value="params.category"
+                    @input="setParams('category', $event)"
                   />
                 </v-flex>
                 <v-flex>
@@ -49,9 +60,10 @@
                 </v-flex>
                 <v-flex>
                   <v-checkbox
-                    v-model="params.skip_checking"
                     prepend-icon="mdi-progress-check"
                     label="Skip hash check"
+                    :value="params.skip_checking"
+                    @change="setParams('skip_checking', $event)"
                   />
                 </v-flex>
               </v-layout>
@@ -83,53 +95,72 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import Vue from 'vue';
 import { mapState } from 'vuex';
 import { api } from '../Api';
+
+const defaultParams = {
+  urls: null,
+  category: null,
+  paused: false,
+  skip_checking: false,
+};
 
 export default Vue.extend({
   data() {
     return {
       dialog: false,
       valid: false,
-      params: {
-        urls: null,
-        paused: null,
-        skip_checking: null,
-      },
+      userParams: {},
       submitting: false,
     };
   },
   computed: {
     ...mapState({
       prefs: 'preferences',
+      categories(state, getters) {
+        return Object.keys(getters.torrentGroupByCategory).filter(_.identity);
+      },
     }),
+    params() {
+      return Object.assign({}, defaultParams, this.userParams);
+    },
     autoStart: {
       get(): boolean {
-        if (this.params.paused === null) {
-          return !this.prefs.start_paused_enabled;
-        }
-
         return !this.params.paused;
       },
       set(value: boolean) {
-        this.params.paused = !value;
+        const paused = !value;
+        const tmp = defaultParams.paused === paused ? null : paused;
+        this.setParams('paused', tmp);
       },
     },
   },
+  created() {
+    defaultParams.paused = this.prefs.start_paused_enabled;
+  },
 
   methods: {
+    setParams(key: string, value: any){
+      debugger;
+      if (_.isNil(value)) {
+        Vue.delete(this.userParams, key);
+      } else {
+        Vue.set(this.userParams, key, value);
+      }
+    },
     async submit() {
       if (this.submitting) {
         return;
       }
 
       this.submitting = true;
-      const resp = await api.addTorrents(this.params);
+      const resp = await api.addTorrents(this.userParams);
 
       this.submitting = false;
       this.dialog = false;
-      this.params.urls = null;
+      this.userParams.urls = null;
     },
   },
 });

@@ -33,7 +33,7 @@
       </v-container>
     </v-content>
 
-    <add-form />
+    <add-form v-if="preferences" />
     <login-form v-if="needAuth" v-model="needAuth" />
     <logs-dialog v-if="drawerOptions.showLogs" v-model="drawerOptions.showLogs" />
 
@@ -89,7 +89,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapState(['mainData', 'rid']),
+    ...mapState([
+      'mainData',
+      'rid',
+      'preferences',
+    ]),
     ...mapGetters(['config']),
   },
   methods: {
