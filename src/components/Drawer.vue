@@ -75,7 +75,50 @@ import FilterGroup from './drawer/FilterGroup.vue';
 import { api } from '../Api';
 import { mapState, mapMutations, mapGetters } from 'vuex';
 import { formatSize } from '../filters';
-import { SiteMap } from '../consts';
+import { SiteMap, StateType, AllStateTypes } from '../consts';
+
+const stateList = [
+  {
+    title: 'Downloading',
+    state: StateType.Downloading,
+    icon: 'download',
+  },
+  {
+    title: 'Seeding',
+    state: StateType.Seeding,
+    icon: 'upload',
+  },
+  {
+    title: 'Completed',
+    state: StateType.Completed,
+    icon: 'check',
+  },
+  {
+    title: 'Resumed',
+    state: StateType.Resumed,
+    icon: 'play',
+  },
+  {
+    title: 'Paused',
+    state: StateType.Paused,
+    icon: 'pause',
+  },
+  {
+    title: 'Active',
+    state: StateType.Active,
+    icon: 'filter',
+  },
+  {
+    title: 'Inactive',
+    state: StateType.Inactive,
+    icon: 'filter-outline',
+  },
+  {
+    title: 'Errored',
+    state: StateType.Errored,
+    icon: 'alert',
+  },
+];
 
 export default {
   components: {
@@ -89,23 +132,6 @@ export default {
   data() {
     return {
       basicItems: null,
-        // {
-        //   'icon': 'mdi-menu-up',
-        //   'icon-alt': 'mdi-menu-down',
-        //   'text': 'Status',
-        //   'model': true,
-        //   'children': [
-        //     { icon: 'mdi-filter-remove', text: 'All' },
-        //     { icon: 'mdi-download', text: 'Downloading' },
-        //     { icon: 'mdi-upload', text: 'Seeding' },
-        //     { icon: 'mdi-check', text: 'Completed' },
-        //     { icon: 'mdi-play', text: 'Resumed' },
-        //     { icon: 'mdi-pause', text: 'Paused' },
-        //     { icon: 'mdi-filter', text: 'Active' },
-        //     { icon: 'mdi-filter-outline', text: 'Inactive' },
-        //     { icon: 'mdi-alert', text: 'Errored' },
-        //   ],
-        // },
       endItems: null,
     };
   },
@@ -126,19 +152,44 @@ export default {
       'allTorrents',
       'torrentGroupByCategory',
       'torrentGroupBySite',
+      'torrentGroupByState',
     ]),
     items() {
       if (!this.isDataReady) {
         return _.concat(this.basicItems, this.endItems);
       }
+
       const filterGroups = [];
+      const totalSize = formatSize(_.sumBy(this.allTorrents, 'size'));
+
+      const states = stateList.map((item) => {
+        let value = this.torrentGroupByState[item.state];
+        if (_.isUndefined(value)) {
+          value = [];
+        }
+        const size = formatSize(_.sumBy(value, 'size'));
+        const title = item.title + ` (${value.length})`;
+        const append =  `[${size}]`;
+        return { icon: 'mdi-' + item.icon, title, key: item.state, append};
+      });
+      filterGroups.push({
+        'icon': 'mdi-menu-up',
+        'icon-alt': 'mdi-menu-down',
+        'title': 'State',
+        'model': true,
+        'select': 'state',
+        'children': [
+          { icon: 'mdi-filter-remove', title: `All (${this.allTorrents.length})`, key: null, append: `[${totalSize}]` },
+          ...states,
+        ],
+      });
+
       const categories: any[] = _.sortBy(Object.entries(this.torrentGroupByCategory).map(([key, value]) => {
         const size = formatSize(_.sumBy(value, 'size'));
-        const title = key ? key : 'Uncategorized';
-        const append =  `(${value.length})[${size}]`;
+        const title = (key ? key : 'Uncategorized') + ` (${value.length})`;
+        const append =  `[${size}]`;
         return { icon: 'mdi-folder-open', title, key, append};
       }), 'key');
-      const totalSize = formatSize(_.sumBy(this.allTorrents, 'size'));
       filterGroups.push({
         'icon': 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
@@ -146,7 +197,6 @@ export default {
         'model': false,
         'select': 'category',
         'children': [
-          { icon: 'mdi-folder-open', title: 'All', key: null, append: `(${this.allTorrents.length})[${totalSize}]` },
           ...categories,
         ],
       });
@@ -154,9 +204,9 @@ export default {
       const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
         const size = formatSize(_.sumBy(value, 'size'));
         const site = (SiteMap as any)[key];
-        const title = site ? site.name : 'Others';
+        const title = (site ? site.name : 'Others') + ` (${value.length})`;
         const icon = _.defaultTo(site ? site.icon : null, 'mdi-server');
-        const append =  `(${value.length})[${size}]`;
+        const append = `[${size}]`;
         return { icon, title, key, append };
       }), 'title');
       filterGroups.push({

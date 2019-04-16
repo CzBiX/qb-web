@@ -1,7 +1,7 @@
 <template>
   <v-list-group
-    v-model="group.model"
-    :prepend-icon="group.model ? group.icon : group['icon-alt']"
+    v-model="model"
+    :prepend-icon="model ? group.icon : group['icon-alt']"
   >
     <template v-slot:activator>
       <v-list-tile>
@@ -51,6 +51,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      model: this.group.model,
       selected: null,
     }
   },

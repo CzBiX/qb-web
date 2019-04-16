@@ -13,20 +13,20 @@
         hide-details
         @click.stop="selectedRows = []"
       ></v-checkbox>
-      <v-btn icon @click="confirmDelete">
+      <v-btn icon @click="confirmDelete" title="Delete">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
       <v-divider vertical inset />
-      <v-btn icon @click="resumeTorrents">
+      <v-btn icon @click="resumeTorrents" title="Resume">
         <v-icon>mdi-play</v-icon>
       </v-btn>
-      <v-btn icon @click="pauseTorrents">
+      <v-btn icon @click="pauseTorrents" title="Pause">
         <v-icon>mdi-pause</v-icon>
       </v-btn>
       <v-divider vertical inset />
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
+          <v-btn icon v-on="on" title="Category">
             <v-icon>mdi-folder</v-icon>
           </v-btn>
         </template>
@@ -157,6 +157,7 @@ export default Vue.extend({
       'allTorrents',
       'torrentGroupByCategory',
       'torrentGroupBySite',
+      'torrentGroupByState',
     ]),
     ...mapState({
       filter(state, getters) {
@@ -182,6 +183,9 @@ export default Vue.extend({
       }
       if (this.filter.category !== null) {
         list = _.intersection(list, this.torrentGroupByCategory[this.filter.category]);
+      }
+      if (this.filter.state !== null) {
+        list = _.intersection(list, this.torrentGroupByState[this.filter.state]);
       }
 
       return list;

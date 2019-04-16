@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from 'lodash';
+import { AllStateTypes } from './consts';
+import { torrentIsState } from './utils';
 
 Vue.use(Vuex);
 
@@ -10,7 +12,7 @@ const defaultConfig = {
     rowsPerPage: 100,
   },
   filter: {
-    type: null,
+    state: null,
     category: null,
     site: null,
   },
@@ -94,6 +96,27 @@ export default new Vuex.Store({
         const url = new URL(torrent.tracker);
         return url.hostname;
       });
+    },
+    torrentGroupByState(__, getters) {
+      const result: any = {};
+      const put = (state: any, torrent: any) => {
+        let list: any[] = result[state];
+        if (!list) {
+          list = [];
+          result[state] = list;
+        }
+        list.push(torrent);
+      };
+
+      for (const torrent of getters.allTorrents) {
+        for (const type of AllStateTypes) {
+          if (torrentIsState(type, torrent.state)) {
+            put(type, torrent);
+          }
+        }
+      }
+
+      return result;
     },
   },
 });
