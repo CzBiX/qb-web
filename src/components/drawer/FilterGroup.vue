@@ -2,6 +2,7 @@
   <v-list-group
     v-model="model"
     :prepend-icon="model ? group.icon : group['icon-alt']"
+    class="filter-group"
   >
     <template v-slot:activator>
       <v-list-tile>
@@ -87,5 +88,9 @@ export default Vue.extend({
 }
 .v-list__tile__action {
   padding-left: 6px;
+}
+
+.filter-group ::v-deep .v-list__group__items .v-list__tile {
+  height: 2.2em;
 }
 </style>

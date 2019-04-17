@@ -143,7 +143,6 @@ export default Vue.extend({
 
   methods: {
     setParams(key: string, value: any){
-      debugger;
       if (_.isNil(value)) {
         Vue.delete(this.userParams, key);
       } else {

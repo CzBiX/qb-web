@@ -31,12 +31,9 @@
           </v-btn>
         </template>
         <v-list class="category-actions">
-          <v-list-tile-sub-title
-            class="px-3 py-1"
-            @click.stop=""
-            >
+          <v-subheader @click.stop="">
             Set category
-          </v-list-tile-sub-title>
+          </v-subheader>
           <v-list-tile
             v-for="(item, i) in categories"
             :key="i"
