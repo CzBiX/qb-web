@@ -67,6 +67,10 @@ class Api {
     return this.axios.get('/log/main').then(this.handleResponse);
   }
 
+  public toggleSpeedLimitsMode() {
+    return this.axios.post('/transfer/toggleSpeedLimitsMode');
+  }
+
   public deleteTorrents(hashes: string[], deleteFiles: boolean) {
     return this.actionTorrents('delete', hashes, {deleteFiles});
   }

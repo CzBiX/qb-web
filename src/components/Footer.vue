@@ -3,44 +3,70 @@
   <v-flex shrink v-if="app">
     <v-layout>
       <v-flex>
-        qBittorrent {{ app.version }}
-      </v-flex>
-      <v-divider vertical class="mx-2"/>
-      <v-flex>
-        API version: {{ app.apiVersion }}
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <span v-on="on">
+              qBittorrent {{ app.version }}
+            </span>
+          </template>
+          <span>
+            API version: {{ app.apiVersion }}
+          </span>
+        </v-tooltip>
       </v-flex>
       <v-divider vertical class="mx-2"/>
       <v-flex>
         Disk free: {{ info.free_space_on_disk | formatSize }}
+      </v-flex>
+      <v-divider vertical class="mx-2"/>
+      <v-flex>
+        Torrents: {{ allTorrents.length }} ({{ totalSize | formatSize }})
       </v-flex>
     </v-layout>
   </v-flex>
   <v-flex shrink v-if="info">
     <v-layout align-center>
       <v-flex>
-        Torrents size: {{ allTorrents.length }} ({{ totalSize | formatSize }})
-      </v-flex>
-      <v-divider vertical class="mx-2"/>
-      <v-flex>
         DHT: {{ info.dht_nodes }} nodes
       </v-flex>
       <v-divider vertical class="mx-2"/>
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-flex class="icon_label" v-on="on">
-            <v-icon :color="info.connection_status | connectionIconColor">mdi-{{ info.connection_status | connectionIcon }}</v-icon>
-          </v-flex>
-        </template>
-        <span>
-          Network {{ info.connection_status }}
-        </span>
-      </v-tooltip>
+      <v-flex class="icon_label">
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              v-on="on"
+              :color="info.connection_status | connectionIconColor"
+            >mdi-{{ info.connection_status | connectionIcon }}</v-icon>
+          </template>
+          <span>
+            Network {{ info.connection_status }}
+          </span>
+        </v-tooltip>
+      </v-flex>
+      <v-divider vertical class="mx-2"/>
+      <v-flex class="icon_label">
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              v-on="on"
+              v-bind="speedModeBind"
+              @click="toggleSpeedLimitsMode"
+            >mdi-speedometer</v-icon>
+          </template>
+          <span>
+            Alternative speed limits {{ speedLimited ? 'enabled' : 'disabled' }}
+          </span>
+        </v-tooltip>
+      </v-flex>
       <v-divider vertical class="mx-2"/>
       <v-flex class="icon_label">
         <v-icon color="success">mdi-download</v-icon>
         <span>
           {{ info.dl_info_speed | formatSize }}/s
-          ({{ info.dl_info_data | formatSize }}/{{ info.alltime_dl | formatSize }})
+          <template v-if="info.dl_rate_limit">
+            ({{ info.dl_rate_limit | formatSize}}/s)
+          </template>
+          [{{ info.dl_info_data | formatSize }}/{{ info.alltime_dl | formatSize }}]
         </span>
       </v-flex>
       <v-divider vertical class="mx-2"/>
@@ -48,7 +74,10 @@
         <v-icon color="warning">mdi-upload</v-icon>
         <span>
           {{ info.up_info_speed | formatSize }}/s
-          ({{ info.up_info_data | formatSize }}/{{ info.alltime_ul | formatSize }})
+          <template v-if="info.up_rate_limit">
+            ({{ info.up_rate_limit | formatSize}}/s)
+          </template>
+          [{{ info.up_info_data | formatSize }}/{{ info.alltime_ul | formatSize }}]
         </span>
       </v-flex>
     </v-layout>
@@ -65,6 +94,7 @@ export default Vue.extend({
   data() {
     return {
       app: null,
+      speedLimited: false,
     };
   },
 
@@ -80,8 +110,8 @@ export default Vue.extend({
     connectionIconColor(status: string) {
       const statusMap: any = {
         connected: 'success',
-        firewalled: 'info',
-        disconnected: 'warning',
+        firewalled: 'warning',
+        disconnected: 'error',
       };
       return statusMap[status];
     },
@@ -100,6 +130,19 @@ export default Vue.extend({
     totalSize() {
       return _.sumBy(this.allTorrents, 'size');
     },
+    speedModeBind() {
+      if (this.speedLimited) {
+        return {
+          class: 'speed-limited',
+          color: 'warning',
+        }
+      }
+
+      return {
+        class: null,
+        color: 'success'
+      }
+    },
   },
 
   methods: {
@@ -114,10 +157,15 @@ export default Vue.extend({
         version, apiVersion,
       };
     },
+    async toggleSpeedLimitsMode() {
+      this.speedLimited = !this.speedLimited;
+      await api.toggleSpeedLimitsMode();
+    },
   },
 
   async created() {
     if (this.isDataReady) {
+      this.speedLimited = this.info.use_alt_speed_limits;
       await this.getAppInfo();
     }
   },
@@ -128,6 +176,9 @@ export default Vue.extend({
         await this.getAppInfo();
       }
     },
+    'info.use_alt_speed_limits'(v) {
+      this.speedLimited = v;
+    },
   },
 });
 </script>
@@ -136,5 +187,8 @@ export default Vue.extend({
 .icon_label {
   display: flex;
   align-items: center;
+}
+.speed-limited {
+  transform: scaleX(-1);
 }
 </style>

@@ -90,8 +90,8 @@
         <td>{{ row.item.state }}</td>
         <td>{{ row.item.num_seeds }}/{{ row.item.num_complete }}</td>
         <td>{{ row.item.num_leechs }}/{{ row.item.num_incomplete }}</td>
-        <td>{{ formatNetworkSpeed(row.item.dlspeed) }}</td>
-        <td>{{ formatNetworkSpeed(row.item.upspeed) }}</td>
+        <td>{{ row.item.dlspeed | formatNetworkSpeed }}</td>
+        <td>{{ row.item.upspeed | formatNetworkSpeed }}</td>
         <td>{{ row.item.eta | formatDuration({dayLimit: 100}) }}</td>
         <td>{{ row.item.ratio.toFixed(2) }}</td>
         <td>
@@ -200,6 +200,13 @@ export default Vue.extend({
       const color = progress >= 0.5 ? 'white' : 'black';
       return color + '--text';
     },
+    formatNetworkSpeed(speed: number) {
+      if (speed === 0) {
+        return null;
+      }
+
+      return formatSize(speed) + '/s';
+    },
   },
 
   methods: {
@@ -217,13 +224,6 @@ export default Vue.extend({
     },
     async setTorrentsCategory(category: string) {
       await api.setTorrentsCategory(this.selectedHashes, category);
-    },
-    formatNetworkSpeed(speed: number) {
-      if (speed === 0) {
-        return null;
-      }
-
-      return formatSize(speed) + '/s';
     },
   },
 
