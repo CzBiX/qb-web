@@ -28,14 +28,9 @@
           @click="submit"
           color="warning"
           :disabled="submitting"
+          :loading="submitting"
         >
-          <v-progress-circular
-            v-if="submitting"
-            indeterminate
-          />
-          <template v-else>
-            Delete
-          </template>
+          Delete
         </v-btn>
       </v-card-actions>
     </v-card>

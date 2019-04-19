@@ -79,14 +79,9 @@
             @click="submit"
             color="primary"
             :disabled="!valid"
+            :loading="submitting"
           >
-            <v-progress-circular
-              v-if="submitting"
-              :indeterminate="true"
-            />
-            <template v-else>
-              Submit
-            </template>
+            Submit
           </v-btn>
         </v-card-actions>
       </v-card>

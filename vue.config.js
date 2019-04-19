@@ -1,4 +1,6 @@
 module.exports = {
+  outputDir: 'dist/public',
+
   pwa: {
     name: 'qBittorrent Web UI',
   },

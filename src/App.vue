@@ -4,28 +4,26 @@
       app
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
+      class="drawer"
     >
       <drawer v-model="drawerOptions" />
+      <v-spacer />
+      <v-divider />
+      <v-expansion-panel
+        class="drawer-footer"
+        v-if="$vuetify.breakpoint.xsOnly">
+        <v-expansion-panel-content lazy>
+          <template v-slot:header>
+            <v-layout align-center>
+              <v-icon class="footer-icon shrink">mdi-information-outline</v-icon>
+              <span class="footer-title">Status info</span>
+            </v-layout>
+          </template>
+          <app-footer phone-layout />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
     </v-navigation-drawer>
-    <v-toolbar
-      :clipped-left="$vuetify.breakpoint.lgAndUp"
-      :scroll-off-screen="!$vuetify.breakpoint.lgAndUp"
-      app
-    >
-      <v-toolbar-title class="headline">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down">qBittorrent Web UI</span>
-      </v-toolbar-title>
-      <!-- <v-spacer></v-spacer>
-      <v-btn
-        flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn> -->
-    </v-toolbar>
+    <main-toolbar v-model="drawer" />
 
     <v-content>
       <v-container pa-0 fluid>
@@ -53,6 +51,7 @@ import Vue from 'vue';
 import AddForm from './components/AddForm.vue';
 import Drawer from './components/Drawer.vue';
 import LoginForm from './components/LoginForm.vue';
+import MainToolbar from './components/MainToolbar.vue';
 import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/LogsDialog.vue';
@@ -69,6 +68,7 @@ export default Vue.extend({
     Torrents,
     AppFooter,
     LogsDialog,
+    MainToolbar,
   },
   data() {
     return {
@@ -140,10 +140,29 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.v-toolbar__title {
-  margin-left: -16px;
-}
 .container {
   margin-bottom: 80px;
+}
+.drawer {
+  display: flex;
+  flex-direction: column;
+
+  .drawer-footer {
+    box-shadow: none;
+
+    ::v-deep .v-expansion-panel__header {
+      padding: 12px;
+    }
+
+    .footer-icon {
+      font-size: 22px;
+      margin-left: 10px;
+      margin-right: 28px;
+    }
+    .footer-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
 }
 </style>

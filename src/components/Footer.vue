@@ -1,8 +1,13 @@
 <template>
-<v-layout align-center justify-space-between fill-height mx-4 v-if="isDataReady">
+<v-layout
+  v-bind="topLayoutBind"
+  v-if="isDataReady">
   <v-flex shrink v-if="app">
-    <v-layout>
-      <v-flex>
+    <v-layout
+      :column="phoneLayout"
+      :align-center="!phoneLayout"
+    >
+      <v-flex v-if="!phoneLayout">
         <v-tooltip top>
           <template v-slot:activator="{ on }">
             <span v-on="on">
@@ -14,38 +19,59 @@
           </span>
         </v-tooltip>
       </v-flex>
-      <v-divider vertical class="mx-2"/>
-      <v-flex>
-        Disk free: {{ info.free_space_on_disk | formatSize }}
+      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+      <v-flex class="icon-label">
+        <v-icon color="info">mdi-nas</v-icon>
+        Free: {{ info.free_space_on_disk | formatSize }}
       </v-flex>
-      <v-divider vertical class="mx-2"/>
-      <v-flex>
+      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+      <v-flex v-if="!phoneLayout">
         Torrents: {{ allTorrents.length }} ({{ totalSize | formatSize }})
       </v-flex>
     </v-layout>
   </v-flex>
   <v-flex shrink v-if="info">
-    <v-layout align-center>
-      <v-flex>
+    <v-layout
+      :column="phoneLayout"
+      :align-center="!phoneLayout"
+    >
+      <v-flex v-if="!phoneLayout">
         DHT: {{ info.dht_nodes }} nodes
       </v-flex>
-      <v-divider vertical class="mx-2"/>
-      <v-flex class="icon_label">
+      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+      <v-flex class="icon-label">
         <v-tooltip top>
           <template v-slot:activator="{ on }">
             <v-icon
               v-on="on"
               :color="info.connection_status | connectionIconColor"
             >mdi-{{ info.connection_status | connectionIcon }}</v-icon>
+            <span v-if="phoneLayout">
+              Network {{ info.connection_status }}
+            </span>
           </template>
           <span>
             Network {{ info.connection_status }}
           </span>
         </v-tooltip>
       </v-flex>
-      <v-divider vertical class="mx-2"/>
-      <v-flex class="icon_label">
-        <v-tooltip top>
+      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+      <v-flex class="icon-label">
+        <v-switch
+          v-if="phoneLayout"
+          hide-details
+          :value="speedLimited"
+          @change="toggleSpeedLimitsMode"
+          label="Alternative speed limits"
+          class="mt-0 pt-0 speed-switch"
+        >
+          <template v-slot:prepend>
+            <v-icon
+              v-bind="speedModeBind"
+            >mdi-speedometer</v-icon>
+          </template>
+        </v-switch>
+        <v-tooltip top v-else>
           <template v-slot:activator="{ on }">
             <v-icon
               v-on="on"
@@ -58,26 +84,30 @@
           </span>
         </v-tooltip>
       </v-flex>
-      <v-divider vertical class="mx-2"/>
-      <v-flex class="icon_label">
+      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+      <v-flex class="icon-label">
         <v-icon color="success">mdi-download</v-icon>
         <span>
           {{ info.dl_info_speed | formatSize }}/s
           <template v-if="info.dl_rate_limit">
             ({{ info.dl_rate_limit | formatSize}}/s)
           </template>
-          [{{ info.dl_info_data | formatSize }}/{{ info.alltime_dl | formatSize }}]
+          <template v-if="!phoneLayout">
+            [{{ info.dl_info_data | formatSize }}/{{ info.alltime_dl | formatSize }}]
+          </template>
         </span>
       </v-flex>
-      <v-divider vertical class="mx-2"/>
-      <v-flex class="icon_label">
+      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+      <v-flex class="icon-label">
         <v-icon color="warning">mdi-upload</v-icon>
         <span>
           {{ info.up_info_speed | formatSize }}/s
           <template v-if="info.up_rate_limit">
             ({{ info.up_rate_limit | formatSize}}/s)
           </template>
-          [{{ info.up_info_data | formatSize }}/{{ info.alltime_ul | formatSize }}]
+          <template v-if="!phoneLayout">
+            [{{ info.up_info_data | formatSize }}/{{ info.alltime_ul | formatSize }}]
+          </template>
         </span>
       </v-flex>
     </v-layout>
@@ -91,6 +121,10 @@ import { api } from '../Api';
 import { mapState, mapGetters } from 'vuex';
 
 export default Vue.extend({
+  props: {
+    phoneLayout: Boolean,
+  },
+
   data() {
     return {
       app: null,
@@ -143,6 +177,17 @@ export default Vue.extend({
         color: 'success'
       }
     },
+    topLayoutBind() {
+      const v: boolean = this.phoneLayout;
+      return {
+        column: v,
+        class: v ? 'in-drawer' : null,
+        'mx-4': !v,
+        'fill-height': !v,
+        'align-center': !v,
+        'justify-space-between': !v,
+      };
+    },
   },
 
   methods: {
@@ -164,10 +209,11 @@ export default Vue.extend({
   },
 
   async created() {
-    if (this.isDataReady) {
-      this.speedLimited = this.info.use_alt_speed_limits;
-      await this.getAppInfo();
+    if (!this.isDataReady) {
+      return;
     }
+    this.speedLimited = this.info.use_alt_speed_limits;
+    await this.getAppInfo();
   },
 
   watch: {
@@ -184,11 +230,46 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.icon_label {
+.icon-label {
   display: flex;
   align-items: center;
 }
+.speed-switch {
+  font-size: inherit;
+
+  ::v-deep {
+    .v-input__prepend-outer {
+      margin-right: 0;
+    }
+
+    .v-input__control {
+      margin-left: 4px;
+      width: 100%;
+
+      .v-input__slot {
+        justify-content: space-between;
+
+        .v-input--selection-controls__input {
+          order: 2;
+        }
+
+        .v-label {
+          color: inherit;
+          font-size: inherit;
+        }
+      }
+    }
+  }
+}
+
 .speed-limited {
   transform: scaleX(-1);
+}
+.in-drawer {
+  padding: 0 16px;
+
+  .no-icon {
+    margin-left: 24px;
+  }
 }
 </style>
