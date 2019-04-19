@@ -35,25 +35,29 @@
             Set category
           </v-subheader>
           <v-list-tile
-            v-for="(item, i) in categories"
+            v-for="(item, i) in allCategories"
             :key="i"
-            @click="setTorrentsCategory(item)"
+            @click="setTorrentsCategory(item.key)"
             >
             <v-list-tile-action>
               <v-icon>mdi-folder-open</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title>
-              {{ item }}
-            </v-list-tile-title>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                {{ item.name }}
+              </v-list-tile-title>
+            </v-list-tile-content>
           </v-list-tile>
           <v-divider />
           <v-list-tile @click="setTorrentsCategory('')">
             <v-list-tile-action>
               <v-icon>mdi-folder-remove</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title>
-              Reset
-            </v-list-tile-title>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Reset
+              </v-list-tile-title>
+            </v-list-tile-content>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -152,6 +156,7 @@ export default Vue.extend({
     ...mapGetters([
       'isDataReady',
       'allTorrents',
+      'allCategories',
       'torrentGroupByCategory',
       'torrentGroupBySite',
       'torrentGroupByState',
@@ -159,9 +164,6 @@ export default Vue.extend({
     ...mapState({
       filter(state, getters) {
         return getters.config.filter;
-      },
-      categories(state, getters) {
-        return Object.keys(getters.torrentGroupByCategory).filter(_.identity);
       },
     }),
     hasSelected() {

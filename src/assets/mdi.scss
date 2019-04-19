@@ -1,0 +1,13 @@
+@import "~@mdi/font/scss/variables";
+@import "~@mdi/font/scss/functions";
+@import "~@mdi/font/scss/core";
+@import "~@mdi/font/scss/icons";
+@import "~@mdi/font/scss/extras";
+@import "~@mdi/font/scss/animated";
+
+@font-face {
+  font-family: "Material Design Icons";
+  src: url("~@mdi/font/fonts/materialdesignicons-webfont.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}

@@ -50,7 +50,7 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list-group>
-      <template v-if="item.filterGroups">
+      <template v-else-if="item.filterGroups">
         <filter-group
           v-for="(child, i) in item.filterGroups"
           :key="i"
@@ -153,6 +153,7 @@ export default {
     ...mapGetters([
       'isDataReady',
       'allTorrents',
+      'allCategories',
       'torrentGroupByCategory',
       'torrentGroupBySite',
       'torrentGroupByState',
@@ -187,21 +188,26 @@ export default {
         ],
       });
 
-      const categories: any[] = _.sortBy(Object.entries(this.torrentGroupByCategory).map(([key, value]) => {
+      const categories: any[] = [{
+        key: '',
+        name: 'Uncategorized',
+      }].concat(this.allCategories).map(category => {
+        let value = this.torrentGroupByCategory[category.key]
+        if (_.isUndefined(value)) {
+          value = [];
+        }
         const size = formatSize(_.sumBy(value, 'size'));
-        const title = (key ? key : 'Uncategorized') + ` (${value.length})`;
+        const title = category.name + ` (${value.length})`;
         const append =  `[${size}]`;
-        return { icon: 'mdi-folder-open', title, key, append};
-      }), 'key');
+        return { icon: 'mdi-folder-open', title, key: category.key, append};
+      });
       filterGroups.push({
         'icon': 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
         'title': 'Categories',
-        'model': false,
+        'model': true,
         'select': 'category',
-        'children': [
-          ...categories,
-        ],
+        'children': categories,
       });
 
       const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {

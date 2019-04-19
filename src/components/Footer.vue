@@ -8,7 +8,7 @@
       :align-center="!phoneLayout"
     >
       <v-flex v-if="!phoneLayout">
-        <v-tooltip top>
+        <v-tooltip top lazy>
           <template v-slot:activator="{ on }">
             <span v-on="on">
               qBittorrent {{ app.version }}
@@ -21,12 +21,13 @@
       </v-flex>
       <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
       <v-flex class="icon-label">
-        <v-icon color="info">mdi-nas</v-icon>
-        Free: {{ info.free_space_on_disk | formatSize }}
+        <v-icon>mdi-sprout</v-icon>
+        {{ allTorrents.length }} [{{ totalSize | formatSize }}]
       </v-flex>
       <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-      <v-flex v-if="!phoneLayout">
-        Torrents: {{ allTorrents.length }} ({{ totalSize | formatSize }})
+      <v-flex class="icon-label">
+        <v-icon>mdi-nas</v-icon>
+        {{ info.free_space_on_disk | formatSize }}
       </v-flex>
     </v-layout>
   </v-flex>
@@ -35,12 +36,13 @@
       :column="phoneLayout"
       :align-center="!phoneLayout"
     >
-      <v-flex v-if="!phoneLayout">
-        DHT: {{ info.dht_nodes }} nodes
+      <v-flex v-if="!phoneLayout" class="icon-label">
+        <v-icon>mdi-access-point-network</v-icon>
+        {{ info.dht_nodes }} nodes
       </v-flex>
       <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
       <v-flex class="icon-label">
-        <v-tooltip top>
+        <v-tooltip top lazy>
           <template v-slot:activator="{ on }">
             <v-icon
               v-on="on"
@@ -71,7 +73,7 @@
             >mdi-speedometer</v-icon>
           </template>
         </v-switch>
-        <v-tooltip top v-else>
+        <v-tooltip top lazy v-else>
           <template v-slot:activator="{ on }">
             <v-icon
               v-on="on"
@@ -86,7 +88,9 @@
       </v-flex>
       <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
       <v-flex class="icon-label">
-        <v-icon color="success">mdi-download</v-icon>
+        <v-icon
+          :color=" info.dl_info_speed > 0 ? 'success' : null"
+        >mdi-download</v-icon>
         <span>
           {{ info.dl_info_speed | formatSize }}/s
           <template v-if="info.dl_rate_limit">
@@ -99,7 +103,9 @@
       </v-flex>
       <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
       <v-flex class="icon-label">
-        <v-icon color="warning">mdi-upload</v-icon>
+        <v-icon
+          :color=" info.up_info_speed > 0 ? 'warning' : null"
+        >mdi-upload</v-icon>
         <span>
           {{ info.up_info_speed | formatSize }}/s
           <template v-if="info.up_rate_limit">
@@ -266,7 +272,7 @@ export default Vue.extend({
   transform: scaleX(-1);
 }
 .in-drawer {
-  padding: 0 16px;
+  padding: 0 16px 0 20px;
 
   .no-icon {
     margin-left: 24px;

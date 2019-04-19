@@ -26,7 +26,7 @@
     <main-toolbar v-model="drawer" />
 
     <v-content>
-      <v-container pa-0 fluid>
+      <v-container fluid>
         <torrents />
       </v-container>
     </v-content>
@@ -141,7 +141,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .container {
-  margin-bottom: 80px;
+  padding: 0 0 80px;
 }
 .drawer {
   display: flex;

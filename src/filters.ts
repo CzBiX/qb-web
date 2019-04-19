@@ -24,11 +24,12 @@ export interface DurationOptions {
 
 export function formatDuration(value: number, options?: DurationOptions) {
   const minute = 60;
-  const hour = 3600;
-  const day = 3600 * 24;
+  const hour = minute * 60;
+  const day = hour * 24;
+  const year = day * 365;
 
-  const durations = [day, hour, minute, 1];
-  const units = 'dhms';
+  const durations = [year, day, hour, minute, 1];
+  const units = 'ydhms';
 
   let index = 0;
   let unitSize = 0;
@@ -41,6 +42,10 @@ export function formatDuration(value: number, options?: DurationOptions) {
 
   const opt = options ? Object.assign(defaultOptions, options) : defaultOptions;
 
+  if (opt.dayLimit && value >= opt.dayLimit * day) {
+    return '∞';
+  }
+
   while (true) {
     if ((opt.maxUnitSize && unitSize === opt.maxUnitSize) || index === durations.length) {
       break;
@@ -52,9 +57,6 @@ export function formatDuration(value: number, options?: DurationOptions) {
       continue;
     }
     const result = Math.floor(value / duration);
-    if (index === 0 && opt.dayLimit && result >= opt.dayLimit) {
-      return '∞';
-    }
     parts.push(result + units[index]);
 
     value %= duration;
