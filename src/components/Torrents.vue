@@ -80,12 +80,16 @@
             hide-details
           />
         </td>
-        <td :title="row.item.name">{{ row.item.name }}</td>
+        <td :title="row.item.name" class="icon-label">
+          <v-icon :color="row.item.state | stateColor">{{ row.item.state | stateIcon }}</v-icon>
+          {{ row.item.name }}
+        </td>
         <td>{{ row.item.size | formatSize }}</td>
         <td>
           <v-progress-linear
             height="1.4em"
             :value="row.item.progress * 100"
+            :color="row.item.state | stateColor(true)"
             class="text-xs-center ma-0"
           >
             <span :class="row.item.progress | progressColorClass">{{ row.item.progress | progressText }}</span>
@@ -117,6 +121,84 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 import _ from 'lodash';
 import { api } from '../Api';
 import { formatSize, formatDuration } from '../filters';
+import { torrentIsState } from '../utils';
+import { StateType } from '../consts';
+
+function getStateInfo(state: string) {
+  let icon;
+  switch (state) {
+    case 'metaDL':
+    case 'allocating':
+    case 'downloading':
+    case 'forcedDL':
+      icon = {
+        icon: 'download',
+        color: 'info',
+      };
+      break;
+    case 'uploading':
+    case 'forcedUP':
+      icon = {
+        icon: 'upload',
+        color: 'info',
+      };
+      break;
+    case 'stalledDL':
+      icon = {
+        icon: 'download',
+        color: null,
+      };
+      break;
+    case 'stalledUP':
+      icon = {
+        icon: 'upload',
+        color: null,
+      };
+      break;
+    case 'pausedDL':
+      icon = {
+        icon: 'pause',
+        color: 'warning',
+      };
+      break;
+    case 'pausedUP':
+      icon = {
+        icon: 'check',
+        color: null,
+      };
+      break;
+    case 'queuedDL':
+    case 'queuedUP':
+      icon = {
+        icon: 'timer-sand',
+        color: 'info',
+      };
+      break;
+    case 'checkingDL':
+    case 'checkingUP':
+    case 'queuedForChecking':
+    case 'checkingResumeData':
+    case 'moving':
+      icon = {
+        icon: 'backup-restore',
+        color: 'info',
+      };
+      break;
+    case 'error':
+    case 'unknown':
+    case 'missingFiles':
+      icon = {
+        icon: 'alert',
+        color: 'error',
+      };
+      break;
+    default:
+      throw state;
+      break;
+  }
+
+  return icon;
+}
 
 export default Vue.extend({
   name: 'torrents',
@@ -209,6 +291,18 @@ export default Vue.extend({
 
       return formatSize(speed) + '/s';
     },
+    stateIcon(state: string) {
+      const item = getStateInfo(state);
+      return 'mdi-' + item.icon;
+    },
+    stateColor(state: string, isProgress?: boolean) {
+      const item = getStateInfo(state);
+      if (!isProgress) {
+        return item.color;
+      }
+
+      return item.color || '#0008';
+    },
   },
 
   methods: {
@@ -254,6 +348,11 @@ export default Vue.extend({
 
 .menu-check {
   padding: 0;
+}
+
+.icon-label {
+  display: flex;
+  align-items: center;
 }
 
 ::v-deep .v-datatable thead th, .v-datatable tbody td {

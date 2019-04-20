@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { StateType } from './consts';
 
-const dlState = ['downloading', 'metaDL', 'stalledDL', 'checkingDL', 'pausedDL', 'queuedDL', 'forceDL'];
+const dlState = ['downloading', 'metaDL', 'stalledDL', 'checkingDL', 'pausedDL', 'queuedDL', 'forceDL', 'allocating'];
 const upState = ['uploading', 'stalledUP', 'checkingUP', 'queuedUP', 'forceUP'];
 const completeState = ['uploading', 'stalledUP', 'checkingUP', 'pausedUP', 'queuedUP', 'forceUP'];
 const activeState = ['metaDL', 'downloading', 'forceDL', 'uploading', 'forcedUP', 'moving'];
