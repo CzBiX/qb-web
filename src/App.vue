@@ -26,9 +26,7 @@
     <main-toolbar v-model="drawer" />
 
     <v-content>
-      <v-container fluid>
-        <torrents />
-      </v-container>
+      <torrents />
     </v-content>
 
     <add-form v-if="preferences" />
@@ -140,9 +138,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.container {
-  padding: 0 0 80px;
-}
 .drawer {
   display: flex;
   flex-direction: column;

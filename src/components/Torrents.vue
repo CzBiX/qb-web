@@ -1,10 +1,15 @@
 <template>
-  <div>
+  <v-container fluid>
+    <v-layout
+      column
+      v-show="hasSelected"
+      class="toolbar"
+      >
     <v-toolbar
       flat
-      v-show="hasSelected"
       color="white"
-      height="57px"
+      height="56px"
+      class="elevation-2"
     >
       <v-checkbox class="shrink menu-check"
         :input-value="hasSelected"
@@ -63,6 +68,12 @@
       </v-menu>
     </v-toolbar>
     <v-divider />
+    </v-layout>
+
+
+    <v-layout
+      column
+      >
     <v-data-table
       :headers="headers"
       :items="torrents"
@@ -72,6 +83,7 @@
       select-all
       :pagination.sync="pagination"
       v-model="selectedRows"
+      class="table"
     >
       <template v-slot:items="row">
         <td>
@@ -109,9 +121,10 @@
         </td>
       </template>
     </v-data-table>
+    </v-layout>
 
     <confirm-delete-dialog v-if="deleteDialog" v-model="deleteDialog" :torrents="selectedRows" />
-  </div>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -337,9 +350,28 @@ export default Vue.extend({
 });
 </script>
 
+<style lang="scss">
+html {
+  overflow-y: hidden;
+}
+</style>
+
+
 <style lang="scss" scoped>
 ::v-deep .v-toolbar__content {
   padding-left: 8px;
+}
+
+.container {
+  padding: 0 0 80px;
+  height: calc(100vh - 100px); // footer + toobar = 100px
+  overflow-y: scroll;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .category-actions .v-list__tile__action {
