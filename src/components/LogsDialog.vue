@@ -30,13 +30,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import { api } from '../Api';
+import { sleep } from '../utils';
 export default Vue.extend({
   props: {
     value: Boolean,
   },
   data() {
     return {
-      logs: null,
+      logs: [],
+      task: 0,
+      destory: false,
     };
   },
   filters: {
@@ -69,14 +72,32 @@ export default Vue.extend({
       this.$emit('input', false);
     },
     async getLogs() {
-      this.logs = await api.getLogs();
+      const lastId = this.logs.length ? this.logs[this.logs.length - 1]['id'] : -1;
+      const logs = await api.getLogs(lastId);
 
-      await this.$nextTick();
-      this.$refs.end.scrollIntoView();
+      if (this.destory) {
+        return;
+      }
+
+      if (logs.length) {
+        this.logs = this.logs.concat(logs);
+
+        await this.$nextTick();
+
+        this.$refs.end.scrollIntoView();
+      }
+
+      this.task = setTimeout(this.getLogs, 2000);
     },
   },
   async created() {
     await this.getLogs();
+  },
+  beforeDestroy() {
+    this.destory = true;
+    if (this.task) {
+      clearTimeout(this.task);
+    }
   },
 });
 </script>

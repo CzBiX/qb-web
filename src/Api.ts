@@ -63,8 +63,14 @@ class Api {
     return this.axios.post('/app/setPreferences', data);
   }
 
-  public getLogs() {
-    return this.axios.get('/log/main').then(this.handleResponse);
+  public getLogs(lastId?: number) {
+    const params = {
+      last_known_id: lastId,
+    };
+
+    return this.axios.get('/log/main', {
+      params,
+    }).then(this.handleResponse);
   }
 
   public toggleSpeedLimitsMode() {
