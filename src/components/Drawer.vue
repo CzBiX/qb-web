@@ -205,7 +205,7 @@ export default {
         'icon': 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
         'title': 'Categories',
-        'model': true,
+        'model': !this.$vuetify.breakpoint.xsOnly,
         'select': 'category',
         'children': categories,
       });

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid v-class:phone-layout="$vuetify.breakpoint.xsOnly">
     <v-layout
       column
       v-show="hasSelected"
@@ -366,6 +366,10 @@ html {
   padding: 0 0 80px;
   height: calc(100vh - 100px); // footer + toobar = 100px
   overflow-y: scroll;
+
+  &.phone-layout {
+    height: calc(100vh - 56px); // toobar = 56px
+  }
 }
 
 .toolbar {

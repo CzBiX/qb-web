@@ -7,21 +7,24 @@
       class="drawer"
     >
       <drawer v-model="drawerOptions" />
-      <v-spacer />
-      <v-divider />
-      <v-expansion-panel
-        class="drawer-footer"
-        v-if="$vuetify.breakpoint.xsOnly">
-        <v-expansion-panel-content lazy>
-          <template v-slot:header>
-            <v-layout align-center>
-              <v-icon class="footer-icon shrink">mdi-information-outline</v-icon>
-              <span class="footer-title">Status info</span>
-            </v-layout>
-          </template>
-          <app-footer phone-layout />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+      <template v-if="phoneLayout">
+        <v-spacer />
+        <v-divider />
+        <v-expansion-panel
+          class="drawer-footer"
+          >
+          <v-expansion-panel-content lazy @input="drawerFooterOpen">
+            <template v-slot:header>
+              <v-layout align-center>
+                <v-icon class="footer-icon shrink">mdi-information-outline</v-icon>
+                <span class="footer-title">Status info</span>
+              </v-layout>
+            </template>
+            <app-footer phone-layout />
+          </v-expansion-panel-content>
+          <div ref="end" />
+        </v-expansion-panel>
+      </template>
     </v-navigation-drawer>
     <main-toolbar v-model="drawer" />
 
@@ -56,6 +59,7 @@ import LogsDialog from './components/LogsDialog.vue';
 import { api } from './Api';
 import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
 import Axios, { AxiosError } from 'axios';
+import { sleep } from './utils';
 
 export default Vue.extend({
   name: 'app',
@@ -72,6 +76,7 @@ export default Vue.extend({
     return {
       needAuth: false,
       drawer: true,
+      phoneLayout: false,
       drawerOptions: {
         showLogs: false,
       },
@@ -79,6 +84,8 @@ export default Vue.extend({
     };
   },
   async created() {
+    this.phoneLayout = this.$vuetify.breakpoint.xsOnly;
+
     await this.getInitData();
   },
   beforeDestroy() {
@@ -125,6 +132,14 @@ export default Vue.extend({
       this.updateMainData(mainData);
 
       this.task = setTimeout(this.getMainData, this.config.updateInterval);
+    },
+    async drawerFooterOpen(v: boolean) {
+      if (!v) return;
+      await sleep(350);
+
+      this.$refs.end.scrollIntoView({
+        behavior: 'smooth',
+      });
     },
   },
   watch: {
