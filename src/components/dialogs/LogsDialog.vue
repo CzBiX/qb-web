@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" @input="$emit('input', $event)" scrollable :width="dialogWidth">
+  <v-dialog :value="value" @input="$emit('input', $event)" scrollable :fullscreen="phoneLayout" :width="dialogWidth">
     <v-card>
       <v-card-title
         class="headline grey lighten-4"
@@ -29,17 +29,19 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { api } from '../Api';
-import { sleep } from '../utils';
+import { api } from '@/Api';
+import { sleep } from '@/utils';
+import Taskable from '@/mixins/taskable';
+
 export default Vue.extend({
+  mixins: [Taskable],
+
   props: {
     value: Boolean,
   },
   data() {
     return {
       logs: [],
-      task: 0,
-      destory: false,
     };
   },
   filters: {
@@ -66,6 +68,9 @@ export default Vue.extend({
     dialogWidth() {
       return this.$vuetify.breakpoint.smAndDown ? '100%' : '70%';
     },
+    phoneLayout() {
+      return this.$vuetify.breakpoint.xsOnly;
+    }
   },
   methods: {
     closeDialog() {
@@ -92,12 +97,6 @@ export default Vue.extend({
   },
   async created() {
     await this.getLogs();
-  },
-  beforeDestroy() {
-    this.destory = true;
-    if (this.task) {
-      clearTimeout(this.task);
-    }
   },
 });
 </script>

@@ -16,6 +16,7 @@ export function formatSize(value: number) {
 }
 
 Vue.filter('formatSize', formatSize);
+Vue.filter('size', formatSize);
 
 export interface DurationOptions {
   dayLimit?: number;
@@ -86,6 +87,12 @@ Vue.filter('formatTimestamp', (timestamp: number) => {
 export function formatAsDuration(date: number, options?: DurationOptions) {
     const duration = (Date.now() / 1000) - date;
     return formatDuration(duration, options);
-};
+}
 
 Vue.filter('formatAsDuration', formatAsDuration);
+
+export function formatProgress(progress: number) {
+  return Math.floor(progress * 100) + '%';
+}
+
+Vue.filter('progress', formatProgress);

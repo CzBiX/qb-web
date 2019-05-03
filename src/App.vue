@@ -55,7 +55,7 @@ import LoginForm from './components/LoginForm.vue';
 import MainToolbar from './components/MainToolbar.vue';
 import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
-import LogsDialog from './components/LogsDialog.vue';
+import LogsDialog from './components/dialogs/LogsDialog.vue';
 import { api } from './Api';
 import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
 import Axios, { AxiosError } from 'axios';
@@ -76,7 +76,6 @@ export default Vue.extend({
     return {
       needAuth: false,
       drawer: true,
-      phoneLayout: false,
       drawerOptions: {
         showLogs: false,
       },
@@ -84,8 +83,6 @@ export default Vue.extend({
     };
   },
   async created() {
-    this.phoneLayout = this.$vuetify.breakpoint.xsOnly;
-
     await this.getInitData();
   },
   beforeDestroy() {
@@ -100,6 +97,9 @@ export default Vue.extend({
       'preferences',
     ]),
     ...mapGetters(['config']),
+    phoneLayout() {
+      return this.$vuetify.breakpoint.xsOnly;
+    },
   },
   methods: {
     ...mapMutations([

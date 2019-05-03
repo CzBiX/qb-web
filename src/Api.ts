@@ -93,6 +93,27 @@ class Api {
     return this.actionTorrents('setCategory', hashes, {category});
   }
 
+  public getTorrentTracker(hash: string) {
+    const params = {
+      hash,
+    };
+
+    return this.axios.get('/torrents/trackers', {
+      params,
+    }).then(this.handleResponse);
+  }
+
+  public getTorrentPeers(hash: string, rid?: number) {
+    const params = {
+      hash,
+      rid,
+    };
+
+    return this.axios.get('/sync/torrentPeers', {
+      params,
+    }).then(this.handleResponse);
+  }
+
   private actionTorrents(action: string, hashes: string[], extra?: any) {
     const params: any = {
       hashes: hashes.join('|'),

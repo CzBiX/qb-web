@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="value" @input="$emit('input', $event)" width="40em">
+  <v-dialog :value="true" @input="closeDialog" :fullscreen="phoneLayout" width="40em">
     <v-card>
       <v-card-title
         class="headline grey lighten-4"
@@ -18,7 +18,7 @@
         <v-checkbox
           v-model="deleteFiles"
           prepend-icon="mdi-file-cancel"
-          label="Also delete the files on the hard disk"
+          label="Also delete files"
         />
       </v-card-text>
       <v-card-actions>
@@ -43,18 +43,26 @@ import { api } from '@/Api';
 
 export default Vue.extend({
   props: {
-    torrents: Array,
-    value: Boolean,
+    value: Array,
   },
   data() {
     return {
       deleteFiles: false,
       submitting: false,
+      torrents: [],
     };
+  },
+  created() {
+    this.torrents = this.value;
+  },
+  computed: {
+    phoneLayout() {
+      return this.$vuetify.breakpoint.xsOnly;
+    }
   },
   methods: {
     closeDialog() {
-      this.$emit('input', false);
+      this.$emit('input', []);
     },
     async submit() {
       if (this.submitting) {
@@ -75,5 +83,16 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .torrents {
   overflow: auto;
+}
+.v-dialog--fullscreen {
+  .v-card__text {
+    padding-bottom: 52px;
+  }
+
+  .v-card__actions {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }
 </style>

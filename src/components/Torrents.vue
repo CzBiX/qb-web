@@ -29,6 +29,9 @@
         <v-icon>mdi-pause</v-icon>
       </v-btn>
       <v-divider vertical inset />
+      <v-btn icon @click="showInfo" title="Info" v-if="selectedRows.length <= 4">
+        <v-icon>mdi-alert-circle</v-icon>
+      </v-btn>
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on" title="Category">
@@ -104,7 +107,7 @@
             :color="row.item.state | stateColor(true)"
             class="text-xs-center ma-0"
           >
-            <span :class="row.item.progress | progressColorClass">{{ row.item.progress | progressText }}</span>
+            <span :class="row.item.progress | progressColorClass">{{ row.item.progress | progress }}</span>
           </v-progress-linear>
         </td>
         <td>{{ row.item.state }}</td>
@@ -123,13 +126,15 @@
     </v-data-table>
     </v-layout>
 
-    <confirm-delete-dialog v-if="deleteDialog" v-model="deleteDialog" :torrents="selectedRows" />
+    <confirm-delete-dialog v-if="toDelete.length" v-model="toDelete" />
+    <info-dialog v-if="toShowInfo.length" v-model="toShowInfo" :tab="infoTab" @change="infoTab = $event" />
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import ConfirmDeleteDialog from './dialogs/ConfirmDeleteDialog.vue';
+import InfoDialog from './dialogs/InfoDialog.vue';
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import _ from 'lodash';
 import { api } from '../Api';
@@ -218,6 +223,7 @@ export default Vue.extend({
 
   components: {
     ConfirmDeleteDialog,
+    InfoDialog,
   },
 
   data() {
@@ -238,7 +244,9 @@ export default Vue.extend({
     return {
       headers,
       selectedRows: [],
-      deleteDialog: false,
+      toDelete: [],
+      toShowInfo: [],
+      infoTab: null,
       pagination: null,
     };
   },
@@ -290,9 +298,6 @@ export default Vue.extend({
   },
 
   filters: {
-    progressText(progress: number) {
-      return Math.floor(progress * 100) + '%';
-    },
     progressColorClass(progress: number) {
       const color = progress >= 0.5 ? 'white' : 'black';
       return color + '--text';
@@ -323,7 +328,10 @@ export default Vue.extend({
       'updateConfig',
     ]),
     confirmDelete() {
-      this.deleteDialog = true;
+      this.toDelete = this.selectedRows;
+    },
+    showInfo() {
+      this.toShowInfo = this.selectedRows;
     },
     async resumeTorrents() {
       await api.resumeTorrents(this.selectedHashes);
