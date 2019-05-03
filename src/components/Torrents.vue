@@ -95,7 +95,11 @@
             hide-details
           />
         </td>
-        <td :title="row.item.name" class="icon-label">
+        <td
+          :title="row.item.name"
+          class="icon-label"
+          @dblclick.prevent="showInfo(row.item)"
+        >
           <v-icon :color="row.item.state | stateColor">{{ row.item.state | stateIcon }}</v-icon>
           {{ row.item.name }}
         </td>
@@ -330,8 +334,8 @@ export default Vue.extend({
     confirmDelete() {
       this.toDelete = this.selectedRows;
     },
-    showInfo() {
-      this.toShowInfo = this.selectedRows;
+    showInfo(row?: any) {
+      this.toShowInfo = row ? [row] : this.selectedRows;
     },
     async resumeTorrents() {
       await api.resumeTorrents(this.selectedHashes);
