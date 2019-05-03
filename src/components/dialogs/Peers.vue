@@ -6,15 +6,17 @@
   >
     <template v-slot:items="row">
       <td class="ip">
-        <img
-          v-if="isWindows"
-          class="country-flag"
-          :title="row.item.country"
-          :alt="codeToFlag(row.item.country_code).char"
-          :src="codeToFlag(row.item.country_code).url"
-        />
-        <template v-else>
-          {{ codeToFlag(row.item.country_code).char }}
+        <template v-if="row.item.country_code">
+          <img
+            v-if="isWindows"
+            class="country-flag"
+            :title="row.item.country"
+            :alt="codeToFlag(row.item.country_code).char"
+            :src="codeToFlag(row.item.country_code).url"
+          />
+          <template v-else>
+            {{ codeToFlag(row.item.country_code).char }}
+          </template>
         </template>
         {{ row.item.ip }}
         <span class="grey--text">:{{ row.item.port }}</span>
@@ -23,10 +25,10 @@
       <td :title="row.item.flags_desc">{{ row.item.flags }}</td>
       <td>{{ row.item.client }}</td>
       <td>{{ row.item.progress | progress }}</td>
-      <td>{{ row.item.dl_speed | size }}/s</td>
-      <td>{{ row.item.up_speed | size }}/s</td>
-      <td>{{ row.item.downloaded | size }}</td>
-      <td>{{ row.item.uploaded | size }}</td>
+      <td>{{ row.item.dl_speed | networkSpeed }}</td>
+      <td>{{ row.item.downloaded | networkSize }}</td>
+      <td>{{ row.item.up_speed | networkSpeed }}</td>
+      <td>{{ row.item.uploaded | networkSize }}</td>
       <td>{{ row.item.relevance | progress }}</td>
       <td>{{ row.item.files }}</td>
     </template>
@@ -39,6 +41,7 @@ import Vue from 'vue';
 import { codeToFlag, isWindows } from '../../utils';
 import Taskable from '@/mixins/taskable';
 import { api } from '../../Api';
+import { formatSize } from '../../filters';
 
 export default Vue.extend({
   mixins: [Taskable],
@@ -55,8 +58,8 @@ export default Vue.extend({
       { text: 'Client', value: 'client' },
       { text: 'Progress', value: 'progress' },
       { text: 'DL Speed', value: 'dl_speed' },
-      { text: 'UP Speed', value: 'up_speed' },
       { text: 'Downloaded', value: 'downloaded' },
+      { text: 'UP Speed', value: 'up_speed' },
       { text: 'Uploaded', value: 'uploaded' },
       { text: 'Relevance', value: 'relevance' },
       { text: 'Files', value: 'files' },
@@ -69,6 +72,22 @@ export default Vue.extend({
       isWindows,
     };
   },
+  filters: {
+    networkSpeed(speed: number) {
+      if (speed === 0) {
+        return null;
+      }
+
+      return formatSize(speed) + '/s';
+    },
+    networkSize(size: number) {
+      if (size === 0) {
+        return null;
+      }
+
+      return formatSize(size);
+    },
+  },
   computed: {
     peers() {
       return _.map(this.peersObj, (value, key) => {
@@ -78,7 +97,11 @@ export default Vue.extend({
   },
   methods: {
     codeToFlag(code: string) {
-      return codeToFlag(code);
+      if (code) {
+        return codeToFlag(code);
+      }
+
+      return {};
     },
     async getPeers() {
       const resp = await api.getTorrentPeers(this.hash, this.rid);

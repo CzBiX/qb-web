@@ -50,10 +50,10 @@ export default Vue.extend({
     formatTrackerStatus(status: number) {
       const map = [
         'Disabled',
-        'Contacted',
-        'Working',
-        'Not working',
         'Not contacted',
+        'Working',
+        'Updating',
+        'Not working',
       ];
 
       return map[status];

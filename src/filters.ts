@@ -1,18 +1,28 @@
 import dayjs from 'dayjs';
 import Vue from 'vue';
 
+export function toPrecision(value: number, precision: number) {
+  if (value >= (Math.pow(10, precision))) {
+    return value.toString();
+  } else if (value >= 1) {
+    return value.toPrecision(precision);
+  }
+
+  return value.toFixed(precision - 1);
+}
+
 export function formatSize(value: number) {
   const units = 'KMGTP';
   let index = -1;
 
-  while (value >= 1024) {
+  while (value >= 1000) {
     index++;
     value /= 1024;
   }
 
   const unit = index < 0 ? 'B' : units[index] + 'iB';
 
-  return `${value.toFixed(2)} ${unit}`;
+  return `${toPrecision(value, 3)} ${unit}`;
 }
 
 Vue.filter('formatSize', formatSize);
@@ -92,7 +102,8 @@ export function formatAsDuration(date: number, options?: DurationOptions) {
 Vue.filter('formatAsDuration', formatAsDuration);
 
 export function formatProgress(progress: number) {
-  return Math.floor(progress * 100) + '%';
+  progress = progress * 100;
+  return toPrecision(progress, 3) + '%';
 }
 
 Vue.filter('progress', formatProgress);

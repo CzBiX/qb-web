@@ -5,7 +5,7 @@
     <slot />
   </div>
 </fieldset>
-<div v-else>
+<div class="inner" v-else>
   <slot />
 </div>
 </template>
