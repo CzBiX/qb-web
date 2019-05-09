@@ -1,5 +1,9 @@
 # qb-web
 
+## Download
+
+[Releases](https://github.com/CzBiX/qb-web/releases)
+
 ## Project setup
 ```
 npm install
