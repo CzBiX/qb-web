@@ -69,6 +69,13 @@
           </v-list-tile>
         </v-list>
       </v-menu>
+      <v-divider vertical inset />
+      <v-btn icon @click="reannounceTorrents" title="Reannounce">
+        <v-icon>mdi-bullhorn</v-icon>
+      </v-btn>
+      <v-btn icon @click="recheckTorrents" title="Recheck">
+        <v-icon>mdi-backup-restore</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-divider />
     </v-layout>
@@ -342,6 +349,12 @@ export default Vue.extend({
     },
     async pauseTorrents() {
       await api.pauseTorrents(this.selectedHashes);
+    },
+    async reannounceTorrents() {
+      await api.reannounceTorrents(this.selectedHashes);
+    },
+    async recheckTorrents() {
+      await api.recheckTorrents(this.selectedHashes);
     },
     async setTorrentsCategory(category: string) {
       await api.setTorrentsCategory(this.selectedHashes, category);

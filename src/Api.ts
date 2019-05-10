@@ -103,6 +103,14 @@ class Api {
     return this.actionTorrents('resume', hashes);
   }
 
+  public reannounceTorrents(hashes: string[]) {
+    return this.actionTorrents('reannounce', hashes);
+  }
+
+  public recheckTorrents(hashes: string[]) {
+    return this.actionTorrents('recheck', hashes);
+  }
+
   public setTorrentsCategory(hashes: string[], category: string) {
     return this.actionTorrents('setCategory', hashes, {category});
   }
