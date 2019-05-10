@@ -187,7 +187,13 @@ export default Vue.extend({
 
       this.submitting = true;
       this.error = null;
-      const files = this.files.length ? this.files : null;
+      let files;
+      if (this.files.length) {
+        files = this.files;
+        Vue.delete(this.userParams, 'urls');
+      } else {
+        files = null;
+      }
 
       try {
         const resp = await api.addTorrents(this.userParams, files);
@@ -207,7 +213,7 @@ export default Vue.extend({
 
       this.dialog = false;
 
-      this.userParams.urls = null;
+      Vue.delete(this.userParams, 'urls');
       this.files = [];
 
       this.$refs.form.resetValidation();

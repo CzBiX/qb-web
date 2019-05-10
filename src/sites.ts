@@ -5,7 +5,7 @@ export default {
   },
   'pt.keepfrds.com': {
     name: 'FRDS',
-    icon: 'https://pt.keepfrds.com/static/favicon.ico',
+    icon: 'https://pt.keepfrds.com/static/favicon-64x64.png',
   },
   'hdcmct.org': {
     name: 'CMCT',

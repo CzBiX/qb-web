@@ -29,7 +29,7 @@
         <v-icon>mdi-pause</v-icon>
       </v-btn>
       <v-divider vertical inset />
-      <v-btn icon @click="showInfo" title="Info" v-if="selectedRows.length <= 4">
+      <v-btn icon @click="showInfo()" title="Info" v-if="selectedRows.length <= 4">
         <v-icon>mdi-alert-circle</v-icon>
       </v-btn>
       <v-menu offset-y>
