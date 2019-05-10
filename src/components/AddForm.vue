@@ -23,21 +23,40 @@
         <v-card-text>
           <v-form
             v-model="valid"
+            ref="form"
           >
             <v-container pa-0 v-bind="{ [`grid-list-${$vuetify.breakpoint.name}`]: true }">
               <v-layout wrap>
-                <v-flex xs12>
+                <v-flex
+                  xs12
+                  ref="fileZone"
+                >
+                  <div
+                    v-show="files.length"
+                    class="files grey lighten-4 align-center justify-space-between subheading font-weight-medium pl-2"
+                    @click="selectFiles"
+                  >
+                    <input ref="file" type="file" multiple class="d-none" @change="onFilesChanged">
+                    <span v-if="files.length == 1">Selected file: {{ files[0].name }}</span>
+                    <span v-else>Selected {{ files.length }} files.</span>
+                    <v-btn icon @click.stop="files = []">
+                      <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                  </div>
                   <v-textarea
-                    name="urls"
+                    v-show="!files.length"
                     label="URLs"
                     hint="One link per line"
+                    :placeholder="'Upload torrents by drop them here,\nor click attachment button at right to select.'"
                     prepend-icon="mdi-link"
-                    :rules="[v => !!v || 'URLs is required']"
+                    append-outer-icon="mdi-attachment"
+                    :rules="[v => (!!files.length || !!v || 'URLs is required')]"
                     :rows="$vuetify.breakpoint.xsOnly ? 1 : 3"
                     required
                     autofocus
                     :value="params.urls"
                     @input="setParams('urls', $event)"
+                    @click:append-outer="selectFiles"
                   />
                 </v-flex>
                 <v-flex>
@@ -69,6 +88,11 @@
               </v-layout>
             </v-container>
           </v-form>
+          <v-alert
+            type="warning"
+            :value="error"
+            v-text="error"
+          />
         </v-card-text>
         <v-card-actions>
           <!-- <v-btn flat>More</v-btn> -->
@@ -111,7 +135,9 @@ export default Vue.extend({
     return {
       dialog: false,
       valid: false,
+      files: [],
       userParams: {},
+      error: null,
       submitting: false,
     };
   },
@@ -139,6 +165,12 @@ export default Vue.extend({
   created() {
     defaultParams.paused = this.prefs.start_paused_enabled;
   },
+  mounted() {
+    this.$refs.fileZone.addEventListener('drop', this.onDrop, true);
+  },
+  beforeDestroy() {
+    this.$refs.fileZone.removeEventListener('drop', this.onDrop, true);
+  },
 
   methods: {
     setParams(key: string, value: any){
@@ -154,11 +186,47 @@ export default Vue.extend({
       }
 
       this.submitting = true;
-      const resp = await api.addTorrents(this.userParams);
+      this.error = null;
+      const files = this.files.length ? this.files : null;
+
+      try {
+        const resp = await api.addTorrents(this.userParams, files);
+
+        if (resp !== 'Ok.') {
+          this.error = resp;
+        }
+      } catch (e) {
+        this.error = e.message
+      }
 
       this.submitting = false;
+
+      if (this.error) {
+        return;
+      }
+
       this.dialog = false;
+
       this.userParams.urls = null;
+      this.files = [];
+
+      this.$refs.form.resetValidation();
+    },
+    selectFiles() {
+      this.$refs.file.click();
+    },
+    onFilesChanged() {
+      this.files = this.$refs.file.files;
+    },
+    onDrop(e: DragEvent) {
+      const transfer = e.dataTransfer!;
+      const files = transfer.files;
+      if (!files.length) {
+        return;
+      }
+
+      e.preventDefault();
+      this.files = files;
     },
   },
 
@@ -175,6 +243,9 @@ export default Vue.extend({
 
       this.$emit('input', null);
     },
+    files(v) {
+      this.$refs.form.validate();
+    },
   },
 });
 </script>
@@ -182,5 +253,14 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .btn-add.with-footer {
   margin-bottom: 36px;
+}
+
+.files {
+  display: flex;
+  height: 3em;
+
+  border: 1px dashed;
+  border-color: grey !important;
+  border-radius: 2px;
 }
 </style>

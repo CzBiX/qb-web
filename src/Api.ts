@@ -46,9 +46,23 @@ class Api {
     });
   }
 
-  public addTorrents(params: any) {
-    const data = new URLSearchParams(params);
-    return this.axios.post('/torrents/add', data);
+  public addTorrents(params: any, torrents?: any) {
+    let data: any;
+    if (torrents) {
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(params)) {
+        formData.append(key, value);
+      }
+
+      for (const torrent of torrents) {
+        formData.append('torrents', torrent);
+      }
+
+      data = formData;
+    } else {
+      data = new URLSearchParams(params);
+    }
+    return this.axios.post('/torrents/add', data).then(this.handleResponse);
   }
 
   public switchToOldUi() {
