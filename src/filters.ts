@@ -81,7 +81,7 @@ export function formatDuration(value: number, options?: DurationOptions) {
   // }
 
   return parts.join(' ');
-};
+}
 
 Vue.filter('formatDuration', formatDuration);
 

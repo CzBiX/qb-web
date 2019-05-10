@@ -103,6 +103,10 @@ const defaultParams = {
 };
 
 export default Vue.extend({
+  props: {
+    url: String,
+  },
+
   data() {
     return {
       dialog: false,
@@ -155,6 +159,21 @@ export default Vue.extend({
       this.submitting = false;
       this.dialog = false;
       this.userParams.urls = null;
+    },
+  },
+
+  watch: {
+    url(v) {
+      if (!v) {
+        return;
+      }
+
+      if (!this.dialog) {
+        Vue.set(this.userParams, 'urls', v);
+        this.dialog = true;
+      }
+
+      this.$emit('input', null);
     },
   },
 });

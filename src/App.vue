@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app ref="app">
     <v-navigation-drawer
       app
       :clipped="$vuetify.breakpoint.lgAndUp"
@@ -32,7 +32,7 @@
       <torrents />
     </v-content>
 
-    <add-form v-if="preferences" />
+    <add-form v-if="preferences" :url="pasteUrl" @input="pasteUrl = null"/>
     <login-form v-if="needAuth" v-model="needAuth" />
     <logs-dialog v-if="drawerOptions.showLogs" v-model="drawerOptions.showLogs" />
 
@@ -61,6 +61,8 @@ import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
 import Axios, { AxiosError } from 'axios';
 import { sleep } from './utils';
 
+let appWrapEl = null;
+
 export default Vue.extend({
   name: 'app',
   components: {
@@ -79,16 +81,20 @@ export default Vue.extend({
       drawerOptions: {
         showLogs: false,
       },
+      pasteUrl: null,
       task: 0,
     };
   },
   async created() {
     await this.getInitData();
+    appWrapEl = this.$refs.app.$el.querySelector('.application--wrap')
+    appWrapEl.addEventListener('paste', this.onPaste);
   },
   beforeDestroy() {
     if (this.task) {
       clearTimeout(this.task);
     }
+    appWrapEl.removeEventListener('paste', this.onPaste);
   },
   computed: {
     ...mapState([
@@ -140,6 +146,12 @@ export default Vue.extend({
       this.$refs.end.scrollIntoView({
         behavior: 'smooth',
       });
+    },
+    onPaste(e: ClipboardEvent) {
+      const text = e.clipboardData.getData('text');
+      if (text) {
+        this.pasteUrl = text;
+      }
     },
   },
   watch: {
