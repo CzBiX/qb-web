@@ -213,7 +213,7 @@ export default {
       const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
         const size = formatSize(_.sumBy(value, 'size'));
         const site = (SiteMap as any)[key];
-        const title = (site ? site.name : 'Others') + ` (${value.length})`;
+        const title = (site ? site.name : (key ? key : 'Others')) + ` (${value.length})`;
         const icon = _.defaultTo(site ? site.icon : null, 'mdi-server');
         const append = `[${size}]`;
         return { icon, title, key, append };
