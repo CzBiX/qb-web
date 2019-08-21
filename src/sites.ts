@@ -1,7 +1,11 @@
 export default {
   'tp.m-team.cc': {
-    name: 'M-Team',
+    name: 'M-Team (Legacy)',
     icon: 'https://tp.m-team.cc/favicon.ico',
+  },
+  'pt.m-team.cc': {
+    name: 'M-Team',
+    icon: 'https://pt.m-team.cc/favicon.ico',
   },
   'pt.keepfrds.com': {
     name: 'FRDS',
