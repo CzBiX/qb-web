@@ -143,7 +143,7 @@ export default Vue.extend({
     ...mapState({
       prefs: 'preferences',
       categories(state, getters) {
-        return Object.keys(getters.torrentGroupByCategory).filter(_.identity);
+        return getters.allCategories.map(c => ({text: c.name, value: c.key}));
       },
     }),
     params() {
