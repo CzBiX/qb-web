@@ -20,7 +20,7 @@
           <v-icon>mdi-pause</v-icon>
         </v-btn>
         <v-divider vertical inset />
-        <v-btn icon @click="showInfo()" title="Info" :disabled="selectedRows.length == 0 || selectedRows.length >= 3">
+        <v-btn icon @click="showInfo()" title="Info" :disabled="selectedRows.length == 0 || selectedRows.length > 5">
           <v-icon>mdi-alert-circle</v-icon>
         </v-btn>
         <v-menu offset-y>
@@ -61,8 +61,11 @@
           </v-list>
         </v-menu>
         <v-divider vertical inset />
-        <v-btn icon @click="reannounceTorrents" title="Reannounce" :disabled="selectedRows.length == 0">
+        <v-btn icon @click="reannounceTorrents" title="Reannounce">
           <v-icon>mdi-bullhorn</v-icon>
+        </v-btn>
+        <v-btn icon @click="editTracker" title="Edit tracker">
+          <v-icon>mdi-server</v-icon>
         </v-btn>
         <v-btn icon @click="recheckTorrents" title="Recheck" :disabled="selectedRows.length == 0">
           <v-icon>mdi-backup-restore</v-icon>
@@ -135,6 +138,7 @@
     </v-data-table>
 
     <confirm-delete-dialog v-if="toDelete.length" v-model="toDelete" />
+    <edit-tracker-dialog v-if="toEditTracker.length" v-model="toEditTracker" />
     <info-dialog
       v-if="toShowInfo.length"
       v-model="toShowInfo"
@@ -148,6 +152,7 @@ import Vue from 'vue';
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import _ from 'lodash';
 import ConfirmDeleteDialog from './dialogs/ConfirmDeleteDialog.vue';
+import EditTrackerDialog from './dialogs/EditTrackerDialog.vue';
 import InfoDialog from './dialogs/InfoDialog.vue';
 import api from '../Api';
 import { formatSize, formatDuration } from '../filters';
@@ -234,6 +239,7 @@ export default Vue.extend({
 
   components: {
     ConfirmDeleteDialog,
+    EditTrackerDialog,
     InfoDialog,
   },
 
@@ -261,6 +267,7 @@ export default Vue.extend({
       selectedRows: [],
       toDelete: [],
       toShowInfo: [],
+      toEditTracker: [],
       infoTab: null,
       pageOptions: null,
       footerProps,
@@ -360,6 +367,9 @@ export default Vue.extend({
       await api.pauseTorrents(this.selectedHashes);
     },
     async reannounceTorrents() {
+      if (this.selectedRows.length == 0) {
+        this.selectedRows = this.allTorrents;
+      }
       await api.reannounceTorrents(this.selectedHashes);
     },
     async recheckTorrents() {
@@ -368,6 +378,12 @@ export default Vue.extend({
     async setTorrentsCategory(category: string) {
       await api.setTorrentsCategory(this.selectedHashes, category);
     },
+    editTracker() {
+      if (this.selectedRows.length == 0) {
+        this.selectedRows = this.allTorrents;
+      }
+      this.toEditTracker = this.selectedRows;
+    }
   },
 
   watch: {
@@ -379,6 +395,9 @@ export default Vue.extend({
         });
       },
       deep: true,
+    },
+    filter() {
+      this.selectedRows = [];
     },
     // loading() {
     //   debugger;

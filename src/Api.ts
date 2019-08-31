@@ -136,6 +136,18 @@ class Api {
       params,
     }).then(Api.handleResponse);
   }
+  
+  public editTracker(hash: string, origUrl: string, newUrl: string) {
+    const params = {
+      hash,
+      origUrl,
+      newUrl,
+    };
+
+    return this.axios.get('/torrents/editTracker', {
+      params,
+    }).then(Api.handleResponse);
+  }
 
   private actionTorrents(action: string, hashes: string[], extra?: any) {
     const params: any = {
