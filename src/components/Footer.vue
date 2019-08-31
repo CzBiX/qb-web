@@ -4,7 +4,7 @@
   :class="topLayoutClass"
   v-if="isDataReady">
   <div
-    class="d-flex shrink footer-row"
+    class="d-flex shrink"
     :class="phoneLayout ? 'flex-column' : 'align-center'"
     v-if="app"
   >
@@ -30,9 +30,16 @@
       <v-icon>mdi-nas</v-icon>
       {{ info.free_space_on_disk | formatSize }}
     </div>
+    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+    <div class="icon-label" v-if="!phoneLayout">
+      <v-icon>mdi-swap-vertical-bold</v-icon>
+      <span>
+        {{ info.alltime_dl | formatSize }}/{{ info.alltime_ul | formatSize }}
+      </span>
+    </div>
   </div>
   <div
-    class="d-flex shrink footer-row"
+    class="d-flex shrink"
     :class="phoneLayout ? 'flex-column' : 'align-center'"
     v-if="info"
   >
@@ -97,7 +104,7 @@
           ({{ info.dl_rate_limit | formatSize}}/s)
         </template>
         <template v-if="!phoneLayout">
-          [{{ info.dl_info_data | formatSize }}/{{ info.alltime_dl | formatSize }}]
+          [{{ info.dl_info_data | formatSize }}]
         </template>
       </span>
     </div>
@@ -112,7 +119,7 @@
           ({{ info.up_rate_limit | formatSize}}/s)
         </template>
         <template v-if="!phoneLayout">
-          [{{ info.up_info_data | formatSize }}/{{ info.alltime_ul | formatSize }}]
+          [{{ info.up_info_data | formatSize }}]
         </template>
       </span>
     </div>
@@ -235,10 +242,6 @@ export default Vue.extend({
 .footer {
   font-size: 14px;
   width: 100%;
-
-  .footer-row {
-
-  }
 }
 
 .icon-label {
