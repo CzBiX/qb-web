@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 const defaultConfig = {
   updateInterval: 2000,
-  pagination: {
+  pageOptions: {
     itemsPerPage: 50,
   },
   filter: {
