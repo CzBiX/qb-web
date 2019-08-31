@@ -69,6 +69,16 @@
                 </v-col>
                 <v-col>
                   <v-checkbox
+                    prepend-icon="mdi-file-tree"
+                    label="Create subfolder"
+                    :value="params.root_path"
+                    @change="setParams('root_path', $event)"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-checkbox
                     v-model="autoStart"
                     label="Start torrent"
                     prepend-icon="mdi-play-pause"
@@ -121,6 +131,7 @@ const defaultParams = {
   category: null,
   paused: false,
   skip_checking: false,
+  root_path: false,
 };
 
 export default Vue.extend({
@@ -162,6 +173,7 @@ export default Vue.extend({
   },
   created() {
     defaultParams.paused = this.prefs.start_paused_enabled;
+    defaultParams.root_path = this.prefs.create_subfolder_enabled;
   },
   mounted() {
     this.$refs.fileZone.addEventListener('drop', this.onDrop, true);
