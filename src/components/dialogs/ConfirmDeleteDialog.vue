@@ -20,6 +20,13 @@
           prepend-icon="mdi-file-cancel"
           label="Also delete files"
         />
+        <v-checkbox
+          v-if="sameNamedTorrents.length > 0"
+          v-model="deleteSameNamed"
+          prepend-icon="mdi-file-multiple"
+          class="mt-0"
+          :label="`Also delete ${sameNamedTorrents.length} same named torrents`"
+        />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -38,8 +45,10 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import Vue from 'vue';
 import api from '@/Api';
+import { mapGetters } from 'vuex';
 
 export default Vue.extend({
   props: {
@@ -48,14 +57,18 @@ export default Vue.extend({
   data() {
     return {
       deleteFiles: false,
+      deleteSameNamed: false,
       submitting: false,
       torrents: [],
+      sameNamedTorrents: [],
     };
   },
   created() {
     this.torrents = this.value;
+    this.sameNamedTorrents = this.getSameNamedTorrents();
   },
   computed: {
+    ...mapGetters(['allTorrents']),
     phoneLayout() {
       return this.$vuetify.breakpoint.xsOnly;
     },
@@ -64,6 +77,26 @@ export default Vue.extend({
     closeDialog() {
       this.$emit('input', []);
     },
+    getSameNamedTorrents() {
+      const hashes = _.map(this.torrents, (t) => t.hash);
+      const result = [];
+      for (const t1 of this.torrents) {
+        for (const t2 of this.allTorrents) {
+          if (hashes.includes(t2.hash)) {
+            continue;
+          }
+
+          if (t1.name != t2.name) {
+            continue;
+          }
+
+          result.push(t2);
+          hashes.push(t2);
+        }
+      }
+
+      return result;
+    },
     async submit() {
       if (this.submitting) {
         return;
@@ -71,8 +104,14 @@ export default Vue.extend({
 
       this.submitting = true;
 
-      const hashed = this.torrents.map((t: any) => t.hash);
-      await api.deleteTorrents(hashed, this.deleteFiles);
+      let torrentsToDelete;
+      if (this.deleteSameNamed) {
+        torrentsToDelete = this.torrents.concat(this.sameNamedTorrents);
+      } else {
+        torrentsToDelete = this.torrents;
+      }
+      const hashes = torrentsToDelete.map((t: any) => t.hash);
+      await api.deleteTorrents(hashes, this.deleteFiles);
 
       this.closeDialog();
     },
