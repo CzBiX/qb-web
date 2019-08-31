@@ -1,13 +1,9 @@
 export default {
-  'tp.m-team.cc': {
-    name: 'M-Team (Old)',
-    icon: 'https://tp.m-team.cc/favicon.ico',
-  },
   'pt.m-team.cc': {
     name: 'M-Team',
     icon: 'https://pt.m-team.cc/favicon.ico',
   },
-  'pt.keepfrds.com': {
+  'tracker.keepfrds.com': {
     name: 'FRDS',
     icon: 'https://pt.keepfrds.com/static/favicon-64x64.png',
   },
