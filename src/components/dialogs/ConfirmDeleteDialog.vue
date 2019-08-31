@@ -7,9 +7,9 @@
         <v-icon class="mr-2">mdi-delete</v-icon>
         <span>Delete torrents</span>
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="pb-0">
          Are you sure you want to delete the selected torrents from the transfer list?
-        <ol class="torrents pt-4">
+        <ol class="torrents pt-6">
           <li v-for="(row, i) in torrents" :key="i">
             {{ row.name }}
           </li>
@@ -23,7 +23,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn flat @click="closeDialog">Cancel</v-btn>
+        <v-btn text @click="closeDialog">Cancel</v-btn>
         <v-btn
           @click="submit"
           color="warning"
@@ -38,8 +38,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { api } from '@/Api';
+import Vue from 'vue';
+import api from '@/Api';
 
 export default Vue.extend({
   props: {
@@ -58,7 +58,7 @@ export default Vue.extend({
   computed: {
     phoneLayout() {
       return this.$vuetify.breakpoint.xsOnly;
-    }
+    },
   },
   methods: {
     closeDialog() {

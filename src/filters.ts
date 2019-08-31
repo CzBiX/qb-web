@@ -2,9 +2,9 @@ import dayjs from 'dayjs';
 import Vue from 'vue';
 
 export function toPrecision(value: number, precision: number) {
-  if (value >= (Math.pow(10, precision))) {
+  if (value >= (10 ** precision)) {
     return value.toString();
-  } else if (value >= 1) {
+  } if (value >= 1) {
     return value.toPrecision(precision);
   }
 
@@ -17,10 +17,11 @@ export function formatSize(value: number) {
 
   while (value >= 1000) {
     index++;
+    // eslint-disable-next-line
     value /= 1024;
   }
 
-  const unit = index < 0 ? 'B' : units[index] + 'iB';
+  const unit = index < 0 ? 'B' : `${units[index]}iB`;
 
   return `${toPrecision(value, 3)} ${unit}`;
 }
@@ -57,11 +58,7 @@ export function formatDuration(value: number, options?: DurationOptions) {
     return '∞';
   }
 
-  while (true) {
-    if ((opt.maxUnitSize && unitSize === opt.maxUnitSize) || index === durations.length) {
-      break;
-    }
-
+  while ((!opt.maxUnitSize || unitSize !== opt.maxUnitSize) && index !== durations.length) {
     const duration = durations[index];
     if (value < duration) {
       index++;
@@ -70,6 +67,7 @@ export function formatDuration(value: number, options?: DurationOptions) {
     const result = Math.floor(value / duration);
     parts.push(result + units[index]);
 
+    // eslint-disable-next-line
     value %= duration;
     index++;
     unitSize++;
@@ -95,15 +93,16 @@ Vue.filter('formatTimestamp', (timestamp: number) => {
 });
 
 export function formatAsDuration(date: number, options?: DurationOptions) {
-    const duration = (Date.now() / 1000) - date;
-    return formatDuration(duration, options);
+  const duration = (Date.now() / 1000) - date;
+  return formatDuration(duration, options);
 }
 
 Vue.filter('formatAsDuration', formatAsDuration);
 
 export function formatProgress(progress: number) {
-  progress = progress * 100;
-  return toPrecision(progress, 3) + '%';
+  // eslint-disable-next-line
+  progress *= 100;
+  return `${toPrecision(progress, 3)}%`;
 }
 
 Vue.filter('progress', formatProgress);

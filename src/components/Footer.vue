@@ -1,130 +1,129 @@
 <template>
-<v-layout
-  v-bind="topLayoutBind"
+<div
+  class="footer d-flex"
+  :class="topLayoutClass"
   v-if="isDataReady">
-  <v-flex shrink v-if="app">
-    <v-layout
-      :column="phoneLayout"
-      :align-center="!phoneLayout"
-    >
-      <v-flex v-if="!phoneLayout">
-        <v-tooltip top lazy>
-          <template v-slot:activator="{ on }">
-            <span v-on="on">
-              qBittorrent {{ app.version }}
-            </span>
-          </template>
-          <span>
-            API version: {{ app.apiVersion }}
+  <div
+    class="d-flex shrink footer-row"
+    :class="phoneLayout ? 'flex-column' : 'align-center'"
+    v-if="app"
+  >
+    <div v-if="!phoneLayout">
+      <v-tooltip top>
+        <template v-slot:activator="{ on }">
+          <span v-on="on">
+            qBittorrent {{ app.version }}
           </span>
-        </v-tooltip>
-      </v-flex>
-      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-      <v-flex class="icon-label">
-        <v-icon>mdi-sprout</v-icon>
-        {{ allTorrents.length }} [{{ totalSize | formatSize }}]
-      </v-flex>
-      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-      <v-flex class="icon-label">
-        <v-icon>mdi-nas</v-icon>
-        {{ info.free_space_on_disk | formatSize }}
-      </v-flex>
-    </v-layout>
-  </v-flex>
-  <v-flex shrink v-if="info">
-    <v-layout
-      :column="phoneLayout"
-      :align-center="!phoneLayout"
-    >
-      <v-flex v-if="!phoneLayout" class="icon-label">
-        <v-icon>mdi-access-point-network</v-icon>
-        {{ info.dht_nodes }} nodes
-      </v-flex>
-      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-      <v-flex class="icon-label">
-        <v-tooltip top lazy>
-          <template v-slot:activator="{ on }">
-            <v-icon
-              v-on="on"
-              :color="info.connection_status | connectionIconColor"
-            >mdi-{{ info.connection_status | connectionIcon }}</v-icon>
-            <span v-if="phoneLayout">
-              Network {{ info.connection_status }}
-            </span>
-          </template>
-          <span>
+        </template>
+        <span>
+          API version: {{ app.apiVersion }}
+        </span>
+      </v-tooltip>
+    </div>
+    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+    <div class="icon-label">
+      <v-icon>mdi-sprout</v-icon>
+      {{ allTorrents.length }} [{{ totalSize | formatSize }}]
+    </div>
+    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+    <div class="icon-label">
+      <v-icon>mdi-nas</v-icon>
+      {{ info.free_space_on_disk | formatSize }}
+    </div>
+  </div>
+  <div
+    class="d-flex shrink footer-row"
+    :class="phoneLayout ? 'flex-column' : 'align-center'"
+    v-if="info"
+  >
+    <div v-if="!phoneLayout" class="icon-label">
+      <v-icon>mdi-access-point-network</v-icon>
+      {{ info.dht_nodes }} nodes
+    </div>
+    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+    <div class="icon-label">
+      <v-tooltip top>
+        <template v-slot:activator="{ on }">
+          <v-icon
+            v-on="on"
+            :color="info.connection_status | connectionIconColor"
+          >mdi-{{ info.connection_status | connectionIcon }}</v-icon>
+          <span v-if="phoneLayout">
             Network {{ info.connection_status }}
           </span>
-        </v-tooltip>
-      </v-flex>
-      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-      <v-flex class="icon-label">
-        <v-switch
-          v-if="phoneLayout"
-          hide-details
-          :value="speedLimited"
-          @change="toggleSpeedLimitsMode"
-          label="Alternative speed limits"
-          class="mt-0 pt-0 speed-switch"
-        >
-          <template v-slot:prepend>
-            <v-icon
-              v-bind="speedModeBind"
-            >mdi-speedometer</v-icon>
-          </template>
-        </v-switch>
-        <v-tooltip top lazy v-else>
-          <template v-slot:activator="{ on }">
-            <v-icon
-              v-on="on"
-              v-bind="speedModeBind"
-              @click="toggleSpeedLimitsMode"
-            >mdi-speedometer</v-icon>
-          </template>
-          <span>
-            Alternative speed limits {{ speedLimited ? 'enabled' : 'disabled' }}
-          </span>
-        </v-tooltip>
-      </v-flex>
-      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-      <v-flex class="icon-label">
-        <v-icon
-          :color=" info.dl_info_speed > 0 ? 'success' : null"
-        >mdi-download</v-icon>
+        </template>
         <span>
-          {{ info.dl_info_speed | formatSize }}/s
-          <template v-if="info.dl_rate_limit">
-            ({{ info.dl_rate_limit | formatSize}}/s)
-          </template>
-          <template v-if="!phoneLayout">
-            [{{ info.dl_info_data | formatSize }}/{{ info.alltime_dl | formatSize }}]
-          </template>
+          Network {{ info.connection_status }}
         </span>
-      </v-flex>
-      <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-      <v-flex class="icon-label">
-        <v-icon
-          :color=" info.up_info_speed > 0 ? 'warning' : null"
-        >mdi-upload</v-icon>
+      </v-tooltip>
+    </div>
+    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+    <div class="icon-label">
+      <v-switch
+        v-if="phoneLayout"
+        hide-details
+        :value="speedLimited"
+        @change="toggleSpeedLimitsMode"
+        label="Alternative speed limits"
+        class="mt-0 pt-0 speed-switch"
+      >
+        <template v-slot:prepend>
+          <v-icon
+            v-bind="speedModeBind"
+          >mdi-speedometer</v-icon>
+        </template>
+      </v-switch>
+      <v-tooltip top v-else>
+        <template v-slot:activator="{ on }">
+          <v-icon
+            v-on="on"
+            v-bind="speedModeBind"
+            @click="toggleSpeedLimitsMode"
+          >mdi-speedometer</v-icon>
+        </template>
         <span>
-          {{ info.up_info_speed | formatSize }}/s
-          <template v-if="info.up_rate_limit">
-            ({{ info.up_rate_limit | formatSize}}/s)
-          </template>
-          <template v-if="!phoneLayout">
-            [{{ info.up_info_data | formatSize }}/{{ info.alltime_ul | formatSize }}]
-          </template>
+          Alternative speed limits {{ speedLimited ? 'enabled' : 'disabled' }}
         </span>
-      </v-flex>
-    </v-layout>
-  </v-flex>
-</v-layout>
+      </v-tooltip>
+    </div>
+    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+    <div class="icon-label">
+      <v-icon
+        :color=" info.dl_info_speed > 0 ? 'success' : null"
+      >mdi-download</v-icon>
+      <span>
+        {{ info.dl_info_speed | formatSize }}/s
+        <template v-if="info.dl_rate_limit">
+          ({{ info.dl_rate_limit | formatSize}}/s)
+        </template>
+        <template v-if="!phoneLayout">
+          [{{ info.dl_info_data | formatSize }}/{{ info.alltime_dl | formatSize }}]
+        </template>
+      </span>
+    </div>
+    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+    <div class="icon-label">
+      <v-icon
+        :color=" info.up_info_speed > 0 ? 'warning' : null"
+      >mdi-upload</v-icon>
+      <span>
+        {{ info.up_info_speed | formatSize }}/s
+        <template v-if="info.up_rate_limit">
+          ({{ info.up_rate_limit | formatSize}}/s)
+        </template>
+        <template v-if="!phoneLayout">
+          [{{ info.up_info_data | formatSize }}/{{ info.alltime_ul | formatSize }}]
+        </template>
+      </span>
+    </div>
+  </div>
+</div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { api } from '../Api';
 import { mapState, mapGetters } from 'vuex';
+import api from '../Api';
 
 export default Vue.extend({
   props: {
@@ -165,7 +164,7 @@ export default Vue.extend({
     }),
     ...mapGetters([
       'isDataReady',
-      'allTorrents'
+      'allTorrents',
     ]),
     totalSize() {
       return _.sumBy(this.allTorrents, 'size');
@@ -175,24 +174,21 @@ export default Vue.extend({
         return {
           class: 'speed-limited',
           color: 'warning',
-        }
+        };
       }
 
       return {
         class: null,
-        color: 'success'
-      }
-    },
-    topLayoutBind() {
-      const v: boolean = this.phoneLayout;
-      return {
-        column: v,
-        class: v ? 'in-drawer' : null,
-        'mx-4': !v,
-        'fill-height': !v,
-        'align-center': !v,
-        'justify-space-between': !v,
+        color: 'success',
       };
+    },
+    topLayoutClass() {
+      const v = this.phoneLayout;
+      if (v) {
+        return ['in-drawer', 'flex-column'];
+      }
+
+      return ['mx-4', 'justify-space-between'];
     },
   },
 
@@ -228,7 +224,7 @@ export default Vue.extend({
         await this.getAppInfo();
       }
     },
-    'info.use_alt_speed_limits'(v) {
+    'info.use_alt_speed_limits': function (v) {
       this.speedLimited = v;
     },
   },
@@ -236,12 +232,27 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.footer {
+  font-size: 14px;
+  width: 100%;
+
+  .footer-row {
+
+  }
+}
+
 .icon-label {
   display: flex;
   align-items: center;
+
+  .v-icon {
+    margin-right: 4px;
+  }
 }
+
 .speed-switch {
   font-size: inherit;
+  width: 100%;
 
   ::v-deep {
     .v-input__prepend-outer {
@@ -272,8 +283,6 @@ export default Vue.extend({
   transform: scaleX(-1);
 }
 .in-drawer {
-  padding: 0 16px 0 20px;
-
   .no-icon {
     margin-left: 24px;
   }

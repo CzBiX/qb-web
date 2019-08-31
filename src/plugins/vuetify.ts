@@ -1,8 +1,15 @@
 import Vue from 'vue';
-// tslint:disable-next-line
 import Vuetify from 'vuetify/lib';
-import 'vuetify/src/stylus/app.styl';
+// import zhHans from 'vuetify/src/locale/zh-Hans';
 
-Vue.use(Vuetify, {
-  iconfont: 'mdi',
+Vue.use(Vuetify);
+
+export default new Vuetify({
+  // lang: {
+  //   locales: { zhHans },
+  //   current: 'zh-Hans',
+  // },
+  icons: {
+    iconfont: 'mdi',
+  },
 });

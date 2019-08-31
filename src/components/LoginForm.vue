@@ -9,33 +9,28 @@
           ref="form"
           v-model="valid"
         >
-          <v-container
-            pa-0
-            @keyup.enter.capture="submit"
+          <div class="pa-0"
+                        @keyup.enter.capture="submit"
             v-bind="{ [`grid-list-${$vuetify.breakpoint.name}`]: true }">
-            <v-layout wrap>
-              <v-flex>
-                <v-text-field
-                  v-model="params.username"
-                  prepend-icon="mdi-account"
-                  label="Username"
-                  :rules="[v => !!v || 'Username is required']"
-                  autofocus
-                  required
-                />
-                <v-text-field
-                  v-model="params.password"
-                  prepend-icon="mdi-lock"
-                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append="showPassword = !showPassword"
-                  label="Password"
-                  :type="showPassword ? 'text' : 'password'"
-                  :rules="[v => !!v || 'Password is required']"
-                  required
-                />
-              </v-flex>
-            </v-layout>
-          </v-container>
+            <v-text-field
+              v-model="params.username"
+              prepend-icon="mdi-account"
+              label="Username"
+              :rules="[v => !!v || 'Username is required']"
+              autofocus
+              required
+            />
+            <v-text-field
+              v-model="params.password"
+              prepend-icon="mdi-lock"
+              :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+              @click:append="showPassword = !showPassword"
+              label="Password"
+              :type="showPassword ? 'text' : 'password'"
+              :rules="[v => !!v || 'Password is required']"
+              required
+            />
+          </div>
         </v-form>
         <v-alert
           type="warning"
@@ -59,8 +54,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { api } from '../Api';
+import Vue from 'vue';
+import api from '../Api';
+
 export default Vue.extend({
   props: {
     value: Boolean,
@@ -74,7 +70,7 @@ export default Vue.extend({
       params: {
         username: null,
         password: null,
-      }
+      },
     };
   },
 
@@ -100,11 +96,11 @@ export default Vue.extend({
 
         this.loginError = data;
       } catch (e) {
-        this.loginError = e.message
+        this.loginError = e.message;
       }
 
       this.submitting = false;
     },
   },
-})
+});
 </script>

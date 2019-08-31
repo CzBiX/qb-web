@@ -1,5 +1,11 @@
 <template>
-  <v-dialog :value="value" @input="$emit('input', $event)" scrollable :fullscreen="phoneLayout" :width="dialogWidth">
+  <v-dialog
+    :value="value"
+    @input="$emit('input', $event)"
+    scrollable
+    :fullscreen="phoneLayout"
+    :width="dialogWidth"
+  >
     <v-card>
       <v-card-title
         class="headline grey lighten-4"
@@ -9,27 +15,29 @@
       </v-card-title>
       <v-card-text>
         <v-progress-linear
+          class="mt-4"
           :indeterminate="true"
-          v-if="!logs"
+          v-if="!logs.length"
         />
         <ol class="logs caption">
           <li v-for="(row, i) in logs" :key="i" :class="row.type | typeColor">
-            [{{ row.type | formatType }} {{ row.timestamp / 1000 | formatTimestamp }}] <span v-html="row.message" />
+            [{{ row.type | formatType }} {{ row.timestamp / 1000 | formatTimestamp }}]
+            <span v-html="row.message" />
           </li>
         </ol>
         <div ref="end" />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn flat @click="closeDialog">Close</v-btn>
+        <v-btn text @click="closeDialog">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { api } from '@/Api';
+import Vue from 'vue';
+import api from '@/Api';
 import { sleep } from '@/utils';
 import Taskable from '@/mixins/taskable';
 
@@ -70,14 +78,14 @@ export default Vue.extend({
     },
     phoneLayout() {
       return this.$vuetify.breakpoint.xsOnly;
-    }
+    },
   },
   methods: {
     closeDialog() {
       this.$emit('input', false);
     },
     async getLogs() {
-      const lastId = this.logs.length ? this.logs[this.logs.length - 1]['id'] : -1;
+      const lastId = this.logs.length ? this.logs[this.logs.length - 1].id : -1;
       const logs = await api.getLogs(lastId);
 
       if (this.destory) {
@@ -85,7 +93,7 @@ export default Vue.extend({
       }
 
       if (logs.length) {
-        this.logs = this.logs.concat(logs);
+        // this.logs = this.logs.concat(logs);
 
         await this.$nextTick();
 
@@ -105,7 +113,7 @@ export default Vue.extend({
 .logs {
   font-family: monospace;
 
-  li:not(:last-child) {
+  li {
     line-height: 1.4em;
   }
 }

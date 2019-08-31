@@ -1,5 +1,5 @@
-import 'axios';
 import Axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+
 
 class Api {
   private axios: AxiosInstance;
@@ -26,7 +26,7 @@ class Api {
       validateStatus(status) {
         return status === 200 || status === 403;
       },
-    }).then(this.handleResponse);
+    }).then(Api.handleResponse);
   }
 
   public getGlobalTransferInfo() {
@@ -51,6 +51,7 @@ class Api {
     if (torrents) {
       const formData = new FormData();
       for (const [key, value] of Object.entries(params)) {
+        // eslint-disable-next-line
         formData.append(key, value);
       }
 
@@ -62,7 +63,7 @@ class Api {
     } else {
       data = new URLSearchParams(params);
     }
-    return this.axios.post('/torrents/add', data).then(this.handleResponse);
+    return this.axios.post('/torrents/add', data).then(Api.handleResponse);
   }
 
   public switchToOldUi() {
@@ -84,7 +85,7 @@ class Api {
 
     return this.axios.get('/log/main', {
       params,
-    }).then(this.handleResponse);
+    }).then(Api.handleResponse);
   }
 
   public toggleSpeedLimitsMode() {
@@ -92,7 +93,7 @@ class Api {
   }
 
   public deleteTorrents(hashes: string[], deleteFiles: boolean) {
-    return this.actionTorrents('delete', hashes, {deleteFiles});
+    return this.actionTorrents('delete', hashes, { deleteFiles });
   }
 
   public pauseTorrents(hashes: string[]) {
@@ -112,7 +113,7 @@ class Api {
   }
 
   public setTorrentsCategory(hashes: string[], category: string) {
-    return this.actionTorrents('setCategory', hashes, {category});
+    return this.actionTorrents('setCategory', hashes, { category });
   }
 
   public getTorrentTracker(hash: string) {
@@ -122,7 +123,7 @@ class Api {
 
     return this.axios.get('/torrents/trackers', {
       params,
-    }).then(this.handleResponse);
+    }).then(Api.handleResponse);
   }
 
   public getTorrentPeers(hash: string, rid?: number) {
@@ -133,7 +134,7 @@ class Api {
 
     return this.axios.get('/sync/torrentPeers', {
       params,
-    }).then(this.handleResponse);
+    }).then(Api.handleResponse);
   }
 
   private actionTorrents(action: string, hashes: string[], extra?: any) {
@@ -142,12 +143,12 @@ class Api {
       ...extra,
     };
     const data = new URLSearchParams(params);
-    return this.axios.post('/torrents/' + action, data).then(this.handleResponse);
+    return this.axios.post(`/torrents/${action}`, data).then(Api.handleResponse);
   }
 
-  private handleResponse(resp: AxiosResponse) {
+  private static handleResponse(resp: AxiosResponse) {
     return resp.data;
   }
 }
 
-export const api = new Api();
+export default new Api();

@@ -12,7 +12,7 @@
     >
       <v-icon>mdi-link-plus</v-icon>
     </v-btn>
-    <v-dialog v-model="dialog" persistent width="50em">
+    <v-dialog v-model="dialog" eager persistent width="40em">
       <v-card>
         <v-card-title
           class="headline grey lighten-4"
@@ -20,34 +20,31 @@
           <v-icon class="mr-2">mdi-link-plus</v-icon>
           <span>Add Torrents</span>
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="pb-0">
           <v-form
             v-model="valid"
             ref="form"
           >
-            <v-container pa-0 v-bind="{ [`grid-list-${$vuetify.breakpoint.name}`]: true }">
-              <v-layout wrap>
-                <v-flex
-                  xs12
+            <v-container v-bind="{ [`grid-list-${$vuetify.breakpoint.name}`]: true }">
+              <v-row>
+                <v-col
+                  cols="12"
                   ref="fileZone"
                 >
-                  <div
+                  <v-file-input
                     v-show="files.length"
-                    class="files grey lighten-4 align-center justify-space-between subheading font-weight-medium pl-2"
-                    @click="selectFiles"
-                  >
-                    <input ref="file" type="file" multiple class="d-none" @change="onFilesChanged">
-                    <span v-if="files.length == 1">Selected file: {{ files[0].name }}</span>
-                    <span v-else>Selected {{ files.length }} files.</span>
-                    <v-btn icon @click.stop="files = []">
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                  </div>
+                    v-model="files"
+                    ref="file"
+                    multiple
+                    chips
+                    outlined
+                    label="Files"
+                  />
                   <v-textarea
                     v-show="!files.length"
                     label="URLs"
                     hint="One link per line"
-                    :placeholder="'Upload torrents by drop them here,\nor click attachment button at right to select.'"
+                    :placeholder="placeholder"
                     prepend-icon="mdi-link"
                     append-outer-icon="mdi-attachment"
                     :rules="[v => (!!files.length || !!v || 'URLs is required')]"
@@ -58,8 +55,8 @@
                     @input="setParams('urls', $event)"
                     @click:append-outer="selectFiles"
                   />
-                </v-flex>
-                <v-flex>
+                </v-col>
+                <v-col>
                   <v-combobox
                     label="Category"
                     prepend-icon="mdi-folder"
@@ -69,23 +66,23 @@
                     :value="params.category"
                     @input="setParams('category', $event)"
                   />
-                </v-flex>
-                <v-flex>
+                </v-col>
+                <v-col>
                   <v-checkbox
                     v-model="autoStart"
                     label="Start torrent"
                     prepend-icon="mdi-play-pause"
                   />
-                </v-flex>
-                <v-flex>
+                </v-col>
+                <v-col>
                   <v-checkbox
                     prepend-icon="mdi-progress-check"
                     label="Skip hash check"
                     :value="params.skip_checking"
                     @change="setParams('skip_checking', $event)"
                   />
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
             </v-container>
           </v-form>
           <v-alert
@@ -97,9 +94,9 @@
         <v-card-actions>
           <!-- <v-btn flat>More</v-btn> -->
           <v-spacer />
-          <v-btn flat @click="dialog = false">Cancel</v-btn>
+          <v-btn text @click="dialog = false">Cancel</v-btn>
           <v-btn
-            flat
+            text
             @click="submit"
             color="primary"
             :disabled="!valid"
@@ -117,7 +114,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { mapState } from 'vuex';
-import { api } from '../Api';
+import api from '../Api';
 
 const defaultParams = {
   urls: null,
@@ -133,6 +130,7 @@ export default Vue.extend({
 
   data() {
     return {
+      placeholder: 'Upload torrents by drop them here,\nor click attachment button at right to select.',
       dialog: false,
       valid: false,
       files: [],
@@ -173,7 +171,7 @@ export default Vue.extend({
   },
 
   methods: {
-    setParams(key: string, value: any){
+    setParams(key: string, value: any) {
       if (_.isNil(value)) {
         Vue.delete(this.userParams, key);
       } else {
@@ -189,7 +187,7 @@ export default Vue.extend({
       this.error = null;
       let files;
       if (this.files.length) {
-        files = this.files;
+        ({ files } = this);
         Vue.delete(this.userParams, 'urls');
       } else {
         files = null;
@@ -202,7 +200,7 @@ export default Vue.extend({
           this.error = resp;
         }
       } catch (e) {
-        this.error = e.message
+        this.error = e.message;
       }
 
       this.submitting = false;
@@ -219,14 +217,12 @@ export default Vue.extend({
       this.$refs.form.resetValidation();
     },
     selectFiles() {
-      this.$refs.file.click();
-    },
-    onFilesChanged() {
-      this.files = this.$refs.file.files;
+      const input = this.$refs.file.$el.querySelector('input[type=file]');
+      input.click();
     },
     onDrop(e: DragEvent) {
       const transfer = e.dataTransfer!;
-      const files = transfer.files;
+      const { files } = transfer;
       if (!files.length) {
         return;
       }
@@ -261,12 +257,12 @@ export default Vue.extend({
   margin-bottom: 36px;
 }
 
-.files {
-  display: flex;
-  height: 3em;
+.container {
+  padding: 12px 0 0;
 
-  border: 1px dashed;
-  border-color: grey !important;
-  border-radius: 2px;
+  .col {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
 </style>

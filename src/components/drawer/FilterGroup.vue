@@ -5,47 +5,46 @@
     class="filter-group"
   >
     <template v-slot:activator>
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title v-class:primary--text="selected !== null">
-            {{ group.title }}
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+      <v-list-item-content>
+        <v-list-item-title v-class:primary--text="selected !== null">
+          {{ group.title }}
+        </v-list-item-title>
+      </v-list-item-content>
     </template>
-    <v-list-tile
+    <v-list-item
       v-for="(child, i) in group.children"
       :key="i"
-      v-class:primary--text="selected === child.key"
+      v-class:v-list-item--active="selected === child.key"
       @click.stop="select(child.key)"
     >
-      <v-list-tile-action>
+      <v-list-item-icon>
         <v-icon v-if="isFontIcon(child.icon)">{{ child.icon }}</v-icon>
         <div v-else>
           <v-img :src="child.icon" width='22px' height="22px" />
         </div>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title>
           <template v-if="child.append">
-            <v-layout>
+            <div class="d-flex">
               {{ child.title }}
               <v-spacer />
               {{ child.append }}
-            </v-layout>>
+            </div>
           </template>
           <template v-else>
             {{ child.title }}
           </template>
-        </v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
+        </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
   </v-list-group>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 import { mapState, mapMutations } from 'vuex';
+
 export default Vue.extend({
   props: {
     group: Object,
@@ -54,7 +53,7 @@ export default Vue.extend({
     return {
       model: this.group.model,
       selected: null,
-    }
+    };
   },
   created() {
     this.selected = this.$store.getters.config.filter[this.group.select];
@@ -68,7 +67,7 @@ export default Vue.extend({
       this.updateConfig({
         key: 'filter',
         value: {
-          [this.group.select]: this.selected
+          [this.group.select]: this.selected,
         },
       });
     },
@@ -80,17 +79,32 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-::v-deep .v-list__group__header__prepend-icon {
-  padding-left: 20px;
-}
-::v-deep .v-list__group__header [role=listitem] {
-  margin-left: -4px;
-}
-.v-list__tile__action {
-  padding-left: 6px;
-}
+.filter-group {
+  .v-list-item {
+    min-height: 0;
 
-.filter-group ::v-deep .v-list__group__items .v-list__tile {
-  height: 2.2em;
+    .v-list-item__icon {
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .v-list-item__content {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
 }
+// ::v-deep .v-list__group__header__prepend-icon {
+//   padding-left: 20px;
+// }
+// ::v-deep .v-list__group__header [role=listitem] {
+//   margin-left: -4px;
+// }
+// .v-list__tile__action {
+//   padding-left: 6px;
+// }
+
+// .filter-group ::v-deep .v-list__group__items .v-list__tile {
+//   height: 2.2em;
+// }
 </style>

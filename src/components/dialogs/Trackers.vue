@@ -2,24 +2,26 @@
   <v-data-table
     :headers="headers"
     :items="trackers"
-    :hide-actions="true"
+    :hide-default-footer="true"
   >
-    <template v-slot:items="row">
-      <td>{{ row.item.tier }}</td>
-      <td>{{ row.item.url }}</td>
-      <td>{{ row.item.status | formatTrackerStatus }}</td>
-      <td>{{ row.item.num_peers | formatTrackerNum }}</td>
-      <td>{{ row.item.num_seeds | formatTrackerNum }}</td>
-      <td>{{ row.item.num_leeches | formatTrackerNum }}</td>
-      <td>{{ row.item.num_downloaded | formatTrackerNum }}</td>
-      <td>{{ row.item.msg }}</td>
+    <template v-slot:item="row">
+      <tr>
+        <td>{{ row.item.tier }}</td>
+        <td>{{ row.item.url }}</td>
+        <td>{{ row.item.status | formatTrackerStatus }}</td>
+        <td>{{ row.item.num_peers | formatTrackerNum }}</td>
+        <td>{{ row.item.num_seeds | formatTrackerNum }}</td>
+        <td>{{ row.item.num_leeches | formatTrackerNum }}</td>
+        <td>{{ row.item.num_downloaded | formatTrackerNum }}</td>
+        <td>{{ row.item.msg }}</td>
+      </tr>
     </template>
   </v-data-table>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { api } from '../../Api';
+import Vue from 'vue';
+import api from '../../Api';
 import Taskable from '@/mixins/taskable';
 
 export default Vue.extend({
@@ -88,7 +90,7 @@ export default Vue.extend({
       } else {
         this.cancelTask();
       }
-    }
+    },
   },
 });
 </script>

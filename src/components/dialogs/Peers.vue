@@ -2,35 +2,37 @@
   <v-data-table
     :headers="headers"
     :items="peers"
-    :hide-actions="true"
+    :hide-default-footer="true"
   >
-    <template v-slot:items="row">
-      <td class="ip">
-        <template v-if="row.item.country_code">
-          <img
-            v-if="isWindows"
-            class="country-flag"
-            :title="row.item.country"
-            :alt="codeToFlag(row.item.country_code).char"
-            :src="codeToFlag(row.item.country_code).url"
-          />
-          <template v-else>
-            {{ codeToFlag(row.item.country_code).char }}
+    <template v-slot:item="row">
+      <tr>
+        <td class="ip">
+          <template v-if="row.item.country_code">
+            <img
+              v-if="isWindows"
+              class="country-flag"
+              :title="row.item.country"
+              :alt="codeToFlag(row.item.country_code).char"
+              :src="codeToFlag(row.item.country_code).url"
+            />
+            <template v-else>
+              {{ codeToFlag(row.item.country_code).char }}
+            </template>
           </template>
-        </template>
-        {{ row.item.ip }}
-        <span class="grey--text">:{{ row.item.port }}</span>
-      </td>
-      <td>{{ row.item.connection }}</td>
-      <td :title="row.item.flags_desc">{{ row.item.flags }}</td>
-      <td>{{ row.item.client }}</td>
-      <td>{{ row.item.progress | progress }}</td>
-      <td>{{ row.item.dl_speed | networkSpeed }}</td>
-      <td>{{ row.item.downloaded | networkSize }}</td>
-      <td>{{ row.item.up_speed | networkSpeed }}</td>
-      <td>{{ row.item.uploaded | networkSize }}</td>
-      <td>{{ row.item.relevance | progress }}</td>
-      <td>{{ row.item.files }}</td>
+          {{ row.item.ip }}
+          <span class="grey--text">:{{ row.item.port }}</span>
+        </td>
+        <td>{{ row.item.connection }}</td>
+        <td :title="row.item.flags_desc">{{ row.item.flags }}</td>
+        <td>{{ row.item.client }}</td>
+        <td>{{ row.item.progress | progress }}</td>
+        <td>{{ row.item.dl_speed | networkSpeed }}</td>
+        <td>{{ row.item.downloaded | networkSize }}</td>
+        <td>{{ row.item.up_speed | networkSpeed }}</td>
+        <td>{{ row.item.uploaded | networkSize }}</td>
+        <td>{{ row.item.relevance | progress }}</td>
+        <td>{{ row.item.files }}</td>
+      </tr>
     </template>
   </v-data-table>
 </template>
@@ -40,7 +42,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { codeToFlag, isWindows } from '../../utils';
 import Taskable from '@/mixins/taskable';
-import { api } from '../../Api';
+import api from '../../Api';
 import { formatSize } from '../../filters';
 
 export default Vue.extend({
@@ -78,7 +80,7 @@ export default Vue.extend({
         return null;
       }
 
-      return formatSize(speed) + '/s';
+      return `${formatSize(speed)}/s`;
     },
     networkSize(size: number) {
       if (size === 0) {
@@ -90,9 +92,7 @@ export default Vue.extend({
   },
   computed: {
     peers() {
-      return _.map(this.peersObj, (value, key) => {
-        return _.merge({}, value, { key });
-      });
+      return _.map(this.peersObj, (value, key) => _.merge({}, value, { key }));
     },
   },
   methods: {
@@ -138,7 +138,7 @@ export default Vue.extend({
       } else {
         this.cancelTask();
       }
-    }
+    },
   },
 });
 </script>

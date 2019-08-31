@@ -1,6 +1,6 @@
 export default {
   'tp.m-team.cc': {
-    name: 'M-Team (Legacy)',
+    name: 'M-Team (Old)',
     icon: 'https://tp.m-team.cc/favicon.ico',
   },
   'pt.m-team.cc': {

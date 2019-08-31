@@ -58,7 +58,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn flat @click="closeDialog">Close</v-btn>
+        <v-btn text @click="closeDialog">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -66,7 +66,7 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import Vue from 'vue'
+import Vue from 'vue';
 import Trackers from './Trackers.vue';
 import Peers from './Peers.vue';
 import Panel from './Panel.vue';
@@ -116,15 +116,16 @@ export default Vue.extend({
 <style lang="scss" scoped>
 ::v-deep .v-dialog {
   max-width: 1100px;
+
+  .v-card__text {
+    min-height: 200px;
+  }
 }
 
-::v-deep .v-datatable thead th, ::v-deep .v-datatable tbody td {
+::v-deep .v-data-table thead th, ::v-deep .v-data-table tbody td {
   padding: 0 2px !important;
-  width: auto;
   height: auto;
 
-  text-overflow: ellipsis;
-  overflow: hidden;
   white-space: nowrap;
 
   &:first-child {

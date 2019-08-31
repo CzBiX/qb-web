@@ -4,26 +4,29 @@
       app
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
-      class="drawer"
+      v-class:phone-layout="phoneLayout"
+      :width="phoneLayout ? '300px' : '280px'"
     >
       <drawer v-model="drawerOptions" />
       <template v-if="phoneLayout">
         <v-spacer />
         <v-divider />
-        <v-expansion-panel
+        <v-expansion-panels
           class="drawer-footer"
           >
-          <v-expansion-panel-content lazy @input="drawerFooterOpen">
-            <template v-slot:header>
-              <v-layout align-center>
+          <v-expansion-panel lazy @input="drawerFooterOpen">
+            <v-expansion-panel-header>
+              <div class="d-flex align-center">
                 <v-icon class="footer-icon shrink">mdi-information-outline</v-icon>
                 <span class="footer-title">Status info</span>
-              </v-layout>
-            </template>
-            <app-footer phone-layout />
-          </v-expansion-panel-content>
+              </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <app-footer phone-layout />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
           <div ref="end" />
-        </v-expansion-panel>
+        </v-expansion-panels>
       </template>
     </v-navigation-drawer>
     <main-toolbar v-model="drawer" />
@@ -38,8 +41,8 @@
 
     <v-footer
       app
-      height="auto"
       class="elevation-4"
+      padless
       v-if="$vuetify.breakpoint.smAndUp"
     >
       <app-footer />
@@ -49,6 +52,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import {
+  mapActions, mapGetters, mapState, mapMutations,
+} from 'vuex';
+import Axios, { AxiosError } from 'axios';
 import AddForm from './components/AddForm.vue';
 import Drawer from './components/Drawer.vue';
 import LoginForm from './components/LoginForm.vue';
@@ -56,12 +63,10 @@ import MainToolbar from './components/MainToolbar.vue';
 import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/dialogs/LogsDialog.vue';
-import { api } from './Api';
-import { mapActions, mapGetters, mapState, mapMutations } from 'vuex';
-import Axios, { AxiosError } from 'axios';
+import api from './Api';
 import { sleep } from './utils';
 
-let appWrapEl = null;
+let appWrapEl: HTMLElement;
 
 export default Vue.extend({
   name: 'app',
@@ -87,7 +92,7 @@ export default Vue.extend({
   },
   async created() {
     await this.getInitData();
-    appWrapEl = this.$refs.app.$el.querySelector('.application--wrap')
+    appWrapEl = this.$refs.app.$el.querySelector('.v-application--wrap');
     appWrapEl.addEventListener('paste', this.onPaste);
   },
   beforeDestroy() {
@@ -140,8 +145,10 @@ export default Vue.extend({
       this.task = setTimeout(this.getMainData, this.config.updateInterval);
     },
     async drawerFooterOpen(v: boolean) {
-      if (!v) return;
-      await sleep(350);
+      if (!v) {
+        return;
+      }
+      await sleep(3000);
 
       this.$refs.end.scrollIntoView({
         behavior: 'smooth',
@@ -159,32 +166,33 @@ export default Vue.extend({
       if (!v) {
         await this.getInitData();
       }
-    }
-  }
+    },
+  },
 });
 </script>
 
 <style lang="scss" scoped>
-.drawer {
+.phone-layout ::v-deep .v-navigation-drawer__content {
   display: flex;
   flex-direction: column;
 
-  .drawer-footer {
-    box-shadow: none;
-
-    ::v-deep .v-expansion-panel__header {
-      padding: 12px;
-    }
+  .drawer-footer .v-expansion-panel-header {
+    padding: 12px 16px 12px 16px;
 
     .footer-icon {
       font-size: 22px;
       margin-left: 10px;
-      margin-right: 28px;
+      margin-right: 34px;
     }
+
     .footer-title {
       font-size: 13px;
       font-weight: 500;
     }
   }
+}
+
+.v-footer {
+  min-height: 36px;
 }
 </style>

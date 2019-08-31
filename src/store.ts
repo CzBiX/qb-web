@@ -9,7 +9,7 @@ Vue.use(Vuex);
 const defaultConfig = {
   updateInterval: 2000,
   pagination: {
-    rowsPerPage: 50,
+    itemsPerPage: 50,
   },
   filter: {
     state: null,
@@ -41,6 +41,7 @@ export default new Vuex.Store({
     preferences: null,
   },
   mutations: {
+    /* eslint-disable no-param-reassign */
     updateMainData(state, payload) {
       state.rid = payload.rid;
       if (payload.full_update) {
@@ -66,13 +67,14 @@ export default new Vuex.Store({
       state.preferences = payload;
     },
     updateConfig(state, payload) {
-      const key = payload.key;
-      const value = payload.value;
+      const { key } = payload;
+      const { value } = payload;
       const tmp = _.merge({}, state.userConfig[key], value);
       Vue.set(state.userConfig, key, tmp);
 
       saveConfig(state.userConfig);
     },
+    /* eslint-enable no-param-reassign */
   },
   getters: {
     config(state) {
@@ -86,22 +88,20 @@ export default new Vuex.Store({
         return [];
       }
 
-      return _.map(state.mainData.torrents, (value, key) => {
-        return _.merge({}, value, { hash: key });
-      });
+      return _.map(state.mainData.torrents,
+        (value, key) => _.merge({}, value, { hash: key }));
     },
     allCategories(state) {
       if (!state.mainData) {
         return [];
       }
 
-      const categories =  _.map(state.mainData.categories, (value, key) => {
-        return _.merge({}, value, { key });
-      });
-      return _.sortBy(categories, 'name')
+      const categories = _.map(state.mainData.categories,
+        (value, key) => _.merge({}, value, { key }));
+      return _.sortBy(categories, 'name');
     },
     torrentGroupByCategory(state, getters) {
-      return _.groupBy(getters.allTorrents, (torrent) => torrent.category);
+      return _.groupBy(getters.allTorrents, torrent => torrent.category);
     },
     torrentGroupBySite(state, getters) {
       return _.groupBy(getters.allTorrents, (torrent) => {
