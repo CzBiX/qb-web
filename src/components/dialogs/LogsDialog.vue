@@ -93,7 +93,7 @@ export default Vue.extend({
       }
 
       if (logs.length) {
-        // this.logs = this.logs.concat(logs);
+        this.logs = this.logs.concat(logs);
 
         await this.$nextTick();
 

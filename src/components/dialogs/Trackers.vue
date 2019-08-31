@@ -2,6 +2,7 @@
   <v-data-table
     :headers="headers"
     :items="trackers"
+    :items-per-page="-1"
     :hide-default-footer="true"
   >
     <template v-slot:item="row">
