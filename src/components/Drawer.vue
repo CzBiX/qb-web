@@ -211,7 +211,12 @@ export default {
         title: 'Categories',
         model: !this.$vuetify.breakpoint.xsOnly,
         select: 'category',
-        children: categories,
+        children: [
+          {
+            icon: 'mdi-folder-open', title: `All (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+          },
+          ...categories,
+        ],
       });
 
       const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
@@ -230,7 +235,12 @@ export default {
         title: 'Sites',
         model: false,
         select: 'site',
-        children: sites,
+        children: [
+          {
+            icon: 'mdi-server', title: `All (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+          },
+          ...sites,
+        ],
       });
 
       return _.concat(this.basicItems, [{ filterGroups }], this.endItems);
@@ -251,10 +261,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.drawer ::v-deep {
-  .v-list-item__icon {
-    margin-left: 8px;
-    margin-right: 32px;
-  }
+.drawer .v-list-item__icon {
+  margin-left: 8px;
 }
 </style>

@@ -20,7 +20,7 @@
       <v-list-item-icon>
         <v-icon v-if="isFontIcon(child.icon)">{{ child.icon }}</v-icon>
         <div v-else>
-          <v-img :src="child.icon" width='22px' height="22px" />
+          <v-img :src="child.icon" width='20px' height="20px" />
         </div>
       </v-list-item-icon>
       <v-list-item-content>
@@ -80,12 +80,21 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .filter-group {
+  ::v-deep .v-list-group__header {
+    .v-list-item__icon {
+      margin-left: 8px;
+    }
+  }
+
   .v-list-item {
     min-height: 0;
 
     .v-list-item__icon {
-      margin-top: 4px;
-      margin-bottom: 4px;
+      margin: 2px 30px 2px 10px;
+
+      .v-icon {
+        font-size: 20px;
+      }
     }
 
     .v-list-item__content {
