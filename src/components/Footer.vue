@@ -34,7 +34,7 @@
     <div class="icon-label" v-if="!phoneLayout">
       <v-icon>mdi-swap-vertical-bold</v-icon>
       <span>
-        {{ info.alltime_dl | formatSize }}/{{ info.alltime_ul | formatSize }}
+        {{ info.alltime_ul | formatSize }}/{{ info.alltime_dl | formatSize }}
       </span>
     </div>
   </div>
@@ -96,21 +96,6 @@
     <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
     <div class="icon-label">
       <v-icon
-        :color=" info.dl_info_speed > 0 ? 'success' : null"
-      >mdi-download</v-icon>
-      <span>
-        {{ info.dl_info_speed | formatSize }}/s
-        <template v-if="info.dl_rate_limit">
-          ({{ info.dl_rate_limit | formatSize}}/s)
-        </template>
-        <template v-if="!phoneLayout">
-          [{{ info.dl_info_data | formatSize }}]
-        </template>
-      </span>
-    </div>
-    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-    <div class="icon-label">
-      <v-icon
         :color=" info.up_info_speed > 0 ? 'warning' : null"
       >mdi-upload</v-icon>
       <span>
@@ -120,6 +105,21 @@
         </template>
         <template v-if="!phoneLayout">
           [{{ info.up_info_data | formatSize }}]
+        </template>
+      </span>
+    </div>
+    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
+    <div class="icon-label">
+      <v-icon
+        :color=" info.dl_info_speed > 0 ? 'success' : null"
+      >mdi-download</v-icon>
+      <span>
+        {{ info.dl_info_speed | formatSize }}/s
+        <template v-if="info.dl_rate_limit">
+          ({{ info.dl_rate_limit | formatSize}}/s)
+        </template>
+        <template v-if="!phoneLayout">
+          [{{ info.dl_info_data | formatSize }}]
         </template>
       </span>
     </div>
