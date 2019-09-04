@@ -155,6 +155,10 @@ export default Vue.extend({
       });
     },
     onPaste(e: ClipboardEvent) {
+      if (e.target.tagName === 'INPUT') {
+        return;
+      }
+
       const text = e.clipboardData.getData('text');
       if (text) {
         this.pasteUrl = text;

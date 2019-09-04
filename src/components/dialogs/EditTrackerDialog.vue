@@ -1,5 +1,11 @@
 <template>
-  <v-dialog :value="true" @input="closeDialog" :fullscreen="phoneLayout" width="40em">
+  <v-dialog
+    :value="true"
+    @input="closeDialog"
+    :fullscreen="phoneLayout"
+    persistent
+    width="40em"
+  >
     <v-card>
       <v-card-title
         class="headline grey lighten-4"
