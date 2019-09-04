@@ -12,7 +12,12 @@
     >
       <v-icon>mdi-link-plus</v-icon>
     </v-btn>
-    <v-dialog v-model="dialog" eager persistent width="40em">
+    <v-dialog
+      v-model="dialog"
+      eager
+      persistent
+      width="40em"
+    >
       <v-card>
         <v-card-title
           class="headline grey lighten-4"
@@ -25,10 +30,9 @@
             v-model="valid"
             ref="form"
           >
-            <v-container v-bind="{ [`grid-list-${$vuetify.breakpoint.name}`]: true }">
-              <v-row>
+            <v-container>
+              <v-row no-gutters>
                 <v-col
-                  cols="12"
                   ref="fileZone"
                 >
                   <v-file-input
@@ -50,41 +54,43 @@
                     :rules="[v => (!!files.length || !!v || 'URLs is required')]"
                     :rows="$vuetify.breakpoint.xsOnly ? 1 : 3"
                     required
-                    autofocus
+                    :autofocus="!phoneLayout"
                     :value="params.urls"
                     @input="setParams('urls', $event)"
                     @click:append-outer="selectFiles"
                   />
                 </v-col>
-                <v-col>
-                  <v-combobox
-                    label="Category"
-                    prepend-icon="mdi-folder"
-                    clearable
-                    hide-no-data
-                    :items="categories"
-                    :value="params.category"
-                    @input="setParams('category', $event)"
-                  />
-                </v-col>
-                <v-col>
-                  <v-checkbox
-                    prepend-icon="mdi-file-tree"
-                    label="Create subfolder"
-                    :value="params.root_path"
-                    @change="setParams('root_path', $event)"
-                  />
-                </v-col>
               </v-row>
-              <v-row>
-                <v-col>
+              <v-row no-gutters>
+                <template v-if="showMore">
+                  <v-col cols="12" sm="6">
+                    <v-combobox
+                      label="Category"
+                      prepend-icon="mdi-folder"
+                      clearable
+                      hide-no-data
+                      :items="categories"
+                      :value="params.category"
+                      @input="setParams('category', $event)"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-checkbox
+                      prepend-icon="mdi-file-tree"
+                      label="Create subfolder"
+                      :value="params.root_path"
+                      @change="setParams('root_path', $event)"
+                    />
+                  </v-col>
+                </template>
+                <v-col cols="12" sm="6">
                   <v-checkbox
                     v-model="autoStart"
                     label="Start torrent"
                     prepend-icon="mdi-play-pause"
                   />
                 </v-col>
-                <v-col>
+                <v-col cols="12" sm="6">
                   <v-checkbox
                     prepend-icon="mdi-progress-check"
                     label="Skip hash check"
@@ -102,7 +108,7 @@
           />
         </v-card-text>
         <v-card-actions>
-          <!-- <v-btn flat>More</v-btn> -->
+          <v-btn text @click="showMore = !showMore" v-text="showMore ? 'Less' : 'More'" />
           <v-spacer />
           <v-btn text @click="dialog = false">Cancel</v-btn>
           <v-btn
@@ -148,6 +154,7 @@ export default Vue.extend({
       userParams: {},
       error: null,
       submitting: false,
+      showMore: false,
     };
   },
   computed: {
@@ -159,6 +166,9 @@ export default Vue.extend({
     }),
     params() {
       return Object.assign({}, defaultParams, this.userParams);
+    },
+    phoneLayout() {
+      return this.$vuetify.breakpoint.xsOnly;
     },
     autoStart: {
       get(): boolean {
@@ -174,6 +184,7 @@ export default Vue.extend({
   created() {
     defaultParams.paused = this.prefs.start_paused_enabled;
     defaultParams.root_path = this.prefs.create_subfolder_enabled;
+    this.showMore = !this.phoneLayout;
   },
   mounted() {
     this.$refs.fileZone.addEventListener('drop', this.onDrop, true);
