@@ -78,7 +78,7 @@
                     <v-checkbox
                       prepend-icon="mdi-file-tree"
                       label="Create subfolder"
-                      :value="params.root_path"
+                      :input-value="true"
                       @change="setParams('root_path', $event)"
                     />
                   </v-col>
@@ -94,7 +94,7 @@
                   <v-checkbox
                     prepend-icon="mdi-progress-check"
                     label="Skip hash check"
-                    :value="params.skip_checking"
+                    :input-value="params.skip_checking"
                     @change="setParams('skip_checking', $event)"
                   />
                 </v-col>
