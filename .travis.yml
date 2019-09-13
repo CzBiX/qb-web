@@ -1,0 +1,19 @@
+language: node_js
+node_js: lts/*
+
+branches:
+  only:
+    - master
+
+before_deploy:
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d')-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
+
+script: npm run build; [ -d dist/public ] && cp INSTALL.md dist && zip -r dist.zip dist
+
+deploy:
+  providers: releases
+  api_key: "$GITHUB_OAUTH_TOKEN"
+  file: dist.zip
+  skip_cleanup: true
+  overwrite: true
