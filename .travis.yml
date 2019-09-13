@@ -6,11 +6,15 @@ branches:
     - master
 
 before_deploy:
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d')}
-  - git tag $TRAVIS_TAG
-  - export RELEASE_TITLE=$(date +'%Y%m%d')-$(git log --format=%h -1)
+  # Add tag if missing
+  - if [ -z "$TRAVIS_TAG" ]; then export TRAVIS_TAG=$(date +'%Y%m%d'); git tag -f $TRAVIS_TAG; fi
+  - export RELEASE_TITLE=$TRAVIS_TAG-$(git log --format=%h -1)
+  # Pack for release
+  - cp dist/public/{index,login}.html
+  - cp INSTALL.md dist
+  - zip -r dist.zip dist
 
-script: npm run build; [ -d dist/public ] && cp INSTALL.md dist && zip -r dist.zip dist
+script: npm run build; [ -d dist/public ]
 
 deploy:
   provider: releases
