@@ -6,14 +6,17 @@ branches:
     - master
 
 before_deploy:
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d')-$(git log --format=%h -1)}
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d')}
   - git tag $TRAVIS_TAG
+  - export RELEASE_TITLE=$(date +'%Y%m%d')-$(git log --format=%h -1)
 
 script: npm run build; [ -d dist/public ] && cp INSTALL.md dist && zip -r dist.zip dist
 
 deploy:
-  providers: releases
-  api_key: "$GITHUB_OAUTH_TOKEN"
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
   file: dist.zip
   skip_cleanup: true
   overwrite: true
+  prerelease: true
+  name: $RELEASE_TITLE
