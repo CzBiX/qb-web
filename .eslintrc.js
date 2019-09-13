@@ -4,7 +4,6 @@ module.exports = {
     browser: true,
   },
   plugins: [
-    'vuetify',
   ],
   extends: [
     'plugin:vue/essential',
@@ -19,10 +18,6 @@ module.exports = {
     'no-plusplus': 'off',
     'no-continue': 'off',
     'func-names': ['warn', 'as-needed'],
-
-    'vuetify/no-deprecated-classes': 'error',
-    'vuetify/grid-unknown-attributes': 'error',
-    'vuetify/no-legacy-grid': 'error',
   },
   parserOptions: {
     parser: '@typescript-eslint/parser',
