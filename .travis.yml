@@ -6,15 +6,16 @@ branches:
     - master
 
 before_install:
-  - export TZ=Asia/Shanghai
+  - export TZ=Asia/Shanghai COMMIT_ID=${TRAVIS_COMMIT::6}
 
 script: npm run build; [ -d dist/public ]
 
 before_deploy:
   # Add tag if missing
   - if [ -z "$TRAVIS_TAG" ]; then
-      export TRAVIS_TAG=nightly RELEASE_TITLE=$(date +'%Y%m%d')-$(git log --format=%h -1);
-      git tag -f $TRAVIS_TAG;
+      export TRAVIS_TAG=nightly-$COMMIT_ID RELEASE_TITLE=$(date +'%Y%m%d')-$COMMIT_ID;
+      git tag $TRAVIS_TAG;
+      echo tagged as $TRAVIS_TAG;
     fi
   # Pack for release
   - cp dist/public/{index,login}.html
