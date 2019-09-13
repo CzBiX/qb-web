@@ -5,6 +5,11 @@ branches:
   only:
     - master
 
+before_install:
+  - export TZ=Asia/Shanghai
+
+script: npm run build; [ -d dist/public ]
+
 before_deploy:
   # Add tag if missing
   - if [ -z "$TRAVIS_TAG" ]; then export TRAVIS_TAG=$(date +'%Y%m%d'); git tag -f $TRAVIS_TAG; fi
@@ -13,8 +18,6 @@ before_deploy:
   - cp dist/public/{index,login}.html
   - cp INSTALL.md dist
   - zip -r dist.zip dist
-
-script: npm run build; [ -d dist/public ]
 
 deploy:
   provider: releases
