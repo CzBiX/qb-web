@@ -141,6 +141,7 @@
     </v-data-table>
 
     <confirm-delete-dialog v-if="toDelete.length" v-model="toDelete" />
+    <confirm-set-category-dialog v-if="toSetCategory.length" :category="categoryToSet" v-model="toSetCategory" />
     <edit-tracker-dialog v-if="toEditTracker.length" v-model="toEditTracker" />
     <info-dialog
       v-if="toShowInfo.length"
@@ -155,6 +156,7 @@ import Vue from 'vue';
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import _ from 'lodash';
 import ConfirmDeleteDialog from './dialogs/ConfirmDeleteDialog.vue';
+import ConfirmSetCategoryDialog from './dialogs/ConfirmSetCategoryDialog.vue';
 import EditTrackerDialog from './dialogs/EditTrackerDialog.vue';
 import InfoDialog from './dialogs/InfoDialog.vue';
 import api from '../Api';
@@ -242,6 +244,7 @@ export default Vue.extend({
 
   components: {
     ConfirmDeleteDialog,
+    ConfirmSetCategoryDialog,
     EditTrackerDialog,
     InfoDialog,
   },
@@ -269,6 +272,8 @@ export default Vue.extend({
       headers,
       selectedRows: [],
       toDelete: [],
+      toSetCategory: [],
+      categoryToSet: null,
       toShowInfo: [],
       toEditTracker: [],
       infoTab: null,
@@ -378,8 +383,9 @@ export default Vue.extend({
     async recheckTorrents() {
       await api.recheckTorrents(this.selectedHashes);
     },
-    async setTorrentsCategory(category: string) {
-      await api.setTorrentsCategory(this.selectedHashes, category);
+    setTorrentsCategory(category: string) {
+      this.categoryToSet = category;
+      this.toSetCategory = this.selectedRows;
     },
     editTracker() {
       if (this.selectedRows.length == 0) {

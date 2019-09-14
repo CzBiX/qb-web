@@ -66,3 +66,24 @@ export function codeToFlag(code: string) {
 }
 
 export const isWindows = navigator.userAgent.includes('Windows');
+
+export function getSameNamedTorrents(allTorrents: Array<any>, torrents: Array<any>) {
+  const hashes = _.map(torrents, (t) => t.hash);
+  const result = [];
+  for (const t1 of torrents) {
+    for (const t2 of allTorrents) {
+      if (hashes.includes(t2.hash)) {
+        continue;
+      }
+
+      if (t1.name != t2.name) {
+        continue;
+      }
+
+      result.push(t2);
+      hashes.push(t2);
+    }
+  }
+
+  return result;
+};

@@ -4,11 +4,16 @@
       <v-card-title
         class="headline grey lighten-4"
       >
-        <v-icon class="mr-2">mdi-delete</v-icon>
-        <span>Delete torrents</span>
+        <v-icon class="mr-2">mdi-folder</v-icon>
+        <span>Set category</span>
       </v-card-title>
       <v-card-text class="pb-0">
-         Are you sure to delete selected torrents from transfer list?
+        <template v-if="category">
+         Are you sure to move selected torrents to category {{ category }}?
+        </template>
+        <template v-else>
+         Are you sure to reset category of selected torrents?
+        </template>
         <ol class="torrents pt-6">
           <li v-for="(row, i) in torrents" :key="i">
             {{ row.name }}
@@ -16,16 +21,11 @@
         </ol>
 
         <v-checkbox
-          v-model="deleteFiles"
-          prepend-icon="mdi-file-cancel"
-          label="Also delete files"
-        />
-        <v-checkbox
           v-if="sameNamedTorrents.length > 0"
-          v-model="deleteSameNamed"
+          v-model="moveSameNamed"
           prepend-icon="mdi-file-multiple"
           class="mt-0"
-          :label="`Also delete ${sameNamedTorrents.length} same named torrents`"
+          :label="`Also move ${sameNamedTorrents.length} same named torrents`"
         />
       </v-card-text>
       <v-card-actions>
@@ -37,7 +37,7 @@
           :disabled="submitting"
           :loading="submitting"
         >
-          Delete
+          Submit
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -54,11 +54,11 @@ import { getSameNamedTorrents } from '@/utils';
 export default Vue.extend({
   props: {
     value: Array,
+    category: String,
   },
   data() {
     return {
-      deleteFiles: false,
-      deleteSameNamed: false,
+      moveSameNamed: false,
       submitting: false,
       torrents: [],
       sameNamedTorrents: [],
@@ -85,14 +85,14 @@ export default Vue.extend({
 
       this.submitting = true;
 
-      let torrentsToDelete;
-      if (this.deleteSameNamed) {
-        torrentsToDelete = this.torrents.concat(this.sameNamedTorrents);
+      let torrentsToMove;
+      if (this.moveSameNamed) {
+        torrentsToMove = this.torrents.concat(this.sameNamedTorrents);
       } else {
-        torrentsToDelete = this.torrents;
+        torrentsToMove = this.torrents;
       }
-      const hashes = torrentsToDelete.map((t: any) => t.hash);
-      await api.deleteTorrents(hashes, this.deleteFiles);
+      const hashes = torrentsToMove.map((t: any) => t.hash);
+      await api.setTorrentsCategory(hashes, this.category);
 
       this.closeDialog();
     },
