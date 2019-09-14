@@ -4,8 +4,13 @@
       open-on-click
       :items="fileTree"
     >
-      <template v-slot:prepend="item">
-        <v-icon v-text="getItemIcon(item)" />
+      <template v-slot:prepend="row">
+        <v-icon v-text="getRowIcon(row)" />
+      </template>
+      <template v-slot:append="row">
+        <span>
+          [{{ getTotalSize(row.item) | size }}]
+        </span>
       </template>
     </v-treeview>
   </div>
@@ -65,12 +70,24 @@ export default Vue.extend({
 
       this.task = setTimeout(this.getFiles, 5000);
     },
-    getItemIcon(item: any) {
-      if (item.item.item) {
+    getRowIcon(row: any) {
+      if (row.item.item) {
         return 'mdi-file';
       }
 
-      return item.open ? 'mdi-folder-open' : 'mdi-folder';
+      return row.open ? 'mdi-folder-open' : 'mdi-folder';
+    },
+    getTotalSize(item: TreeItem) {
+      if (item.item) {
+        return item.item.size
+      }
+      
+      let size = 0;
+      for (const child of item.children!) {
+        size += this.getTotalSize(child);
+      }
+
+      return size;
     },
     getFileFolder(item: File, start: number) {
       const name = item.name;
