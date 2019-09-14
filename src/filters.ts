@@ -48,7 +48,7 @@ export function formatDuration(value: number, options?: DurationOptions) {
   const parts = [];
 
   const defaultOptions: DurationOptions = {
-    maxUnitSize: 1,
+    maxUnitSize: 2,
     dayLimit: 0,
   };
 

@@ -5,6 +5,7 @@
       >
       <v-toolbar
         flat
+        dense
         color="white"
         height="40px"
         class="elevation-2"
@@ -60,16 +61,18 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        <v-divider vertical inset />
-        <v-btn icon @click="reannounceTorrents" title="Reannounce">
-          <v-icon>mdi-bullhorn</v-icon>
-        </v-btn>
-        <v-btn icon @click="editTracker" title="Edit tracker">
-          <v-icon>mdi-server</v-icon>
-        </v-btn>
-        <v-btn icon @click="recheckTorrents" title="Recheck" :disabled="selectedRows.length == 0">
-          <v-icon>mdi-backup-restore</v-icon>
-        </v-btn>
+        <template v-if="!$vuetify.breakpoint.xsOnly">
+          <v-divider vertical inset />
+          <v-btn icon @click="reannounceTorrents" title="Reannounce">
+            <v-icon>mdi-bullhorn</v-icon>
+          </v-btn>
+          <v-btn icon @click="editTracker" title="Edit tracker">
+            <v-icon>mdi-server</v-icon>
+          </v-btn>
+          <v-btn icon @click="recheckTorrents" title="Recheck" :disabled="selectedRows.length == 0">
+            <v-icon>mdi-backup-restore</v-icon>
+          </v-btn>
+        </template>
       </v-toolbar>
       <v-divider />
     </div>
@@ -80,7 +83,6 @@
       :items="torrents"
       item-key="hash"
       fixed-header
-      :hide-default-footer="torrents.length <= pageOptions.itemsPerPage"
       v-class:hide-headers="hasSelected"
       show-select
       :options.sync="pageOptions"
@@ -89,6 +91,7 @@
       :loading="loading"
       dense
       :footer-props="footerProps"
+      :mobile-breakpoint="0"
     >
       <template v-slot:item="row">
         <tr
@@ -445,6 +448,13 @@ export default Vue.extend({
         max-width: 36em;
       }
     }
+  }
+}
+
+.phone-layout {
+  .v-data-table ::v-deep .v-data-footer {
+    flex-wrap: nowrap;
+    margin-right: 0;
   }
 }
 

@@ -7,10 +7,10 @@
           <template
             v-for="item in transfer"
           >
-            <v-col class="label" :key="item.label + '_l'" cols="1">
+            <v-col class="label" :key="item.label + '_l'" cols="3" sm="2" md="1">
               {{ item.label }}:
             </v-col>
-            <v-col class="value" :key="item.label + '_v'" cols="2">
+            <v-col class="value" :key="item.label + '_v'" cols="9" sm="4" md="2">
               {{ item.value(properties) }}
             </v-col>
           </template>
@@ -24,10 +24,10 @@
           <template
             v-for="item in information"
           >
-            <v-col class="label" :key="item.label + '_l'" cols="1">
+            <v-col class="label" :key="item.label + '_l'" cols="3" sm="2" md="1">
               {{ item.label }}:
             </v-col>
-            <v-col class="value" :key="item.label + '_v'" cols="3">
+            <v-col class="value" :key="item.label + '_v'" cols="9" sm="4" md="3">
               {{ item.value(properties) }}
             </v-col>
           </template>
@@ -101,27 +101,31 @@ export default Vue.extend({
     return {
       properties: undefined,
       transfer: [
-        { label: 'Time Active', value: (prop) => formatDuration(prop.time_elapsed) },
+        { label: 'Time active', value: (prop) => {
+          return formatDuration(prop.time_elapsed) + (prop.seeding_time ? ` (seeded ${formatDuration(prop.seeding_time)})` : '') 
+        }},
         { label: 'ETA', value: (prop) => formatDuration(prop.eta, {dayLimit: 100}) },
         { label: 'Connections', value: (prop) => `${prop.nb_connections} (${prop.nb_connections_limit} max)` },
         { label: 'Downloaded', value: (prop) => `${formatSize(prop.total_downloaded_session)}/${formatSize(prop.total_downloaded)}` },
         { label: 'Uploaded', value: (prop) => `${formatSize(prop.total_uploaded_session)}/${formatSize(prop.total_uploaded)}` },
         { label: 'Seeds', value: (prop) => `${prop.seeds} (${prop.seeds_total} total)` },
-        { label: 'DL Speed', value: (prop) => `${formatSize(prop.dl_speed)}/s` },
-        { label: 'UP Speed', value: (prop) => `${formatSize(prop.up_speed)}/s` },
+        { label: 'DL speed', value: (prop) => `${formatSize(prop.dl_speed)}/s` },
+        { label: 'UP speed', value: (prop) => `${formatSize(prop.up_speed)}/s` },
         { label: 'Peers', value: (prop) => `${prop.peers} (${prop.peers_total} total)` },
         { label: 'Wasted', value: (prop) => formatSize(prop.total_wasted) },
-        { label: 'Share Ratio', value: (prop) => toPrecision(prop.share_ratio, 2) },
+        { label: 'Share ratio', value: (prop) => toPrecision(prop.share_ratio, 2) },
         { label: 'Reannounce', value: (prop) => formatDuration(prop.reannounce) },
+        { label: 'Last seen', value: (prop) => formatTimestamp(prop.last_seen) },
       ],
       information: [
-        { label: 'Total Size', value: (prop) => formatSize(prop.total_size) },
+        { label: 'Total size', value: (prop) => formatSize(prop.total_size) },
         { label: 'Pieces', value: (prop) => `${prop.pieces_num} x ${formatSize(prop.piece_size)} (have ${prop.pieces_have})` },
-        { label: 'Created By', value: (prop) => prop.created_by },
-        { label: 'Added On', value: (prop) => formatTimestamp(prop.addition_date) },
-        { label: 'Completed On', value: (prop) => formatTimestamp(prop.completion_date) },
-        { label: 'Torrent Hash', value: (prop) => this.torrent.hash },
-        { label: 'Save Path', value: (prop) => prop.save_path },
+        { label: 'Created by', value: (prop) => prop.created_by },
+        { label: 'Created on', value: (prop) => formatTimestamp(prop.creation_date) },
+        { label: 'Added on', value: (prop) => formatTimestamp(prop.addition_date) },
+        { label: 'Completed on', value: (prop) => formatTimestamp(prop.completion_date) },
+        { label: 'Torrent hash', value: (prop) => this.torrent.hash },
+        { label: 'Save path', value: (prop) => prop.save_path },
         { label: 'Comment', value: (prop) => prop.comment },
       ],
     };
@@ -156,16 +160,17 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .torrent-info {
   font-size: 12px;
-  
 
   .label {
     text-align: right;
     padding-right: 0.5em;
+    text-transform: capitalize;
   }
 
   .value {
     text-overflow: ellipsis;
-    word-wrap: none;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 </style>
