@@ -6,9 +6,10 @@ module.exports = {
   },
 
   devServer: {
+    port: 8000,
     proxy: {
       '/api': {
-        target: 'http://192.168.1.2:8080',
+        target: 'http://qb.test:8080',
       },
     },
   },

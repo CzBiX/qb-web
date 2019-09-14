@@ -14,9 +14,9 @@
       </v-card-title>
       <v-card-text>
         <v-tabs v-model="mTab">
-          <!-- <v-tab>
+          <v-tab href="#general">
             General
-          </v-tab> -->
+          </v-tab>
           <v-tab href="#trackers">
             Trackers
           </v-tab>
@@ -28,6 +28,19 @@
           </v-tab> -->
         </v-tabs>
         <v-tabs-items :value="mTab" touchless>
+          <v-tab-item value="general">
+            <panel
+              v-for="torrent in torrents"
+              :key="torrent.hash"
+              :title="torrent.name"
+              :single="torrents.length === 1"
+            >
+              <torrent-info
+                :torrent="torrent"
+                :isActive="mTab === 'general'"
+                />
+            </panel>
+          </v-tab-item>
           <v-tab-item value="trackers">
             <panel
               v-for="torrent in torrents"
@@ -67,12 +80,14 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
+import TorrentInfo from './TorrentInfo.vue';
 import Trackers from './Trackers.vue';
 import Peers from './Peers.vue';
 import Panel from './Panel.vue';
 
 export default Vue.extend({
   components: {
+    TorrentInfo,
     Trackers,
     Peers,
     Panel,
@@ -119,6 +134,7 @@ export default Vue.extend({
 
   .v-card__text {
     min-height: 200px;
+    padding: 0 8px 8px;
   }
 }
 

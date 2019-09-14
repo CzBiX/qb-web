@@ -18,6 +18,7 @@ before_deploy:
       echo tagged as $TRAVIS_TAG;
     fi
   # Pack for release
+  # see https://github.com/qbittorrent/qBittorrent/pull/10485, fixed in qb v4.2.0
   - cp dist/public/{index,login}.html
   - cp INSTALL.md dist
   - zip -r dist.zip dist

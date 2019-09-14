@@ -78,19 +78,25 @@ export function formatDuration(value: number, options?: DurationOptions) {
   //   parts.push(result + units[index]);
   // }
 
+  if (!parts.length) {
+    return '0';
+  }
+
   return parts.join(' ');
 }
 
 Vue.filter('formatDuration', formatDuration);
 
-Vue.filter('formatTimestamp', (timestamp: number) => {
-  if (timestamp === null) {
+export function formatTimestamp(timestamp: number) {
+  if (timestamp == null || timestamp === -1) {
     return '';
   }
 
   const m = dayjs.unix(timestamp);
   return m.format('YYYY-MM-DD HH:mm:ss');
-});
+}
+
+Vue.filter('formatTimestamp', formatTimestamp);
 
 export function formatAsDuration(date: number, options?: DurationOptions) {
   const duration = (Date.now() / 1000) - date;
