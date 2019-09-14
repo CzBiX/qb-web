@@ -159,6 +159,16 @@ class Api {
     }).then(Api.handleResponse);
   }
 
+  public getTorrentFiles(hash: string) {
+    const params = {
+      hash,
+    };
+
+    return this.axios.get('/torrents/files', {
+      params,
+    }).then(Api.handleResponse);
+  }
+
   private actionTorrents(action: string, hashes: string[], extra?: any) {
     const params: any = {
       hashes: hashes.join('|'),

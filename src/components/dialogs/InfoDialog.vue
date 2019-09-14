@@ -23,9 +23,9 @@
           <v-tab href="#peers">
             Peers
           </v-tab>
-          <!-- <v-tab>
+          <v-tab href="#content">
             Content
-          </v-tab> -->
+          </v-tab>
         </v-tabs>
         <v-tabs-items :value="mTab" touchless>
           <v-tab-item value="general">
@@ -67,6 +67,19 @@
               />
             </panel>
           </v-tab-item>
+          <v-tab-item value="content">
+            <panel
+              v-for="torrent in torrents"
+              :key="torrent.hash"
+              :title="torrent.name"
+              :single="torrents.length === 1"
+            >
+              <torrent-content
+                :hash="torrent.hash"
+                :isActive="mTab === 'content'"
+              />
+            </panel>
+          </v-tab-item>
         </v-tabs-items>
       </v-card-text>
       <v-card-actions>
@@ -81,6 +94,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import TorrentInfo from './TorrentInfo.vue';
+import TorrentContent from './TorrentContent.vue';
 import Trackers from './Trackers.vue';
 import Peers from './Peers.vue';
 import Panel from './Panel.vue';
@@ -88,6 +102,7 @@ import Panel from './Panel.vue';
 export default Vue.extend({
   components: {
     TorrentInfo,
+    TorrentContent,
     Trackers,
     Peers,
     Panel,
