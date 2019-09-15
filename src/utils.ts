@@ -87,3 +87,7 @@ export function getSameNamedTorrents(allTorrents: Array<any>, torrents: Array<an
 
   return result;
 }
+
+export function typed<T>(value: T): T {
+  return value;
+}

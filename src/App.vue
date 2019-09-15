@@ -35,7 +35,7 @@
       <torrents />
     </v-content>
 
-    <add-form v-if="preferences" :url="pasteUrl" @input="pasteUrl = null"/>
+    <add-form v-if="preferences" />
     <login-form v-if="needAuth" v-model="needAuth" />
     <logs-dialog v-if="drawerOptions.showLogs" v-model="drawerOptions.showLogs" />
 
@@ -86,13 +86,12 @@ export default Vue.extend({
       drawerOptions: {
         showLogs: false,
       },
-      pasteUrl: null,
       task: 0,
     };
   },
   async created() {
     await this.getInitData();
-    appWrapEl = this.$refs.app.$el.querySelector('.v-application--wrap');
+    appWrapEl = (this.$refs.app as any).$el.querySelector('.v-application--wrap');
     appWrapEl.addEventListener('paste', this.onPaste);
   },
   beforeDestroy() {
@@ -150,18 +149,20 @@ export default Vue.extend({
       }
       await sleep(3000);
 
-      this.$refs.end.scrollIntoView({
+      (this.$refs.end as HTMLElement).scrollIntoView({
         behavior: 'smooth',
       });
     },
     onPaste(e: ClipboardEvent) {
-      if (e.target.tagName === 'INPUT') {
+      if ((e.target as HTMLElement).tagName === 'INPUT') {
         return;
       }
 
-      const text = e.clipboardData.getData('text');
+      const text = e.clipboardData!.getData('text');
       if (text) {
-        this.pasteUrl = text;
+        this.$store.commit('setPasteUrl', {
+          url: text,
+        });
       }
     },
   },

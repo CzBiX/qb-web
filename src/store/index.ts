@@ -1,50 +1,30 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import _ from 'lodash';
-import { AllStateTypes } from './consts';
-import { torrentIsState } from './utils';
+import { configStore } from './config';
+import { AllStateTypes } from '../consts';
+import { torrentIsState } from '../utils';
+import { RootState } from './types';
 
 Vue.use(Vuex);
 
-const defaultConfig = {
-  updateInterval: 2000,
-  pageOptions: {
-    itemsPerPage: 50,
+export default new Vuex.Store<RootState>({
+  modules: {
+    config: configStore,
   },
-  filter: {
-    state: null,
-    category: null,
-    site: null,
-  },
-};
-
-const configKey = 'qb-config';
-
-function saveConfig(obj: any) {
-  localStorage[configKey] = JSON.stringify(obj);
-}
-
-function loadConfig() {
-  const tmp = localStorage[configKey];
-  if (!tmp) {
-    return {};
-  }
-
-  return JSON.parse(tmp);
-}
-
-export default new Vuex.Store({
   state: {
     rid: 0,
-    mainData: null,
-    userConfig: loadConfig(),
+    mainData: undefined,
     preferences: null,
+    pasteUrl: null,
   },
   mutations: {
     /* eslint-disable no-param-reassign */
     updateMainData(state, payload) {
       state.rid = payload.rid;
+      delete payload.rid;
       if (payload.full_update) {
+        delete payload.full_update;
         state.mainData = payload;
       } else {
         const tmp: any = _.cloneDeep(state.mainData);
@@ -66,20 +46,13 @@ export default new Vuex.Store({
     updatePreferences(state, payload) {
       state.preferences = payload;
     },
-    updateConfig(state, payload) {
-      const { key } = payload;
-      const { value } = payload;
-      const tmp = _.merge({}, state.userConfig[key], value);
-      Vue.set(state.userConfig, key, tmp);
-
-      saveConfig(state.userConfig);
+    setPasteUrl(state, payload) {
+      const { url } = payload;
+      state.pasteUrl = url;
     },
     /* eslint-enable no-param-reassign */
   },
   getters: {
-    config(state) {
-      return _.merge({}, defaultConfig, state.userConfig);
-    },
     isDataReady(state) {
       return !!state.mainData;
     },

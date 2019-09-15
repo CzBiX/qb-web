@@ -141,10 +141,6 @@ const defaultParams = {
 };
 
 export default Vue.extend({
-  props: {
-    url: String,
-  },
-
   data() {
     return {
       placeholder: 'Upload torrents by drop them here,\nor click attachment button at right to select.',
@@ -159,7 +155,10 @@ export default Vue.extend({
   },
   computed: {
     ...mapState({
+      pasteUrl: 'pasteUrl',
       prefs: 'preferences',
+    }),
+    ...mapState({
       categories(state, getters) {
         return getters.allCategories.map(c => ({ text: c.name, value: c.key }));
       },
@@ -187,10 +186,10 @@ export default Vue.extend({
     this.showMore = !this.phoneLayout;
   },
   mounted() {
-    this.$refs.fileZone.addEventListener('drop', this.onDrop, true);
+    (this.$refs.fileZone as HTMLElement).addEventListener('drop', this.onDrop, true);
   },
   beforeDestroy() {
-    this.$refs.fileZone.removeEventListener('drop', this.onDrop, true);
+    (this.$refs.fileZone as HTMLElement).removeEventListener('drop', this.onDrop, true);
   },
 
   methods: {
@@ -256,7 +255,7 @@ export default Vue.extend({
   },
 
   watch: {
-    url(v) {
+    pasteUrl(v) {
       if (!v) {
         return;
       }
@@ -265,8 +264,6 @@ export default Vue.extend({
         Vue.set(this.userParams, 'urls', v);
         this.dialog = true;
       }
-
-      this.$emit('input', null);
     },
     files(v) {
       this.$refs.form.validate();
