@@ -1,6 +1,9 @@
 language: node_js
 node_js: lts/*
 
+branches:
+  except: /^nightly-.*$/
+
 before_install:
   - export TZ=Asia/Shanghai COMMIT_ID=${TRAVIS_COMMIT::6}
 
