@@ -180,7 +180,7 @@ export default {
         icon: 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
         title: 'State',
-        model: true,
+        model: false,
         select: 'state',
         children: [
           {

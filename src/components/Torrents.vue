@@ -435,9 +435,14 @@ export default Vue.extend({
       padding-left: 4px;
     }
 
+    tr:nth-child(2n) {
+      background-color: #eee;
+    }
+
     td {
       font-size: 13px;
       height: auto;
+      border-bottom: none !important;
 
       .v-input--checkbox {
         margin-top: 0;
