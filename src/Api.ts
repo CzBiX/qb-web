@@ -136,7 +136,7 @@ class Api {
       params,
     }).then(Api.handleResponse);
   }
-  
+
   public editTracker(hash: string, origUrl: string, newUrl: string) {
     const params = {
       hash,

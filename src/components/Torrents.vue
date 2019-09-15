@@ -10,23 +10,25 @@
         height="40px"
         class="elevation-2"
       >
-        <v-btn icon @click="confirmDelete" title="Delete" :disabled="selectedRows.length == 0">
+        <v-btn icon @click="confirmDelete" title="Delete" :disabled="!hasSelected">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
         <v-divider vertical inset />
-        <v-btn icon @click="resumeTorrents" title="Resume" :disabled="selectedRows.length == 0">
+        <v-btn icon @click="resumeTorrents" title="Resume" :disabled="!hasSelected">
           <v-icon>mdi-play</v-icon>
         </v-btn>
-        <v-btn icon @click="pauseTorrents" title="Pause" :disabled="selectedRows.length == 0">
+        <v-btn icon @click="pauseTorrents" title="Pause" :disabled="!hasSelected">
           <v-icon>mdi-pause</v-icon>
         </v-btn>
         <v-divider vertical inset />
-        <v-btn icon @click="showInfo()" title="Info" :disabled="selectedRows.length == 0 || selectedRows.length > 5">
+        <v-btn icon @click="showInfo()" title="Info"
+          :disabled="!hasSelected || selectedRows.length > 5"
+        >
           <v-icon>mdi-alert-circle</v-icon>
         </v-btn>
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" title="Category" :disabled="selectedRows.length == 0">
+            <v-btn icon v-on="on" title="Category" :disabled="!hasSelected">
               <v-icon>mdi-folder</v-icon>
             </v-btn>
           </template>
@@ -141,7 +143,9 @@
     </v-data-table>
 
     <confirm-delete-dialog v-if="toDelete.length" v-model="toDelete" />
-    <confirm-set-category-dialog v-if="toSetCategory.length" :category="categoryToSet" v-model="toSetCategory" />
+    <confirm-set-category-dialog v-if="toSetCategory.length"
+      :category="categoryToSet" v-model="toSetCategory"
+    />
     <edit-tracker-dialog v-if="toEditTracker.length" v-model="toEditTracker" />
     <info-dialog
       v-if="toShowInfo.length"
@@ -304,7 +308,7 @@ export default Vue.extend({
       return !this.isDataReady;
     },
     hasSelected() {
-      return this.selectedRows.length;
+      return !!this.selectedRows.length;
     },
     selectedHashes() {
       return this.selectedRows.map(_.property('hash'));
@@ -375,7 +379,7 @@ export default Vue.extend({
       await api.pauseTorrents(this.selectedHashes);
     },
     async reannounceTorrents() {
-      if (this.selectedRows.length == 0) {
+      if (!this.hasSelected) {
         this.selectedRows = this.allTorrents;
       }
       await api.reannounceTorrents(this.selectedHashes);
@@ -388,11 +392,11 @@ export default Vue.extend({
       this.toSetCategory = this.selectedRows;
     },
     editTracker() {
-      if (this.selectedRows.length == 0) {
+      if (this.hasSelected) {
         this.selectedRows = this.allTorrents;
       }
       this.toEditTracker = this.selectedRows;
-    }
+    },
   },
 
   watch: {

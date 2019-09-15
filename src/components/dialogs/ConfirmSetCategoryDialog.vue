@@ -47,8 +47,8 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
-import api from '@/Api';
 import { mapGetters } from 'vuex';
+import api from '@/Api';
 import { getSameNamedTorrents } from '@/utils';
 
 export default Vue.extend({

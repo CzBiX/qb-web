@@ -161,7 +161,7 @@ export default Vue.extend({
     ...mapState({
       prefs: 'preferences',
       categories(state, getters) {
-        return getters.allCategories.map(c => ({text: c.name, value: c.key}));
+        return getters.allCategories.map(c => ({ text: c.name, value: c.key }));
       },
     }),
     params() {

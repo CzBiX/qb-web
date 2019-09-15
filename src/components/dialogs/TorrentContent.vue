@@ -22,6 +22,7 @@ import Vue from 'vue';
 import api from '../../Api';
 import Taskable from '@/mixins/taskable';
 
+/* eslint-disable camelcase */
 interface File {
   name: string;
   size: number;
@@ -30,7 +31,8 @@ interface File {
   is_seed: boolean;
   piece_range: Array<number>;
   availability: number;
-};
+}
+/* eslint-disable camelcase */
 
 interface TreeItem {
   name: string;
@@ -40,7 +42,7 @@ interface TreeItem {
 
 interface Data {
   files: Array<File>;
-};
+}
 
 const FILE_KEY = '/FILE/';
 
@@ -79,9 +81,9 @@ export default Vue.extend({
     },
     getTotalSize(item: TreeItem) {
       if (item.item) {
-        return item.item.size
+        return item.item.size;
       }
-      
+
       let size = 0;
       for (const child of item.children!) {
         size += this.getTotalSize(child);
@@ -90,7 +92,7 @@ export default Vue.extend({
       return size;
     },
     getFileFolder(item: File, start: number) {
-      const name = item.name;
+      const { name } = item;
       const index = name.indexOf('/', start);
       if (index === -1) {
         return FILE_KEY;
@@ -103,7 +105,7 @@ export default Vue.extend({
         return [];
       }
 
-      const entries = _.groupBy(files, (item) => this.getFileFolder(item, start));
+      const entries = _.groupBy(files, item => this.getFileFolder(item, start));
 
       const result = [];
       for (const [folder, values] of _.entries(entries)) {
@@ -112,14 +114,14 @@ export default Vue.extend({
           result.push({
             name: folder,
             children: subTree,
-          })
+          });
           continue;
         }
 
         for (const item of values) {
           result.push({
             name: item.name.substring(start),
-            item: item,
+            item,
           });
         }
       }

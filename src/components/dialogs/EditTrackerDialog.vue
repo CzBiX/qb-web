@@ -85,8 +85,9 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
-import api from '@/Api';
 import { mapGetters } from 'vuex';
+import api from '@/Api';
+
 
 export default Vue.extend({
   props: {
@@ -113,15 +114,16 @@ export default Vue.extend({
       return this.$vuetify.breakpoint.xsOnly;
     },
     canNext() {
-      if (this.step == 1 && this.valid) {
+      if (this.step === 1 && this.valid) {
         return true;
-      } else if (this.step == 2 && this.toEdit.length > 0) {
-        return true;
-      } else if (this.step == 3 && !this.submitting) {
-        return true;
-      } else {
-        return false;
       }
+      if (this.step === 2 && this.toEdit.length > 0) {
+        return true;
+      }
+      if (this.step === 3 && !this.submitting) {
+        return true;
+      }
+      return false;
     },
   },
   methods: {
@@ -132,9 +134,9 @@ export default Vue.extend({
       const regex = new RegExp(this.search);
 
       return _.chain(this.torrents)
-        .map(({tracker, hash, name}) => {
+        .map(({ tracker, hash, name }) => {
           const newUrl = tracker.replace(regex, this.replace);
-          return newUrl == tracker ? null : {
+          return newUrl === tracker ? null : {
             hash,
             name,
             origUrl: tracker,
@@ -143,19 +145,19 @@ export default Vue.extend({
         }).compact().value();
     },
     back() {
-      if (this.step == 1) {
+      if (this.step === 1) {
         this.closeDialog();
         return;
       }
       this.step--;
     },
     async foward() {
-      if (this.step == 1) {
+      if (this.step === 1) {
         this.toEdit = this.calcResults();
         this.step++;
         return;
       }
-      if (this.step == 3) {
+      if (this.step === 3) {
         this.closeDialog();
         return;
       }
