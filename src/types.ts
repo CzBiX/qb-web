@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
-export interface Torrent {
+export interface BaseTorrent {
   added_on: number;
   amount_left: number;
-  auto_tmm: boolean
+  auto_tmm: boolean;
   availability: number;
   category: string;
   completed: number;
@@ -12,8 +12,8 @@ export interface Torrent {
   downloaded: number;
   downloaded_session: number;
   eta: number;
-  f_l_piece_prio: boolean
-  force_start: boolean
+  f_l_piece_prio: boolean;
+  force_start: boolean;
   last_activity: number;
   magnet_uri: string;
   max_ratio: number;
@@ -30,10 +30,10 @@ export interface Torrent {
   save_path: string;
   seeding_time_limit: number;
   seen_complete: number;
-  seq_dl: boolean
+  seq_dl: boolean;
   size: number;
   state: string;
-  super_seeding: boolean
+  super_seeding: boolean;
   tags: string;
   time_active: number;
   total_size: number;
@@ -42,6 +42,10 @@ export interface Torrent {
   uploaded: number;
   uploaded_session: number;
   upspeed: number;
+}
+
+export interface Torrent extends BaseTorrent {
+  hash: string;
 }
 
 export interface Category {
@@ -79,5 +83,5 @@ export interface ServerState {
 export interface MainData {
     categories: Record<string, Category>;
     server_state: ServerState;
-    torrents: Record<string, Torrent>;
+    torrents: Record<string, BaseTorrent>;
 }

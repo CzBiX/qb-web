@@ -46,7 +46,7 @@ class Api {
     });
   }
 
-  public addTorrents(params: any, torrents?: any) {
+  public addTorrents(params: Record<string, any>, torrents?: any) {
     let data: any;
     if (torrents) {
       const formData = new FormData();

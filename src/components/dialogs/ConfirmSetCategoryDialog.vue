@@ -49,7 +49,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import api from '@/Api';
-import { getSameNamedTorrents } from '@/utils';
+import { findSameNamedTorrents } from '@/utils';
 
 export default Vue.extend({
   props: {
@@ -66,7 +66,7 @@ export default Vue.extend({
   },
   created() {
     this.torrents = this.value;
-    this.sameNamedTorrents = getSameNamedTorrents(this.allTorrents, this.torrents);
+    this.sameNamedTorrents = findSameNamedTorrents(this.allTorrents, this.torrents);
   },
   computed: {
     ...mapGetters(['allTorrents']),

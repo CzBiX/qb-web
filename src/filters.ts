@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import Vue from 'vue';
 
+/* eslint-disable no-param-reassign */
 export function toPrecision(value: number, precision: number) {
   if (value >= (10 ** precision)) {
     return value.toString();
@@ -16,13 +17,15 @@ export function formatSize(value: number) {
   let index = -1;
 
   while (value >= 1000) {
-    index++;
-    // eslint-disable-next-line
     value /= 1024;
+    index++;
   }
 
   const unit = index < 0 ? 'B' : `${units[index]}iB`;
 
+  if (index < 0) {
+    return `${value} ${unit}`;
+  }
   return `${toPrecision(value, 3)} ${unit}`;
 }
 
@@ -98,8 +101,8 @@ export function formatTimestamp(timestamp: number) {
 
 Vue.filter('formatTimestamp', formatTimestamp);
 
-export function formatAsDuration(date: number, options?: DurationOptions) {
-  const duration = (Date.now() / 1000) - date;
+export function formatAsDuration(timestamp: number, options?: DurationOptions) {
+  const duration = (Date.now() / 1000) - timestamp;
   return formatDuration(duration, options);
 }
 

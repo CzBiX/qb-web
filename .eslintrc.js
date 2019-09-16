@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   env: {
-    browser: true,
+    node: true,
   },
   plugins: [
   ],
@@ -24,4 +24,14 @@ module.exports = {
   parserOptions: {
     parser: '@typescript-eslint/parser',
   },
+  overrides: [
+    {
+      files: [
+        '**/__tests__/*.{j,t}s?(x)',
+      ],
+      env: {
+        jest: true,
+      },
+    },
+  ],
 };

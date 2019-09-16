@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { StateType } from './consts';
+import { Torrent } from './types';
 
 const dlState = ['downloading', 'metaDL', 'stalledDL', 'checkingDL', 'pausedDL', 'queuedDL', 'forceDL', 'allocating'];
 const upState = ['uploading', 'stalledUP', 'checkingUP', 'queuedUP', 'forceUP'];
@@ -45,9 +46,13 @@ export function torrentIsState(type: StateType, state: string) {
   return result;
 }
 
-export function sleep(ms: number) {
+export function timeout(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+/**
+ * @deprecated renamed to `timeout`
+ */
+export const sleep = timeout;
 
 export function codeToFlag(code: string) {
   const magicNumber = 0x1F1A5;
@@ -67,7 +72,7 @@ export function codeToFlag(code: string) {
 
 export const isWindows = navigator.userAgent.includes('Windows');
 
-export function getSameNamedTorrents(allTorrents: Array<any>, torrents: Array<any>) {
+export function findSameNamedTorrents(allTorrents: Torrent[], torrents: Torrent[]) {
   const hashes = _.map(torrents, t => t.hash);
   const result = [];
   for (const t1 of torrents) {
@@ -81,7 +86,7 @@ export function getSameNamedTorrents(allTorrents: Array<any>, torrents: Array<an
       }
 
       result.push(t2);
-      hashes.push(t2);
+      hashes.push(t2.hash);
     }
   }
 

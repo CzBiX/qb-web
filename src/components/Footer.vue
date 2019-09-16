@@ -128,6 +128,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import Vue from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import api from '../Api';

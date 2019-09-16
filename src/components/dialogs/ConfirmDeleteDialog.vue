@@ -46,14 +46,15 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import Vue from 'vue';
+import Vue, { PropType } from 'vue';
 import { mapGetters } from 'vuex';
 import api from '@/Api';
-import { getSameNamedTorrents } from '@/utils';
+import { findSameNamedTorrents } from '@/utils';
+import { Torrent } from '../../types';
 
 export default Vue.extend({
   props: {
-    value: Array,
+    value: Array as PropType<Torrent[]>,
   },
   data() {
     return {
@@ -66,7 +67,7 @@ export default Vue.extend({
   },
   created() {
     this.torrents = this.value;
-    this.sameNamedTorrents = getSameNamedTorrents(this.allTorrents, this.torrents);
+    this.sameNamedTorrents = findSameNamedTorrents(this.allTorrents, this.torrents);
   },
   computed: {
     ...mapGetters(['allTorrents']),
