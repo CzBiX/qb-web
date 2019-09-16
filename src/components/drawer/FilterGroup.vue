@@ -42,29 +42,51 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { PropType } from 'vue';
 import { mapState, mapMutations } from 'vuex';
+
+export interface Group {
+  title: string;
+  icon: string;
+  children: Child[];
+  model: boolean;
+  select: string;
+}
+
+export interface Child {
+  title: string;
+  key: string | null;
+  icon: string;
+  append: string | null;
+}
+
+interface Data {
+  model: boolean;
+  selected: string | null;
+}
 
 export default Vue.extend({
   props: {
-    group: Object,
+    group: Object as PropType<Group>,
   },
-  data() {
+  data(): Data {
     return {
       model: this.group.model,
       selected: null,
     };
   },
   created() {
-    this.selected = this.$store.getters.config.filter[this.group.select];
+    const s = this.$store.getters.config.filter[this.group.select];
+    if (this.group.children.some(child => child.key === s)) {
+      this.selected = s;
+    } else {
+      this.select(null);
+    }
   },
   methods: {
-    ...mapMutations([
-      'updateConfig',
-    ]),
-    select(key: any) {
+    select(key: string | null) {
       this.selected = this.selected === key ? null : key;
-      this.updateConfig({
+      this.$store.commit('updateConfig', {
         key: 'filter',
         value: {
           [this.group.select]: this.selected,
