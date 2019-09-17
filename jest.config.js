@@ -1,4 +1,4 @@
-const isCi = process.env.CI;
+const isCi = !!process.env.CI;
 
 module.exports = {
   collectCoverage: isCi,
