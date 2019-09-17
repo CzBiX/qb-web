@@ -1,7 +1,6 @@
-import { Torrent } from '@/types';
+import { Torrent, BaseTorrent } from '@/types';
 
-const emptyTorrent: Torrent = {
-  hash: '',
+const emptyBaseTorrent: BaseTorrent = {
   added_on: 0,
   amount_left: 0,
   auto_tmm: false,
@@ -46,6 +45,13 @@ const emptyTorrent: Torrent = {
   upspeed: 0,
 };
 
-export function mockTorrent(props: Partial<Torrent>): Torrent {
-  return Object.assign({}, emptyTorrent, props);
+const emptyTorrent: Torrent = Object.assign({}, emptyBaseTorrent, {
+  hash: '',
+});
+
+export function mock<T>(empty: T) {
+  return (props: Partial<T>): T => Object.assign({}, empty, props);
 }
+
+export const mockBaseTorrent = mock(emptyBaseTorrent);
+export const mockTorrent = mock(emptyTorrent);

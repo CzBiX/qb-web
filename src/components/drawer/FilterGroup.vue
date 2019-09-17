@@ -44,21 +44,7 @@
 <script lang="ts">
 import Vue, { PropType } from 'vue';
 import { mapState, mapMutations } from 'vuex';
-
-export interface Group {
-  title: string;
-  icon: string;
-  children: Child[];
-  model: boolean;
-  select: string;
-}
-
-export interface Child {
-  title: string;
-  key: string | null;
-  icon: string;
-  append: string | null;
-}
+import { FilterGroup as types } from '../types';
 
 interface Data {
   model: boolean;
@@ -67,7 +53,7 @@ interface Data {
 
 export default Vue.extend({
   props: {
-    group: Object as PropType<Group>,
+    group: Object as PropType<types.Group>,
   },
   data(): Data {
     return {

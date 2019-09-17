@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { Module } from 'vuex';
-import { RootState, ConfigState } from './types';
+import { ConfigState } from './types';
 
 const configKey = 'qb-config';
 
@@ -18,11 +18,11 @@ const defaultConfig = {
 };
 
 function saveConfig(obj: any) {
-  localStorage[configKey] = JSON.stringify(obj);
+  localStorage.setItem(configKey, JSON.stringify(obj));
 }
 
 function loadConfig() {
-  const tmp = localStorage[configKey];
+  const tmp = localStorage.getItem(configKey);
   if (!tmp) {
     return {};
   }
@@ -30,15 +30,21 @@ function loadConfig() {
   return JSON.parse(tmp);
 }
 
-export const configStore : Module<ConfigState, RootState> = {
-  state: {
-    userConfig: loadConfig(),
+export const configStore : Module<ConfigState, any> = {
+  state() {
+    return {
+      userConfig: loadConfig(),
+    };
   },
   mutations: {
     updateConfig(state, payload) {
       const { key, value } = payload;
-      const tmp = _.merge({}, state.userConfig[key], value);
-      Vue.set(state.userConfig, key, tmp);
+      if (_.isPlainObject(value)) {
+        const tmp = _.merge({}, state.userConfig, value);
+        Vue.set(state.userConfig, key, tmp);
+      } else {
+        Vue.set(state.userConfig, key, value);
+      }
 
       saveConfig(state.userConfig);
     },
