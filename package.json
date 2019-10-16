@@ -25,7 +25,6 @@
     "@types/lodash": "^4.14.144",
     "@vue/cli-plugin-babel": "^3.12.0",
     "@vue/cli-plugin-eslint": "^3.12.0",
-    "@vue/cli-plugin-pwa": "^3.11.0",
     "@vue/cli-plugin-typescript": "^3.12.0",
     "@vue/cli-plugin-unit-jest": "^3.12.0",
     "@vue/cli-service": "^3.12.0",

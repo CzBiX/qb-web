@@ -460,7 +460,7 @@ export default Vue.extend({
       .torrent-title {
         text-overflow: ellipsis;
         overflow: hidden;
-        max-width: 36em;
+        max-width: 32em;
       }
     }
   }
