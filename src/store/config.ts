@@ -40,7 +40,7 @@ export const configStore : Module<ConfigState, any> = {
     updateConfig(state, payload) {
       const { key, value } = payload;
       if (_.isPlainObject(value)) {
-        const tmp = _.merge({}, state.userConfig, value);
+        const tmp = _.merge({}, state.userConfig[key], value);
         Vue.set(state.userConfig, key, tmp);
       } else {
         Vue.set(state.userConfig, key, value);

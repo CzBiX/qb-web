@@ -53,19 +53,30 @@ describe('update config', () => {
   });
 
   test('update object', () => {
+    const value1 = {
+      foo1: 'bar1',
+    };
+
     store.commit('updateConfig', {
       key: 'obj',
-      value: {
-        foo: 'bar',
-      },
+      value: value1,
     });
 
-    expect(store.getters.config).toMatchObject({
-      obj: {
-        foo: 'bar',
-      },
+    expect(store.state.config.userConfig).toEqual({
+      obj: value1,
     });
-    expect(spySet).toBeCalled();
+
+    const value2 = {
+      foo2: 'bar2',
+    };
+    store.commit('updateConfig', {
+      key: 'obj',
+      value: value2,
+    });
+
+    expect(store.state.config.userConfig).toEqual({
+      obj: Object.assign({}, value1, value2),
+    });
   });
 
   test('update plain type', () => {
