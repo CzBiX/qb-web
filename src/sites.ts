@@ -4,7 +4,7 @@ function getSiteIcon(name: String) {
 }
 
 export default {
-  'pt.m-team.cc': {
+  'tracker.m-team.cc': {
     name: 'M-Team',
     icon: getSiteIcon('m-team'),
   },
