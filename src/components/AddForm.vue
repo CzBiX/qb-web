@@ -71,7 +71,7 @@
                       hide-no-data
                       :items="categories"
                       :value="params.category"
-                      @input="setParams('category', $event)"
+                      @input="setParams('category', $event.value)"
                     />
                   </v-col>
                   <v-col cols="12" sm="6">
