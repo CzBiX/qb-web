@@ -26,10 +26,10 @@ describe('format size', () => {
 
 describe('format duration', () => {
   test.each([
-    [0, null, '0'],
+    [0, undefined, '0'],
     [3600 * 24, { dayLimit: 1 }, '∞'],
-    [3600 * 24, null, '1d'],
-    [3600 * 26, null, '1d 2h'],
+    [3600 * 24, undefined, '1d'],
+    [3600 * 26, undefined, '1d 2h'],
   ])('case %#', (value, options, result) => {
     expect(formatDuration(value, options)).toEqual(result);
   });
