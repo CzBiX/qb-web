@@ -412,9 +412,19 @@ export default Vue.extend({
     filter() {
       this.selectedRows = [];
     },
-    // loading() {
-    //   debugger;
-    // },
+    torrents(v) {
+      if (!this.hasSelected) {
+        return;
+      }
+
+      const torrentHashs = v.map(_.property('hash'));
+      const toRemove = _.difference(this.selectedHashes, torrentHashs);
+      if (!toRemove) {
+        return;
+      }
+
+      this.selectedRows = this.selectedRows.filter(r => !toRemove.includes(r.hash));
+    },
   },
 });
 </script>
