@@ -98,6 +98,24 @@
                     @change="setParams('skip_checking', $event)"
                   />
                 </v-col>
+                <template v-if="showMore">
+                  <v-col cols="12" sm="6">
+                    <v-checkbox
+                      label="In sequential order"
+                      prepend-icon="mdi-sort-descending"
+                      :ipnut-value="params.sequentialDownload"
+                      @change="setParams('sequentialDownload', $event.value)"
+                    />
+                  </v-col>
+                  <v-col cols="12" sm="6">
+                    <v-checkbox
+                      prepend-icon="mdi-ray-start-end"
+                      label="First and last pieces first"
+                      :input-value="params.firstLastPiecePrio"
+                      @change="setParams('firstLastPiecePrio', $event)"
+                    />
+                  </v-col>
+                </template>
               </v-row>
             </v-container>
           </v-form>
@@ -138,6 +156,8 @@ const defaultParams = {
   paused: false,
   skip_checking: false,
   root_path: false,
+  sequentialDownload: false,
+  firstLastPiecePrio: false,
 };
 
 export default Vue.extend({
