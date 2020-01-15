@@ -1,5 +1,10 @@
 <template>
   <div class="torrent-info">
+    <div class="progress">
+      <span>Progress:</span>
+      <canvas ref="canvas" class="progress-inner" />
+      <span>{{ torrent.progress | progress }}</span>
+    </div>
     <fieldset>
       <legend>Transfer</legend>
       <v-container v-if="properties" class="pa-1">
@@ -38,6 +43,8 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
+
 import Vue from 'vue';
 import api from '../../Api';
 import Taskable from '@/mixins/taskable';
@@ -92,6 +99,14 @@ interface Data {
   properties?: Properties;
   transfer: Array<Item>;
   information: Array<Item>;
+  pieces: Array<PieceState>;
+  canvas: CanvasRenderingContext2D | null;
+}
+
+enum PieceState {
+  Empty,
+  Downloading,
+  Downloaded,
 }
 
 export default Vue.extend({
@@ -133,29 +148,74 @@ export default Vue.extend({
         { label: 'Save path', value: prop => prop.save_path },
         { label: 'Comment', value: prop => prop.comment },
       ],
+      pieces: [],
+      canvas: null,
     };
   },
   methods: {
-    async getProperties() {
+    async getData() {
       this.properties = await api.getTorrentProperties(this.torrent.hash);
+      this.pieces = await api.getTorrentPieceStates(this.torrent.hash);
       if (!this.isActive || this.destroy) {
         return;
       }
 
-      this.task = setTimeout(this.getProperties, 5000);
+      this.task = setTimeout(this.getData, 5000);
+    },
+    initCanvas(el: HTMLCanvasElement) {
+      const { clientWidth, clientHeight } = el;
+      /* eslint-disable no-param-reassign */
+      el.width = clientWidth;
+      el.height = clientHeight;
+      /* eslint-enable no-param-reassign */
+
+      const ctx = el.getContext('2d')!;
+      return ctx;
     },
   },
-  async created() {
+  async mounted() {
     if (this.isActive) {
-      await this.getProperties();
+      await this.getData();
     }
   },
   watch: {
     async isActive(v) {
       if (v) {
-        await this.getProperties();
+        await this.getData();
       } else {
         this.cancelTask();
+      }
+    },
+    pieces(v) {
+      let ctx;
+      if (this.canvas) {
+        ctx = this.canvas!;
+      } else {
+        ctx = this.initCanvas(this.$refs.canvas as HTMLCanvasElement);
+        this.canvas = ctx;
+      }
+
+      const { clientHeight, clientWidth } = ctx.canvas;
+      const partNum = clientWidth;
+      ctx.clearRect(0, 0, clientWidth, clientHeight);
+
+      const offset = clientWidth / partNum;
+      const chunkSize = v.length / partNum;
+
+      const chunks = _.chunk(v, chunkSize);
+      for (let i = 0; i < partNum; i++) {
+        const states = _.uniq(chunks[i]);
+        let color;
+        if (states.includes(PieceState.Downloading)) {
+          color = 'green';
+        } else if (states.includes(PieceState.Empty)) {
+          continue;
+        } else {
+          color = 'blue';
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(i * offset, 0, offset, clientHeight);
       }
     },
   },
@@ -176,6 +236,19 @@ export default Vue.extend({
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+  }
+
+  .progress {
+    margin: 0.5em;
+    display: flex;
+
+    .progress-inner {
+      margin: 0 1em;
+      align-self: center;
+      height: 16px;
+      flex-grow: 1;
+      border: 1px inset;
+    }
   }
 }
 </style>

@@ -159,6 +159,16 @@ class Api {
     }).then(Api.handleResponse);
   }
 
+  public getTorrentPieceStates(hash: string) {
+    const params = {
+      hash,
+    };
+
+    return this.axios.get('/torrents/pieceStates', {
+      params,
+    }).then(Api.handleResponse);
+  }
+
   public getTorrentFiles(hash: string) {
     const params = {
       hash,
