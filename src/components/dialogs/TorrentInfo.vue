@@ -133,7 +133,7 @@ export default Vue.extend({
         { label: 'UP speed', value: prop => `${formatSize(prop.up_speed)}/s` },
         { label: 'Peers', value: prop => `${prop.peers} (${prop.peers_total} total)` },
         { label: 'Wasted', value: prop => formatSize(prop.total_wasted) },
-        { label: 'Share ratio', value: prop => toPrecision(prop.share_ratio, 2) },
+        { label: 'Share ratio', value: prop => toPrecision(prop.share_ratio, 3) },
         { label: 'Reannounce', value: prop => formatDuration(prop.reannounce) },
         { label: 'Last seen', value: prop => formatTimestamp(prop.last_seen) },
       ],
@@ -196,7 +196,7 @@ export default Vue.extend({
       }
 
       const { clientHeight, clientWidth } = ctx.canvas;
-      const partNum = clientWidth;
+      const partNum = clientWidth / 2;
       ctx.clearRect(0, 0, clientWidth, clientHeight);
 
       const offset = clientWidth / partNum;
@@ -204,14 +204,17 @@ export default Vue.extend({
 
       const chunks = _.chunk(v, chunkSize);
       for (let i = 0; i < partNum; i++) {
-        const states = _.uniq(chunks[i]);
+        const states = _.countBy(chunks[i]);
+        const downloading = states[PieceState.Downloading];
+        const empty = states[PieceState.Empty];
+        const downloaded = states[PieceState.Downloaded];
         let color;
-        if (states.includes(PieceState.Downloading)) {
+        if (downloading) {
           color = 'green';
-        } else if (states.includes(PieceState.Empty)) {
-          continue;
-        } else {
+        } else if (downloaded >= empty) {
           color = 'blue';
+        } else {
+          continue;
         }
 
         ctx.fillStyle = color;
