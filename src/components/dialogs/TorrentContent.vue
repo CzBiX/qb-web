@@ -11,6 +11,9 @@
         <span>
           [{{ getTotalSize(row.item) | size }}]
         </span>
+        <span class="progress">
+          {{ getTotalProgress(row.item) | progress }}
+        </span>
       </template>
     </v-treeview>
   </div>
@@ -91,6 +94,24 @@ export default Vue.extend({
 
       return size;
     },
+    getTotalProgress(item: TreeItem) {
+      if (item.item) {
+        return item.item.progress;
+      }
+
+      let count = 0;
+      let progress = 0;
+      for (const child of item.children!) {
+        count++;
+        progress += this.getTotalProgress(child);
+      }
+
+      if (count === 0) {
+        return 1;
+      }
+
+      return progress / count;
+    },
     getFileFolder(item: File, start: number) {
       const { name } = item;
       const index = name.indexOf('/', start);
@@ -151,5 +172,10 @@ export default Vue.extend({
   ::v-deep .v-treeview-node__root {
     min-height: 0;
   }
+}
+
+.progress {
+  display: inline-block;
+  width: 3em;
 }
 </style>
