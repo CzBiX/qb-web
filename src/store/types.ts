@@ -10,3 +10,35 @@ export interface RootState {
 export interface ConfigState {
   userConfig: any;
 }
+
+export enum DialogType {
+  Alert,
+  YesNo,
+  OkCancel,
+  Custom,
+}
+
+export interface DialogConfig {
+  content: {
+    title?: String,
+    text: String,
+    callback?: CallableFunction,
+    type?: DialogType,
+    buttons?: any,
+  },
+  width?: string,
+}
+
+export interface DialogState {
+  config: DialogConfig | null,
+}
+
+export interface SnackBarConfig {
+  text: string,
+  btnText?: string,
+  callback?: CallableFunction,
+}
+
+export interface SnackBarState {
+  config: SnackBarConfig | null,
+}

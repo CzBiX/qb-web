@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import vuetify from './plugins/vuetify';
+import './plugins/composition-api';
 import store from './store';
 // import router from './router';
 import './filters';

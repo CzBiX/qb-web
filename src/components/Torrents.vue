@@ -167,6 +167,7 @@ import api from '../Api';
 import { formatSize, formatDuration } from '../filters';
 import { torrentIsState } from '../utils';
 import { StateType } from '../consts';
+import { DialogType } from '../store/types';
 
 function getStateInfo(state: string) {
   let icon;
@@ -365,6 +366,8 @@ export default Vue.extend({
   methods: {
     ...mapMutations([
       'updateConfig',
+      'showDialog',
+      'showSnackBar',
     ]),
     confirmDelete() {
       this.toDelete = this.selectedRows;
@@ -382,10 +385,43 @@ export default Vue.extend({
       if (!this.hasSelected) {
         this.selectedRows = this.allTorrents;
       }
+      const v = await new Promise((resolve) => {
+        this.showDialog({
+          content: {
+            title: 'Reannounce Torrents',
+            text: 'Are you sure want to reannounce torrents?',
+            type: DialogType.OkCancel,
+            callback: resolve,
+          },
+        });
+      });
+
+      if (!v) {
+        return;
+      }
+
       await api.reannounceTorrents(this.selectedHashes);
+
+      this.showSnackBar('Reannounced');
     },
     async recheckTorrents() {
+      const v = await new Promise((resolve) => {
+        this.showDialog({
+          content: {
+            title: 'Recheck Torrents',
+            text: 'Are you sure want to recheck torrents?',
+            type: DialogType.OkCancel,
+            callback: resolve,
+          },
+        });
+      });
+
+      if (!v) {
+        return;
+      }
       await api.recheckTorrents(this.selectedHashes);
+
+      this.showSnackBar('Rechecking');
     },
     setTorrentsCategory(category: string) {
       this.categoryToSet = category;

@@ -47,6 +47,9 @@
     >
       <app-footer />
     </v-footer>
+
+    <GlobalDialog />
+    <GlobalSnackBar />
   </v-app>
 </template>
 
@@ -56,6 +59,9 @@ import {
   mapActions, mapGetters, mapState, mapMutations,
 } from 'vuex';
 import Axios, { AxiosError } from 'axios';
+import GlobalDialog from './components/GlobalDialog.vue';
+import GlobalSnackBar from './components/GlobalSnackBar.vue';
+
 import AddForm from './components/AddForm.vue';
 import Drawer from './components/Drawer.vue';
 import LoginForm from './components/LoginForm.vue';
@@ -63,6 +69,7 @@ import MainToolbar from './components/MainToolbar.vue';
 import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/dialogs/LogsDialog.vue';
+
 import api from './Api';
 import { sleep } from './utils';
 
@@ -78,6 +85,8 @@ export default Vue.extend({
     AppFooter,
     LogsDialog,
     MainToolbar,
+    GlobalDialog,
+    GlobalSnackBar,
   },
   data() {
     return {

@@ -1,16 +1,22 @@
+import _ from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import _ from 'lodash';
+import { computed, Ref } from '@vue/composition-api';
+
 import { configStore } from './config';
+import { dialogStore } from './dialog';
+import { snackBarStore } from './snackBar';
 import { AllStateTypes } from '../consts';
 import { torrentIsState } from '../utils';
 import { RootState } from './types';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store<RootState>({
+const store = new Vuex.Store<RootState>({
   modules: {
     config: configStore,
+    dialog: dialogStore,
+    snackBar: snackBarStore,
   },
   state: {
     rid: 0,
@@ -109,3 +115,32 @@ export default new Vuex.Store<RootState>({
     },
   },
 });
+
+export default store;
+
+export function useStore() {
+  return store;
+}
+
+export function useMutations(mutations: [string], namespace?: string) {
+  const result: {[key: string]: () => any} = {};
+
+  mutations.forEach((m) => {
+    const method = namespace ? `${namespace}/${m}` : m;
+    result[m] = (..._args) => store.commit(method, ..._args);
+  });
+
+  return result;
+}
+
+export function useState(states: [string], namespace?: string) {
+  const state = namespace ? (store.state as any)[namespace] : store.state;
+
+  const result: {[key: string]: Readonly<Ref<Readonly<any>>>} = {};
+
+  states.forEach((s) => {
+    result[s] = computed(() => state[s]);
+  });
+
+  return result;
+}

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "^3.6.95",
+    "@vue/composition-api": "^0.5.0",
     "axios": "^0.19.1",
     "core-js": "^3.6.3",
     "dayjs": "^1.8.19",
