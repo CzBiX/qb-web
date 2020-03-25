@@ -10,31 +10,31 @@
         height="40px"
         class="elevation-2"
       >
-        <v-btn icon @click="confirmDelete" title="Delete" :disabled="!hasSelected">
+        <v-btn icon @click="confirmDelete" :title="$t('delete')" :disabled="!hasSelected">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
         <v-divider vertical inset />
-        <v-btn icon @click="resumeTorrents" title="Resume" :disabled="!hasSelected">
+        <v-btn icon @click="resumeTorrents" :title="$t('resume')" :disabled="!hasSelected">
           <v-icon>mdi-play</v-icon>
         </v-btn>
-        <v-btn icon @click="pauseTorrents" title="Pause" :disabled="!hasSelected">
+        <v-btn icon @click="pauseTorrents" :title="$t('pause')" :disabled="!hasSelected">
           <v-icon>mdi-pause</v-icon>
         </v-btn>
         <v-divider vertical inset />
-        <v-btn icon @click="showInfo()" title="Info"
+        <v-btn icon @click="showInfo()" :title="$t('info')"
           :disabled="!hasSelected || selectedRows.length > 5"
         >
           <v-icon>mdi-alert-circle</v-icon>
         </v-btn>
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" title="Category" :disabled="!hasSelected">
+            <v-btn icon v-on="on" :title="$t('category')" :disabled="!hasSelected">
               <v-icon>mdi-folder</v-icon>
             </v-btn>
           </template>
           <v-list class="category-actions">
             <v-subheader @click.stop="">
-              Set category
+              {{ $t('title.set_category') }}
             </v-subheader>
             <v-list-item
               v-for="(item, i) in allCategories"
@@ -57,7 +57,7 @@
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
-                  Reset
+                  {{ $t('reset') }}
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -65,13 +65,13 @@
         </v-menu>
         <template v-if="!$vuetify.breakpoint.xsOnly">
           <v-divider vertical inset />
-          <v-btn icon @click="reannounceTorrents" title="Reannounce">
+          <v-btn icon @click="reannounceTorrents" :title="$t('reannounce')">
             <v-icon>mdi-bullhorn</v-icon>
           </v-btn>
-          <v-btn icon @click="editTracker" title="Edit tracker">
+          <v-btn icon @click="editTracker" :title="$t('title.edit_tracker')">
             <v-icon>mdi-server</v-icon>
           </v-btn>
-          <v-btn icon @click="recheckTorrents" title="Recheck" :disabled="selectedRows.length == 0">
+          <v-btn icon @click="recheckTorrents" :title="$t('recheck')" :disabled="selectedRows.length == 0">
             <v-icon>mdi-backup-restore</v-icon>
           </v-btn>
         </template>
@@ -159,6 +159,8 @@
 import Vue from 'vue';
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import _ from 'lodash';
+
+import { tr } from '@/locale';
 import ConfirmDeleteDialog from './dialogs/ConfirmDeleteDialog.vue';
 import ConfirmSetCategoryDialog from './dialogs/ConfirmSetCategoryDialog.vue';
 import EditTrackerDialog from './dialogs/EditTrackerDialog.vue';
@@ -256,17 +258,17 @@ export default Vue.extend({
 
   data() {
     const headers = [
-      { text: 'Name', value: 'name' },
-      { text: 'Size', value: 'size' },
-      { text: 'Progress', value: 'progress' },
-      { text: 'Status', value: 'state' },
-      { text: 'Seeds', value: 'num_complete' },
-      { text: 'Peers', value: 'num_incomplete' },
-      { text: 'DL Speed', value: 'dlspeed' },
-      { text: 'UP Speed', value: 'upspeed' },
-      { text: 'ETA', value: 'eta' },
-      { text: 'Ratio', value: 'ratio' },
-      { text: 'Added', value: 'added_on' },
+      { text: tr('name'), value: 'name' },
+      { text: tr('size'), value: 'size' },
+      { text: tr('progress'), value: 'progress' },
+      { text: tr('status'), value: 'state' },
+      { text: tr('seeds'), value: 'num_complete' },
+      { text: tr('peers'), value: 'num_incomplete' },
+      { text: tr('dl_speed'), value: 'dlspeed' },
+      { text: tr('up_speed'), value: 'upspeed' },
+      { text: tr('eta'), value: 'eta' },
+      { text: tr('ratio'), value: 'ratio' },
+      { text: tr('added_on'), value: 'added_on' },
     ];
 
     const footerProps = {
@@ -274,6 +276,7 @@ export default Vue.extend({
     };
 
     return {
+      tr,
       headers,
       selectedRows: [],
       toDelete: [],

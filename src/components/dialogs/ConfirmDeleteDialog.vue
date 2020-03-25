@@ -5,10 +5,10 @@
         class="headline grey lighten-4"
       >
         <v-icon class="mr-2">mdi-delete</v-icon>
-        <span>Delete torrents</span>
+        <span>{{ $t('title.delete_torrents') }}</span>
       </v-card-title>
       <v-card-text class="pb-0">
-         Are you sure to delete selected torrents from transfer list?
+        {{ $t('dialog.delete_torrents.msg') }}
         <ol class="torrents pt-6">
           <li v-for="(row, i) in torrents" :key="i">
             {{ row.name }}
@@ -18,26 +18,26 @@
         <v-checkbox
           v-model="deleteFiles"
           prepend-icon="mdi-file-cancel"
-          label="Also delete files"
+          :label="$t('label.also_delete_files')"
         />
         <v-checkbox
           v-if="sameNamedTorrents.length > 0"
           v-model="deleteSameNamed"
           prepend-icon="mdi-file-multiple"
           class="mt-0"
-          :label="`Also delete ${sameNamedTorrents.length} same named torrents`"
+          :label="$t('dialog.delete_torrents', sameNamedTorrents.length)"
         />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="closeDialog">Cancel</v-btn>
+        <v-btn text @click="closeDialog">{{ $t('cancel') }}</v-btn>
         <v-btn
           @click="submit"
           color="warning"
           :disabled="submitting"
           :loading="submitting"
         >
-          Delete
+          {{ $t('delete') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -48,6 +48,8 @@
 import _ from 'lodash';
 import Vue, { PropType } from 'vue';
 import { mapGetters } from 'vuex';
+
+import { tr } from '@/locale';
 import api from '@/Api';
 import { findSameNamedTorrents } from '@/utils';
 import { Torrent } from '../../types';
@@ -58,6 +60,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      tr,
       deleteFiles: false,
       deleteSameNamed: false,
       submitting: false,

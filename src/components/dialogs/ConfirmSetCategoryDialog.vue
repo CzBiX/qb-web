@@ -5,14 +5,14 @@
         class="headline grey lighten-4"
       >
         <v-icon class="mr-2">mdi-folder</v-icon>
-        <span>Set category</span>
+        <span>{{ $t('title.set_category') }}</span>
       </v-card-title>
       <v-card-text class="pb-0">
         <template v-if="category">
-         Are you sure to move selected torrents to category {{ category }}?
+          {{ $t('dialog.set_category.move', { category }) }}
         </template>
         <template v-else>
-         Are you sure to reset category of selected torrents?
+          {{ $t('dialog.set_category.reset') }}
         </template>
         <ol class="torrents pt-6">
           <li v-for="(row, i) in torrents" :key="i">
@@ -25,19 +25,19 @@
           v-model="moveSameNamed"
           prepend-icon="mdi-file-multiple"
           class="mt-0"
-          :label="`Also move ${sameNamedTorrents.length} same named torrents`"
+          :label="$t('dialog.set_category.also.move_same_name_torrents', sameNamedTorrents.length)"
         />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="closeDialog">Cancel</v-btn>
+        <v-btn text @click="closeDialog">{{ $t('cancel') }}</v-btn>
         <v-btn
           @click="submit"
           color="warning"
           :disabled="submitting"
           :loading="submitting"
         >
-          Submit
+          {{ $t('submit') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -48,6 +48,8 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
+
+import { tr } from '@/locale';
 import api from '@/Api';
 import { findSameNamedTorrents } from '@/utils';
 

@@ -5,23 +5,9 @@
     class="drawer"
   >
     <template v-for="item in items">
-      <v-row
-        v-if="item.heading"
-        :key="item.heading"
-        align="center"
-      >
-        <v-col cols="6">
-          <v-subheader v-if="item.heading">
-            {{ item.heading }}
-          </v-subheader>
-        </v-col>
-        <v-col cols="6" class="text-center">
-          <a href="#!" class="body-2 black--text">EDIT</a>
-        </v-col>
-      </v-row>
       <v-list-group
-        v-else-if="item.children"
-        :key="item.text"
+        v-if="item.children"
+        :key="item.title"
         v-model="item.model"
         :prepend-icon="item.model ? item.icon : item['icon-alt']"
         append-icon=""
@@ -29,7 +15,7 @@
         <template v-slot:activator>
           <v-list-item-content>
             <v-list-item-title>
-              {{ item.text }}
+              {{ item.title }}
             </v-list-item-title>
           </v-list-item-content>
         </template>
@@ -43,7 +29,7 @@
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>
-              {{ child.text }}
+              {{ child.title }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -55,13 +41,13 @@
           :group="child"
         />
       </template>
-      <v-list-item v-else :key="item.text" @click="item.click ? item.click() : null">
+      <v-list-item v-else :key="item.title" @click="item.click ? item.click() : null">
         <v-list-item-icon>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            {{ item.text }}
+            {{ item.title }}
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
@@ -73,6 +59,9 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { mapState, mapMutations, mapGetters } from 'vuex';
+
+import { tr } from '@/locale';
+import { Torrent } from '@/types';
 import FilterGroup from './drawer/FilterGroup.vue';
 import api from '../Api';
 import { formatSize } from '../filters';
@@ -80,46 +69,67 @@ import { SiteMap, StateType, AllStateTypes } from '../consts';
 
 const stateList = [
   {
-    title: 'Downloading',
+    title: tr('state.downloading'),
     state: StateType.Downloading,
     icon: 'download',
   },
   {
-    title: 'Seeding',
+    title: tr('state.seeding'),
     state: StateType.Seeding,
     icon: 'upload',
   },
   {
-    title: 'Completed',
+    title: tr('state.completed'),
     state: StateType.Completed,
     icon: 'check',
   },
   {
-    title: 'Resumed',
+    title: tr('state.resumed'),
     state: StateType.Resumed,
     icon: 'play',
   },
   {
-    title: 'Paused',
+    title: tr('state.paused'),
     state: StateType.Paused,
     icon: 'pause',
   },
   {
-    title: 'Active',
+    title: tr('state.active'),
     state: StateType.Active,
     icon: 'filter',
   },
   {
-    title: 'Inactive',
+    title: tr('state.inactive'),
     state: StateType.Inactive,
     icon: 'filter-outline',
   },
   {
-    title: 'Errored',
+    title: tr('state.errored'),
     state: StateType.Errored,
     icon: 'alert',
   },
 ];
+
+interface MenuItem {
+  icon: string,
+  'icon-alt'?: string,
+  title: string,
+  model?: boolean,
+  select?: string,
+  click?: () => void,
+  children?: MenuChildrenItem[],
+}
+
+interface MenuChildrenItem extends MenuItem {
+  key: string | null,
+  append?: string,
+}
+
+interface Data {
+  tr: any,
+  basicItems: MenuItem[],
+  endItems: MenuItem[],
+}
 
 export default {
   components: {
@@ -130,21 +140,20 @@ export default {
     value: Object,
   },
 
-  data() {
-    return {
-      basicItems: null,
-      endItems: null,
-    };
-  },
+  data(): Data {
+    const basicItems = [
+      { icon: 'mdi-settings', title: tr('settings'), click: () => alert(tr('todo')) },
+    ];
+    const endItems = [
+      { icon: 'mdi-delta', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
+      { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
+    ];
 
-  created() {
-    this.basicItems = [
-      { icon: 'mdi-settings', text: 'Settings', click: () => alert('TODO') },
-    ];
-    this.endItems = [
-      { icon: 'mdi-delta', text: 'Logs', click: () => this.updateOptions('showLogs', true) },
-      { icon: 'mdi-history', text: 'Switch to old UI', click: this.switchUi },
-    ];
+    return {
+      tr,
+      basicItems,
+      endItems,
+    };
   },
 
   computed: {
@@ -161,7 +170,7 @@ export default {
         return _.concat(this.basicItems, this.endItems);
       }
 
-      const filterGroups = [];
+      const filterGroups: MenuItem[] = [];
       const totalSize = formatSize(_.sumBy(this.allTorrents, 'size'));
 
       const states = stateList.map((item) => {
@@ -179,12 +188,12 @@ export default {
       filterGroups.push({
         icon: 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
-        title: 'State',
+        title: tr('state._'),
         model: false,
         select: 'state',
         children: [
           {
-            icon: 'mdi-filter-remove', title: `All (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+            icon: 'mdi-filter-remove', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
           },
           ...states,
         ],
@@ -192,7 +201,7 @@ export default {
 
       const categories: any[] = [{
         key: '',
-        name: 'Uncategorized',
+        name: tr('uncategorized'),
       }].concat(this.allCategories).map((category) => {
         let value = this.torrentGroupByCategory[category.key];
         if (_.isUndefined(value)) {
@@ -208,12 +217,12 @@ export default {
       filterGroups.push({
         icon: 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
-        title: 'Categories',
+        title: tr('category', 0),
         model: !this.$vuetify.breakpoint.xsOnly,
         select: 'category',
         children: [
           {
-            icon: 'mdi-folder-open', title: `All (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+            icon: 'mdi-folder-open', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
           },
           ...categories,
         ],
@@ -222,7 +231,7 @@ export default {
       const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
         const size = formatSize(_.sumBy(value, 'size'));
         const site = (SiteMap as any)[key];
-        const title = `${site ? site.name : (key || 'Others')} (${value.length})`;
+        const title = `${site ? site.name : (key || tr('others'))} (${value.length})`;
         const icon = _.defaultTo(site ? site.icon : null, 'mdi-server');
         const append = `[${size}]`;
         return {
@@ -232,18 +241,18 @@ export default {
       filterGroups.push({
         icon: 'mdi-menu-up',
         'icon-alt': 'mdi-menu-down',
-        title: 'Sites',
+        title: tr('sites'),
         model: false,
         select: 'site',
         children: [
           {
-            icon: 'mdi-server', title: `All (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+            icon: 'mdi-server', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
           },
           ...sites,
         ],
       });
 
-      return _.concat(this.basicItems, [{ filterGroups }], this.endItems);
+      return _.concat(this.basicItems, [{filterGroups}] as any, this.endItems);
     },
   },
 

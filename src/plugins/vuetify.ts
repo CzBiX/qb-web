@@ -1,14 +1,19 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
-// import zhHans from 'vuetify/src/locale/zh-Hans';
+import i18n from '@/locale';
 
 Vue.use(Vuetify);
 
+let locale = i18n.locale();
+locale = locale === 'zh-CN' ? 'zh-Hans' : locale.split('-', 1)[0];
+
+const { default: translation } = require('vuetify/src/locale/' + locale);
+
 export default new Vuetify({
-  // lang: {
-  //   locales: { zhHans },
-  //   current: 'zh-Hans',
-  // },
+  lang: {
+    locales: { [locale]: translation },
+    current: locale,
+  },
   icons: {
     iconfont: 'mdi',
   },

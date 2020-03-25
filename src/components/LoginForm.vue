@@ -2,7 +2,7 @@
   <v-dialog v-model="value" persistent width="25em">
     <v-card>
       <v-toolbar dark color="primary">
-        <v-toolbar-title>Login</v-toolbar-title>
+        <v-toolbar-title>{{ $t('login') }}</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
         <v-form
@@ -15,8 +15,8 @@
             <v-text-field
               v-model="params.username"
               prepend-icon="mdi-account"
-              label="Username"
-              :rules="[v => !!v || 'Username is required']"
+              :label="$t('username')"
+              :rules="[v => !!v || $t('msg.item_is_required', { item: $t('username') })]"
               autofocus
               required
             />
@@ -25,9 +25,9 @@
               prepend-icon="mdi-lock"
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
               @click:append="showPassword = !showPassword"
-              label="Password"
+              :label="$t('password')"
               :type="showPassword ? 'text' : 'password'"
-              :rules="[v => !!v || 'Password is required']"
+              :rules="[v => !!v || $t('msg.item_is_required', { item: $t('password') })]"
               required
             />
           </div>
@@ -46,7 +46,7 @@
           :disabled="!valid || submitting"
           :loading="submitting"
         >
-          Submit
+          {{ $t('submit') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -55,6 +55,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
+
+import { tr } from '@/locale';
 import api from '../Api';
 
 export default Vue.extend({
@@ -63,6 +65,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      tr,
       valid: false,
       submitting: false,
       showPassword: false,

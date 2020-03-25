@@ -23,7 +23,7 @@
           class="headline grey lighten-4"
         >
           <v-icon class="mr-2">mdi-link-plus</v-icon>
-          <span>Add Torrents</span>
+          <span>{{ $t('title.add_torrents') }}</span>
         </v-card-title>
         <v-card-text class="pb-0">
           <v-form
@@ -42,16 +42,16 @@
                     multiple
                     chips
                     outlined
-                    label="Files"
+                    :label="$t('files')"
                   />
                   <v-textarea
                     v-show="!files.length"
-                    label="URLs"
-                    hint="One link per line"
-                    :placeholder="placeholder"
+                    label="URL"
+                    :hint="$t('dialog.add_torrents.hint')"
+                    :placeholder="$t('dialog.add_torrents.placeholder')"
                     prepend-icon="mdi-link"
                     append-outer-icon="mdi-attachment"
-                    :rules="[v => (!!files.length || !!v || 'URLs is required')]"
+                    :rules="[v => (!!files.length || !!v || $t('msg.item_is_required', { item: 'URL' }))]"
                     :rows="$vuetify.breakpoint.xsOnly ? 1 : 3"
                     required
                     :autofocus="!phoneLayout"
@@ -65,7 +65,7 @@
                 <template v-if="showMore">
                   <v-col cols="12" sm="6">
                     <v-combobox
-                      label="Category"
+                      :label="$t('category', 1)"
                       prepend-icon="mdi-folder"
                       clearable
                       hide-no-data
@@ -77,7 +77,7 @@
                   <v-col cols="12" sm="6">
                     <v-checkbox
                       prepend-icon="mdi-file-tree"
-                      label="Create subfolder"
+                      :label="$t('label.create_subfolder')"
                       :input-value="true"
                       @change="setParams('root_path', $event)"
                     />
@@ -86,14 +86,14 @@
                 <v-col cols="12" sm="6">
                   <v-checkbox
                     v-model="autoStart"
-                    label="Start torrent"
+                    :label="$t('label.start_torrent')"
                     prepend-icon="mdi-play-pause"
                   />
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-checkbox
                     prepend-icon="mdi-progress-check"
-                    label="Skip hash check"
+                    :label="$t('label.skip_hash_check')"
                     :input-value="params.skip_checking"
                     @change="setParams('skip_checking', $event)"
                   />
@@ -101,7 +101,7 @@
                 <template v-if="showMore">
                   <v-col cols="12" sm="6">
                     <v-checkbox
-                      label="In sequential order"
+                      :label="$t('label.in_sequential_order')"
                       prepend-icon="mdi-sort-descending"
                       :ipnut-value="params.sequentialDownload"
                       @change="setParams('sequentialDownload', $event.value)"
@@ -110,7 +110,7 @@
                   <v-col cols="12" sm="6">
                     <v-checkbox
                       prepend-icon="mdi-ray-start-end"
-                      label="First and last pieces first"
+                      :label="$t('label.first_and_last_pieces_first')"
                       :input-value="params.firstLastPiecePrio"
                       @change="setParams('firstLastPiecePrio', $event)"
                     />
@@ -126,9 +126,9 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn text @click="showMore = !showMore" v-text="showMore ? 'Less' : 'More'" />
+          <v-btn text @click="showMore = !showMore" v-text="showMore ? $t('less') : $t('more')" />
           <v-spacer />
-          <v-btn text @click="dialog = false">Cancel</v-btn>
+          <v-btn text @click="dialog = false">{{ $t('cancel') }}</v-btn>
           <v-btn
             text
             @click="submit"
@@ -136,7 +136,7 @@
             :disabled="!valid"
             :loading="submitting"
           >
-            Submit
+            {{ $t('submit') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -148,6 +148,8 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { mapState } from 'vuex';
+
+import { tr } from '@/locale';
 import api from '../Api';
 
 const defaultParams = {
@@ -160,10 +162,21 @@ const defaultParams = {
   firstLastPiecePrio: false,
 };
 
-export default Vue.extend({
-  data() {
+interface Data {
+  tr: any,
+  dialog: boolean,
+  valid: boolean,
+  files: any[],
+  userParams: any,
+  error: string | null,
+  submitting: boolean,
+  showMore: boolean,
+}
+
+export default {
+  data(): Data {
     return {
-      placeholder: 'Upload torrents by drop them here,\nor click attachment button at right to select.',
+      tr,
       dialog: false,
       valid: false,
       files: [],
@@ -180,7 +193,7 @@ export default Vue.extend({
     }),
     ...mapState({
       categories(state, getters) {
-        return getters.allCategories.map(c => ({ text: c.name, value: c.key }));
+        return getters.allCategories.map((c: any) => ({ text: c.name, value: c.key }));
       },
     }),
     params() {
@@ -289,7 +302,7 @@ export default Vue.extend({
       this.$refs.form.validate();
     },
   },
-});
+};
 </script>
 
 <style lang="scss" scoped>

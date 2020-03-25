@@ -11,13 +11,15 @@
       color="info"
       @click="clickBtn"
     >
-      {{ config.btnText ? config.btnText : 'Close' }}
+      {{ config.btnText ? config.btnText : $t('close') }}
     </v-btn>
   </v-snackbar>
 </template>
 
 <script>
 import { useMutations, useState } from '@/store';
+
+import { tr } from '@/locale';
 import { timeout } from '@/utils';
 
 export default {
@@ -45,6 +47,7 @@ export default {
     }
 
     return {
+      tr,
       config,
       changed,
       clickBtn,
