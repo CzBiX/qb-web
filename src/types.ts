@@ -85,3 +85,44 @@ export interface MainData {
     server_state: ServerState;
     torrents: Record<string, BaseTorrent>;
 }
+
+export interface RssTorrent {
+  category?: string
+  comment?: string
+  date?: string
+  description?: string
+  id: string
+  link: string
+  title: string
+  torrentURL: string
+}
+
+export interface RssItem {
+  articles: RssTorrent[]
+  hasError: boolean
+  isLoading: boolean
+  lastBuildDate: string
+  title: string
+  uid: string
+  url: string
+}
+
+export interface RssNode {
+  [key: string]: RssNode | RssItem
+}
+
+export interface RssRule {
+  enabled: boolean,
+  mustContain: string,
+  mustNotContain: string,
+  useRegex: boolean,
+  episodeFilter: string,
+  smartFiolter: boolean,
+  previouslyMatchedEpisodes: string[],
+  affectedFeeds: string[],
+  ignoreDays: number,
+  lastMatch: string,
+  addPaused: boolean,
+  assignedCategory: string,
+  savepath: string,
+}

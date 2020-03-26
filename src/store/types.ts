@@ -15,6 +15,7 @@ export enum DialogType {
   Alert,
   YesNo,
   OkCancel,
+  Input,
   Custom,
 }
 
@@ -25,6 +26,9 @@ export interface DialogConfig {
     callback?: CallableFunction,
     type?: DialogType,
     buttons?: any,
+
+    rules?: CallableFunction[],
+    placeholder?: string,
   },
   width?: string,
 }

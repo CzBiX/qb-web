@@ -46,8 +46,11 @@ export default {
   files: 'Files',
   less: 'Less',
   more: 'More',
+  feed: 'Feed',
+  date: 'Date',
 
   title: {
+    _: 'Title',
     add_torrents: 'Add Torrents',
     delete_torrents: 'Delete Torrents',
     set_category: 'Set category',
@@ -63,6 +66,10 @@ export default {
     first_and_last_pieces_first: 'First and last pieces first',
 
     also_delete_files: 'Also delete files',
+
+    adding: 'Adding…',
+    reloading: 'Reloading…',
+    deleting: 'Deleting…',
   },
 
   msg: {
@@ -85,7 +92,14 @@ export default {
     },
     switch_locale: {
       msg: 'Are you sure to switch language to %{lang}?\nThis action will reload page.',
-      reloading: 'Reloading…',
+    },
+    rss: {
+      add_feed: 'Add Feed',
+      feed_url: 'Feed URL',
+      auto_refresh: 'Auto Refresh',
+      auto_download: 'Auto Download',
+      delete_feeds: 'Are you sure to delete selected feeds?',
+      date_format: '%{date} (%{duration} ago)',
     },
   },
 

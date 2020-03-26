@@ -1,4 +1,5 @@
 import Axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import { RssNode } from '@/types';
 
 
 class Api {
@@ -71,6 +72,10 @@ class Api {
       alternative_webui_enabled: false,
     };
 
+    return this.setPreferences(params)
+  }
+
+  public setPreferences(params: any) {
     const data = new URLSearchParams({
       json: JSON.stringify(params),
     });
@@ -177,6 +182,35 @@ class Api {
     return this.axios.get('/torrents/files', {
       params,
     }).then(Api.handleResponse);
+  }
+
+  public getRssItems(): Promise<RssNode> {
+    const params = {
+      withData: true,
+    }
+
+    return this.axios.get('/rss/items', {
+      params,
+    }).then(Api.handleResponse);
+  }
+
+  public addRssFeed(url: string, path: string = '') {
+    const params: any = {
+      url,
+      path,
+    }
+
+    const data = new URLSearchParams(params)
+    return this.axios.post('/rss/addFeed', data).then(Api.handleResponse);
+  }
+
+  public removeRssFeed(path: string) {
+    const params: any = {
+      path,
+    }
+
+    const data = new URLSearchParams(params)
+    return this.axios.post('/rss/removeItem', data).then(Api.handleResponse);
   }
 
   private actionTorrents(action: string, hashes: string[], extra?: any) {

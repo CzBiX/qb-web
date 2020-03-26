@@ -83,7 +83,7 @@ export default Vue.extend({
         value: locale,
       });
 
-      this.showSnackBar(tr('dialog.switch_locale.reloading'))
+      this.showSnackBar(tr('label.reloading'))
 
       location.reload();
     },

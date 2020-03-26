@@ -5,7 +5,19 @@
   >
     <v-card v-if="!!config">
       <v-card-title v-text="content.title" />
-      <v-card-text class="content" v-text="content.text" />
+      <v-card-text class="content">
+        <v-text-field
+          v-if="isInput"
+          v-model="input"
+          :label="content.text"
+          :rules="content.rules"
+          :placeholder="content.placeholder"
+          :hide-details="!content.rules"
+        />
+        <template v-else>
+          {{ content.text }}
+        </template>
+      </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn
@@ -45,6 +57,10 @@ const BUTTONS = {
     [tr('cancel'), false],
     [tr('ok'), true],
   ],
+  [DialogType.Input]: [
+    [tr('cancel'), false],
+    [tr('ok'), true],
+  ],
 };
 
 const DefaultConfig = {
@@ -63,12 +79,22 @@ export default {
     });
     const content = computed(() => (config.value ? config.value.content : null));
     const value = ref<boolean>();
+    const input = ref<string>();
+
+    const isInput = computed(() => {
+      const type = content.value!.type
+      return type === DialogType.Input
+    })
 
     async function clickBtn(btnValue: any) {
       const cb = content.value!.callback;
 
       if (cb) {
-        cb(btnValue);
+        if (isInput.value) {
+          cb(btnValue ? input.value : undefined)
+        } else {
+          cb(btnValue);
+        }
       }
 
       mutations.closeDialog();
@@ -78,9 +104,13 @@ export default {
       value.value = !!v;
     });
     watch(value, async (v) => {
-      if (!v && !!config.value) {
-        clickBtn(null);
+      if (v || !config.value) {
+        return
       }
+
+      input.value = undefined;
+
+      clickBtn(null);
     }, { lazy: true });
 
     const btns = computed(() => {
@@ -98,6 +128,8 @@ export default {
       config,
       content,
       value,
+      input,
+      isInput,
       btns,
       clickBtn,
     };

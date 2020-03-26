@@ -35,6 +35,7 @@ Vue.filter('size', formatSize);
 export interface DurationOptions {
   dayLimit?: number;
   maxUnitSize?: number;
+  minUnit?: number;
 }
 
 export function formatDuration(value: number, options?: DurationOptions) {
@@ -53,6 +54,7 @@ export function formatDuration(value: number, options?: DurationOptions) {
   const defaultOptions: DurationOptions = {
     maxUnitSize: 2,
     dayLimit: 0,
+    minUnit: 0,
   };
 
   const opt = options ? Object.assign(defaultOptions, options) : defaultOptions;
@@ -66,7 +68,10 @@ export function formatDuration(value: number, options?: DurationOptions) {
     if (value < duration) {
       index++;
       continue;
+    } else if (opt.minUnit && (durations.length - index) <= opt.minUnit) {
+      break
     }
+
     const result = Math.floor(value / duration);
     parts.push(result + units[index]);
 
@@ -82,7 +87,7 @@ export function formatDuration(value: number, options?: DurationOptions) {
   // }
 
   if (!parts.length) {
-    return '0';
+    return '0' + units[durations.length - 1 - opt.minUnit!];
   }
 
   return parts.join(' ');
@@ -115,3 +120,13 @@ export function formatProgress(progress: number) {
 }
 
 Vue.filter('progress', formatProgress);
+
+export function parseDate(str: string) {
+  if (!str) {
+    return null
+  }
+
+  return Date.parse(str) / 1000
+}
+
+Vue.filter('parseDate', parseDate)

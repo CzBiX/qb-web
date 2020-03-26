@@ -38,6 +38,11 @@
     <add-form v-if="preferences" />
     <login-form v-if="needAuth" v-model="needAuth" />
     <logs-dialog v-if="drawerOptions.showLogs" v-model="drawerOptions.showLogs" />
+    <RssDialog
+      v-if="drawerOptions.showRss"
+      v-model="drawerOptions.showRss"
+      @download-torrent="setPasteUrl({url: $event})"
+    />
 
     <v-footer
       app
@@ -69,6 +74,7 @@ import MainToolbar from './components/MainToolbar.vue';
 import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/dialogs/LogsDialog.vue';
+import RssDialog from './components/dialogs/RssDialog.vue';
 
 import api from './Api';
 import { sleep } from './utils';
@@ -87,6 +93,7 @@ export default Vue.extend({
     MainToolbar,
     GlobalDialog,
     GlobalSnackBar,
+    RssDialog,
   },
   data() {
     return {
@@ -94,6 +101,7 @@ export default Vue.extend({
       drawer: true,
       drawerOptions: {
         showLogs: false,
+        showRss: false,
       },
       task: 0,
     };
@@ -124,6 +132,7 @@ export default Vue.extend({
     ...mapMutations([
       'updateMainData',
       'updatePreferences',
+      'setPasteUrl',
     ]),
     async getInitData() {
       try {
@@ -169,7 +178,7 @@ export default Vue.extend({
 
       const text = e.clipboardData!.getData('text');
       if (text) {
-        this.$store.commit('setPasteUrl', {
+        this.setPasteUrl({
           url: text,
         });
       }

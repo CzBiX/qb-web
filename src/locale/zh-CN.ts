@@ -46,8 +46,11 @@ export default {
   files: '文件',
   less: '更少',
   more: '更多',
+  feed: '订阅',
+  date: '日期',
 
   title: {
+    _: '标题',
     add_torrents: '添加种子',
     delete_torrents: '删除种子',
     set_category: '设置分类',
@@ -63,6 +66,10 @@ export default {
     first_and_last_pieces_first: '先下载首尾文件块',
 
     also_delete_files: '同时删除文件',
+
+    adding: '添加…',
+    reloading: '刷新中…',
+    deleting: '删除中…',
   },
 
   msg: {
@@ -85,7 +92,14 @@ export default {
     },
     switch_locale: {
       msg: '确定要切换语言为 %{lang} 吗？\n这将会刷新页面。',
-      reloading: '刷新中…',
+    },
+    rss: {
+      add_feed: '添加订阅',
+      feed_url: '订阅 URL',
+      auto_refresh: '自动刷新',
+      auto_download: '自动下载',
+      delete_feeds: '确定要删除选中的订阅吗？',
+      date_format: '%{date}（%{duration} 之前）',
     },
   },
 
