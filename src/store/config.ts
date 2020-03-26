@@ -15,13 +15,14 @@ const defaultConfig = {
     category: null,
     site: null,
   },
+  locale: null,
 };
 
 function saveConfig(obj: any) {
   localStorage.setItem(configKey, JSON.stringify(obj));
 }
 
-function loadConfig() {
+export function loadConfig() {
   const tmp = localStorage.getItem(configKey);
   if (!tmp) {
     return {};

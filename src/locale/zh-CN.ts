@@ -75,14 +75,18 @@ export default {
       hint: '每行一个链接',
     },
     delete_torrents: {
-      msg: '你确定要删除选中的种子吗？',
+      msg: '确定要删除选中的种子吗？',
       also_delete_same_name_torrents: '同时删除 %{smart_count} 个同名的种子',
     },
     set_category: {
-      move: '你确定要移动选中的种子到分类 %{category} 吗？',
-      reset: '你确定重置选中的种子的分类吗？',
+      move: '确定要移动选中的种子到分类 %{category} 吗？',
+      reset: '确定重置选中的种子的分类吗？',
       also_move_same_name_torrents: '同时移动 %{smart_count} 个同名的种子',
-    }
+    },
+    switch_locale: {
+      msg: '确定要切换语言为 %{lang} 吗？\n这将会刷新页面。',
+      reloading: '刷新中…',
+    },
   },
 
   state: {

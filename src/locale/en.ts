@@ -82,7 +82,11 @@ export default {
       move: 'Are you sure to move selected torrents to category %{category}?',
       reset: 'Are you sure to reset category of selected torrents?',
       also_move_same_name_torrents: 'Also move one same named torrent |||| Also move %{smart_count} same named torrents',
-    }
+    },
+    switch_locale: {
+      msg: 'Are you sure to switch language to %{lang}?\nThis action will reload page.',
+      reloading: 'Reloading…',
+    },
   },
 
   state: {

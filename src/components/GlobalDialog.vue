@@ -5,7 +5,7 @@
   >
     <v-card v-if="!!config">
       <v-card-title v-text="content.title" />
-      <v-card-text v-text="content.text" />
+      <v-card-text class="content" v-text="content.text" />
       <v-card-actions>
         <v-spacer />
         <v-btn
@@ -104,3 +104,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.content {
+  white-space: pre-wrap;
+}
+</style>

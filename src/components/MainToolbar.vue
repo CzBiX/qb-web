@@ -10,19 +10,87 @@
       <img class="icon" src="/favicon.ico">
       <span class="title hidden-sm-and-down ml-3 mr-5">qBittorrent Web UI</span>
     </v-toolbar-title>
+    <v-spacer />
+    <v-select
+      class="locales"
+      :items="locales"
+      prepend-inner-icon="mdi-translate"
+      v-model="currentLocale"
+      hide-details
+      solo
+      flat
+    />
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapMutations } from 'vuex';
+
+import i18n, { tr, locales } from '@/locale';
+import { DialogType } from '@/store/types';
 
 export default Vue.extend({
   props: {
     value: Boolean,
   },
+  data() {
+    const locales_ = Object.entries(locales).map(([key, value]) => {
+      return {
+        text: value,
+        value: key,
+      };
+    });
+
+    const locale = i18n.locale();
+
+    return {
+      locales: locales_,
+      oldLocale: locale,
+      currentLocale: locale,
+    };
+  },
   methods: {
+    ...mapMutations([
+      'showDialog',
+      'showSnackBar',
+    ]),
     toggle() {
       this.$emit('input', !this.value);
+    },
+    async switchLocale(locale: string) {
+      if (locale === this.oldLocale) {
+        return;
+      }
+
+      const confirm = await new Promise((resolve) => {
+        this.showDialog({
+          content: {
+            text: tr('dialog.switch_locale.msg', { lang: locales[locale] }),
+            type: DialogType.OkCancel,
+            callback: resolve,
+          },
+        });
+      });
+
+      if (!confirm) {
+        this.currentLocale = this.oldLocale;
+        return;
+      }
+
+      this.$store.commit('updateConfig', {
+        key: 'locale',
+        value: locale,
+      });
+
+      this.showSnackBar(tr('dialog.switch_locale.reloading'))
+
+      location.reload();
+    },
+  },
+  watch: {
+    currentLocale(v) {
+      this.switchLocale(v);
     },
   },
 });
@@ -47,6 +115,22 @@ export default Vue.extend({
   &.sm-and-down {
     margin-left: -12px;
     width: 60px;
+  }
+}
+
+// Fix width
+// see: https://github.com/vuetifyjs/vuetify/issues/6275
+.locales {
+  flex-grow: 0;
+
+  &::v-deep .v-select__selections {
+    .v-select__selection {
+      max-width: none;
+    }
+
+    input {
+      width: 0;
+    }
   }
 }
 </style>

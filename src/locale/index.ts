@@ -1,24 +1,27 @@
-import { isString } from 'lodash';
 import Polyglot from 'node-polyglot';
 import en from './en';
+
+import { loadConfig } from '@/store/config';
 
 const polyglot = new Polyglot({
   phrases: en,
 });
 
-const locales: any = {
+export const locales: {[key: string]: string} = {
   en: 'English',
   'zh-CN': '中文',
 };
 
 function updateLocale() {
-  const { languages } = navigator;
+  let locale: string | undefined = loadConfig()['locale'];
+  if (!locale) {
+    const { languages } = navigator;
 
-  let locale;
-  for (const code of languages) {
-    if (code in locales) {
-      locale = code;
-      break;
+    for (const code of languages) {
+      if (code in locales) {
+        locale = code;
+        break;
+      }
     }
   }
 
