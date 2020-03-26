@@ -15,7 +15,8 @@ script:
 before_deploy:
   # Add tag if missing
   - if [ -z "$TRAVIS_TAG" ]; then
-      export TRAVIS_TAG=nightly-$COMMIT_ID RELEASE_TITLE=$(date +'%Y%m%d-%H%M%S') RELEASE_FILE=qb-web-$RELEASE_TITLE.zip &&
+      export TRAVIS_TAG=nightly-$COMMIT_ID RELEASE_TITLE=$(date +'%Y%m%d-%H%M%S') &&
+      export RELEASE_FILE=qb-web-$RELEASE_TITLE.zip &&
       git tag $TRAVIS_TAG &&
       echo tagged as $TRAVIS_TAG;
     fi
