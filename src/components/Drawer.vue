@@ -146,8 +146,6 @@ export default {
     ];
     const endItems = [
       { icon: 'mdi-delta', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
-      { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
-      { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
     ];
 
     return {
@@ -155,6 +153,16 @@ export default {
       basicItems,
       endItems,
     };
+  },
+  created() {
+    if (this.phoneLayout) {
+      return
+    }
+
+    this.endItems = this.endItems.concat([
+      { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
+      { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
+    ])
   },
 
   computed: {
@@ -166,6 +174,9 @@ export default {
       'torrentGroupBySite',
       'torrentGroupByState',
     ]),
+    phoneLayout() {
+      return this.$vuetify.breakpoint.smAndDown;
+    },
     items(): Array<any> {
       if (!this.isDataReady) {
         return _.concat(this.basicItems, this.endItems);

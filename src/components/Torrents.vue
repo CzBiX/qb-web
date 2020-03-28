@@ -1,15 +1,7 @@
 <template>
   <div class="torrents" v-class:phone-layout="$vuetify.breakpoint.xsOnly">
-    <div
-      class="toolbar"
-      >
-      <v-toolbar
-        flat
-        dense
-        color="white"
-        height="40px"
-        class="elevation-2"
-      >
+    <div class="toolbar-wrapper">
+      <div class="toolbar">
         <v-btn icon @click="confirmDelete" :title="$t('delete')" :disabled="!hasSelected">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
@@ -75,72 +67,72 @@
             <v-icon>mdi-backup-restore</v-icon>
           </v-btn>
         </template>
-      </v-toolbar>
+      </div>
       <v-divider />
     </div>
 
-
-    <v-data-table
-      :headers="headers"
-      :items="torrents"
-      item-key="hash"
-      fixed-header
-      v-class:hide-headers="hasSelected"
-      show-select
-      :options.sync="pageOptions"
-      v-model="selectedRows"
-      class="table"
-      :loading="loading"
-      dense
-      :footer-props="footerProps"
-      :mobile-breakpoint="0"
-    >
-      <template v-slot:item="row">
-        <tr
-        >
-          <!-- @dblclick.prevent="showInfo(row.item)" -->
-          <td>
-            <v-checkbox
-              :value="row.isSelected"
-              @change="row.select"
-              hide-details
-            />
-          </td>
-          <td
-            :title="row.item.name"
-            class="icon-label"
+    <div class="table-wrapper">
+      <v-data-table
+        :headers="headers"
+        :items="torrents"
+        item-key="hash"
+        fixed-header
+        v-class:hide-headers="hasSelected"
+        show-select
+        :options.sync="pageOptions"
+        v-model="selectedRows"
+        :loading="loading"
+        dense
+        :footer-props="footerProps"
+        :mobile-breakpoint="0"
+      >
+        <template v-slot:item="row">
+          <tr
           >
-            <v-icon :color="row.item.state | stateColor">{{ row.item.state | stateIcon }}</v-icon>
-            <span class="torrent-title">{{ row.item.name }}</span>
-          </td>
-          <td>{{ row.item.size | formatSize }}</td>
-          <td>
-            <v-progress-linear
-              height="1.4em"
-              :value="row.item.progress * 100"
-              :color="row.item.state | stateColor(true)"
-              class="text-center ma-0"
+            <!-- @dblclick.prevent="showInfo(row.item)" -->
+            <td>
+              <v-checkbox
+                :value="row.isSelected"
+                @change="row.select"
+                hide-details
+              />
+            </td>
+            <td
+              :title="row.item.name"
+              class="icon-label"
             >
-              <span :class="row.item.progress | progressColorClass">
-                {{ row.item.progress | progress }}
+              <v-icon :color="row.item.state | stateColor">{{ row.item.state | stateIcon }}</v-icon>
+              <span class="torrent-title">{{ row.item.name }}</span>
+            </td>
+            <td>{{ row.item.size | formatSize }}</td>
+            <td>
+              <v-progress-linear
+                height="1.4em"
+                :value="row.item.progress * 100"
+                :color="row.item.state | stateColor(true)"
+                class="text-center ma-0"
+              >
+                <span :class="row.item.progress | progressColorClass">
+                  {{ row.item.progress | progress }}
+                </span>
+              </v-progress-linear>
+            </td>
+            <td>{{ row.item.state }}</td>
+            <td>{{ row.item.num_seeds }}/{{ row.item.num_complete }}</td>
+            <td>{{ row.item.num_leechs }}/{{ row.item.num_incomplete }}</td>
+            <td>{{ row.item.dlspeed | formatNetworkSpeed }}</td>
+            <td>{{ row.item.upspeed | formatNetworkSpeed }}</td>
+            <td>{{ row.item.eta | formatDuration({dayLimit: 100}) }}</td>
+            <td>{{ row.item.ratio.toFixed(2) }}</td>
+            <td>
+              <span :title="row.item.added_on | formatTimestamp">
+                {{ row.item.added_on | formatAsDuration }} ago
               </span>
-            </v-progress-linear>
-          </td>
-          <td>{{ row.item.state }}</td>
-          <td>{{ row.item.num_seeds }}/{{ row.item.num_complete }}</td>
-          <td>{{ row.item.num_leechs }}/{{ row.item.num_incomplete }}</td>
-          <td>{{ row.item.dlspeed | formatNetworkSpeed }}</td>
-          <td>{{ row.item.upspeed | formatNetworkSpeed }}</td>
-          <td>{{ row.item.eta | formatDuration({dayLimit: 100}) }}</td>
-          <td>{{ row.item.ratio.toFixed(2) }}</td>
-          <td>
-            <span :title="row.item.added_on | formatTimestamp">
-              {{ row.item.added_on | formatAsDuration }} ago
-            </span>
-          </td>
-        </tr>
-      </template>
-    </v-data-table>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </div>
 
     <confirm-delete-dialog v-if="toDelete.length" v-model="toDelete" />
     <confirm-set-category-dialog v-if="toSetCategory.length"
@@ -469,15 +461,31 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-// ::v-deep .v-toolbar__content {
-//   padding-left: 8px;
-// }
+.toolbar {
+  display: flex;
+  margin-left: 2px;
+}
 
 .torrents {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
   padding: 0;
+  height: 100%;
+}
 
-  .table {
+.table-wrapper {
+  flex: 1;
+  position: relative;
+
+  .v-data-table {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+
     ::v-deep thead th, td {
       white-space: nowrap;
       padding: 0 4px;
@@ -511,6 +519,10 @@ export default Vue.extend({
         overflow: hidden;
         max-width: 32em;
       }
+    }
+    
+    ::v-deep .v-data-footer {
+      margin-right: 6em;
     }
   }
 }

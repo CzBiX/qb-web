@@ -219,3 +219,9 @@ export default Vue.extend({
   min-height: 36px;
 }
 </style>
+
+<style lang="scss">
+html {
+  overflow-y: hidden;
+}
+</style>
