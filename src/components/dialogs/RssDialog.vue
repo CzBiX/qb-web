@@ -183,7 +183,11 @@ import { parseDate, formatTimestamp, formatAsDuration } from '../../filters'
           return
         }
 
-        (el as HTMLIFrameElement).contentDocument!.body.innerHTML = binding.value
+        const body = (el as HTMLIFrameElement).contentDocument!.body
+        body.innerHTML = binding.value
+        body.scrollTo({
+          top: 0,
+        })
       },
     },
   },
@@ -312,7 +316,7 @@ export default class RssDialog extends HasTask {
     })
 
     try {
-      await api.removeRssFeed(this.selectNode!);
+      await api.removeRssFeed(this.selectNode!.replace('.', '\\'));
     } catch (e) {
       this.showSnackBar({
         text: e.response ? e.response.data : e.message,

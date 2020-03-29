@@ -118,7 +118,7 @@ export interface RssRule {
   mustNotContain: string,
   useRegex: boolean,
   episodeFilter: string,
-  smartFiolter: boolean,
+  smartFilter: boolean,
   previouslyMatchedEpisodes: string[],
   affectedFeeds: string[],
   ignoreDays: number,
