@@ -145,7 +145,7 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
+import { isNil } from 'lodash';
 import Vue from 'vue';
 import { mapState } from 'vuex';
 
@@ -226,7 +226,7 @@ export default class AddForm extends Vue {
   }
 
   setParams(key: string, value: any) {
-    if (_.isNil(value)) {
+    if (isNil(value)) {
       Vue.delete(this.userParams, key);
     } else {
       Vue.set(this.userParams, key, value);

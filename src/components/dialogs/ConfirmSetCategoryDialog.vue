@@ -45,7 +45,6 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 

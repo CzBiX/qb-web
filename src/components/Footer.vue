@@ -128,7 +128,7 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
+import { sumBy } from 'lodash';
 import Vue from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import api from '../Api';
@@ -180,7 +180,7 @@ export default class Footer extends Vue {
   allTorrents!: Torrent[]
 
   get totalSize() {
-    return _.sumBy(this.allTorrents, 'size');
+    return sumBy(this.allTorrents, 'size');
   }
 
   get speedModeBind() {

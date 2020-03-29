@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { StateType } from './consts';
 import { Torrent } from './types';
 
@@ -73,7 +72,7 @@ export function codeToFlag(code: string) {
 export const isWindows = navigator.userAgent.includes('Windows');
 
 export function findSameNamedTorrents(allTorrents: Torrent[], torrents: Torrent[]) {
-  const hashes = _.map(torrents, t => t.hash);
+  const hashes = torrents.map(t => t.hash);
   const result = [];
   for (const t1 of torrents) {
     for (const t2 of allTorrents) {

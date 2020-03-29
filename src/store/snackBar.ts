@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { cloneDeep, isString } from 'lodash';
 import { Module } from 'vuex';
 import { SnackBarState } from './types';
 
@@ -10,12 +10,12 @@ export const snackBarStore : Module<SnackBarState, any> = {
   },
   mutations: {
     showSnackBar(state, payload) {
-      if (_.isString(payload)) {
+      if (isString(payload)) {
         state.config = {
           text: payload,
         };
       } else {
-        state.config = _.cloneDeep(payload);
+        state.config = cloneDeep(payload);
       }
     },
     closeSnackBar(state) {

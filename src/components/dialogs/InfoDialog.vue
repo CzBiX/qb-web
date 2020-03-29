@@ -91,7 +91,6 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
 import Vue from 'vue';
 import TorrentInfo from './TorrentInfo.vue';
 import TorrentContent from './TorrentContent.vue';
