@@ -20,10 +20,12 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
+import { groupBy } from 'lodash';
 import Vue from 'vue';
 import api from '../../Api';
-import Taskable from '@/mixins/taskable';
+import BaseTorrentInfo from './baseTorrentInfo'
+import Component from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
 
 /* eslint-disable camelcase */
 interface File {
@@ -49,122 +51,104 @@ interface Data {
 
 const FILE_KEY = '/FILE/';
 
-export default Vue.extend({
-  mixins: [Taskable],
+@Component
+export default class TorrentContent extends BaseTorrentInfo {
+  @Prop(String)
+  readonly hash!: string
 
-  props: {
-    hash: String,
-    isActive: Boolean,
-  },
-  data(): Data {
-    return {
-      files: [],
-    };
-  },
-  computed: {
-    fileTree() {
-      return this.buildTree(this.files, 0);
-    },
-  },
-  methods: {
-    async getFiles() {
-      this.files = await api.getTorrentFiles(this.hash);
-      if (!this.isActive || this.destroy) {
-        return;
-      }
+  files: File[] = []
 
-      this.task = setTimeout(this.getFiles, 5000);
-    },
-    getRowIcon(row: any) {
-      if (row.item.item) {
-        return 'mdi-file';
-      }
+  get fileTree() {
+    return this.buildTree(this.files, 0);
+  }
 
-      return row.open ? 'mdi-folder-open' : 'mdi-folder';
-    },
-    getTotalSize(item: TreeItem) {
-      if (item.item) {
-        return item.item.size;
-      }
+  async getFiles() {
+    this.files = await api.getTorrentFiles(this.hash);
+  }
 
-      let size = 0;
-      for (const child of item.children!) {
-        size += this.getTotalSize(child);
-      }
-
-      return size;
-    },
-    getTotalProgress(item: TreeItem) {
-      if (item.item) {
-        return item.item.progress;
-      }
-
-      let count = 0;
-      let progress = 0;
-      for (const child of item.children!) {
-        count++;
-        progress += this.getTotalProgress(child);
-      }
-
-      if (count === 0) {
-        return 1;
-      }
-
-      return progress / count;
-    },
-    getFileFolder(item: File, start: number) {
-      const { name } = item;
-      const index = name.indexOf('/', start);
-      if (index === -1) {
-        return FILE_KEY;
-      }
-
-      return name.substring(start, index);
-    },
-    buildTree(files: Array<File>, start: number): Array<TreeItem> {
-      if (!files.length) {
-        return [];
-      }
-
-      const entries = _.groupBy(files, item => this.getFileFolder(item, start));
-
-      const result = [];
-      for (const [folder, values] of _.entries(entries)) {
-        if (folder !== FILE_KEY) {
-          const subTree = this.buildTree(values, start + folder.length + 1);
-          result.push({
-            name: folder,
-            children: subTree,
-          });
-          continue;
-        }
-
-        for (const item of values) {
-          result.push({
-            name: item.name.substring(start),
-            item,
-          });
-        }
-      }
-
-      return result;
-    },
-  },
-  async created() {
-    if (this.isActive) {
-      await this.getFiles();
+  getRowIcon(row: any) {
+    if (row.item.item) {
+      return 'mdi-file';
     }
-  },
-  watch: {
-    async isActive(v) {
-      if (v) {
-        await this.getFiles();
-      } else {
-        this.cancelTask();
+
+    return row.open ? 'mdi-folder-open' : 'mdi-folder';
+  }
+
+  getTotalSize(item: TreeItem) {
+    if (item.item) {
+      return item.item.size;
+    }
+
+    let size = 0;
+    for (const child of item.children!) {
+      size += this.getTotalSize(child);
+    }
+
+    return size;
+  }
+
+  getTotalProgress(item: TreeItem) {
+    if (item.item) {
+      return item.item.progress;
+    }
+
+    let count = 0;
+    let progress = 0;
+    for (const child of item.children!) {
+      count++;
+      progress += this.getTotalProgress(child);
+    }
+
+    if (count === 0) {
+      return 1;
+    }
+
+    return progress / count;
+  }
+
+  getFileFolder(item: File, start: number) {
+    const { name } = item;
+    const index = name.indexOf('/', start);
+    if (index === -1) {
+      return FILE_KEY;
+    }
+
+    return name.substring(start, index);
+  }
+
+  buildTree(files: Array<File>, start: number): TreeItem[] {
+    if (!files.length) {
+      return [];
+    }
+
+    const entries = groupBy(files, item => this.getFileFolder(item, start));
+
+    const result = [];
+    for (const [folder, values] of Object.entries(entries)) {
+      if (folder !== FILE_KEY) {
+        const subTree = this.buildTree(values, start + folder.length + 1);
+        result.push({
+          name: folder,
+          children: subTree,
+        });
+        continue;
       }
-    },
-  },
-});
+
+      for (const item of values) {
+        result.push({
+          name: item.name.substring(start),
+          item,
+        });
+      }
+    }
+
+    return result;
+  }
+
+  fetchInfo() {
+    return this.getFiles()
+  }
+}
 </script>
 
 <style lang="scss" scoped>

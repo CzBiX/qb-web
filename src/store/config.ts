@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { Module } from 'vuex';
-import { ConfigState } from './types';
+import { ConfigState, ConfigPayload } from './types';
 
 const configKey = 'qb-config';
 
@@ -38,7 +38,7 @@ export const configStore : Module<ConfigState, any> = {
     };
   },
   mutations: {
-    updateConfig(state, payload) {
+    updateConfig(state, payload: ConfigPayload) {
       const { key, value } = payload;
       if (_.isPlainObject(value)) {
         const tmp = _.merge({}, state.userConfig[key], value);

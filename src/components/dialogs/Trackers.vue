@@ -23,32 +23,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import api from '../../Api';
-import Taskable from '@/mixins/taskable';
+import Component from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
+import BaseTorrentInfo from './baseTorrentInfo';
 
-export default Vue.extend({
-  mixins: [Taskable],
-
-  props: {
-    hash: String,
-    isActive: Boolean,
-  },
-  data() {
-    const headers = [
-      { text: '#', value: 'tier' },
-      { text: 'URL', value: 'url' },
-      { text: 'Status', value: 'status' },
-      { text: 'Peers', value: 'num_peers' },
-      { text: 'Seeds', value: 'num_seeds' },
-      { text: 'Leeches', value: 'num_leeches' },
-      { text: 'Downloaded', value: 'num_downloaded' },
-      { text: 'Message', value: 'msg' },
-    ];
-
-    return {
-      headers,
-      trackers: [],
-    };
-  },
+@Component({
   filters: {
     formatTrackerStatus(status: number) {
       const map = [
@@ -69,29 +48,30 @@ export default Vue.extend({
       return num.toString();
     },
   },
-  methods: {
-    async getTracker() {
-      this.trackers = await api.getTorrentTracker(this.hash);
-      if (!this.isActive || this.destroy) {
-        return;
-      }
+})
+export default class Trackers extends BaseTorrentInfo {
+  @Prop(String)
+  readonly hash!: string
 
-      this.task = setTimeout(this.getTracker, 5000);
-    },
-  },
-  async created() {
-    if (this.isActive) {
-      await this.getTracker();
-    }
-  },
-  watch: {
-    async isActive(v) {
-      if (v) {
-        await this.getTracker();
-      } else {
-        this.cancelTask();
-      }
-    },
-  },
-});
+  readonly headers = [
+    { text: '#', value: 'tier' },
+    { text: 'URL', value: 'url' },
+    { text: 'Status', value: 'status' },
+    { text: 'Peers', value: 'num_peers' },
+    { text: 'Seeds', value: 'num_seeds' },
+    { text: 'Leeches', value: 'num_leeches' },
+    { text: 'Downloaded', value: 'num_downloaded' },
+    { text: 'Message', value: 'msg' },
+  ]
+
+  trackers = []
+
+  async getTracker() {
+    this.trackers = await api.getTorrentTracker(this.hash);
+  }
+
+  fetchInfo() {
+    return this.getTracker()
+  }
+}
 </script>

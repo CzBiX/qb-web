@@ -83,103 +83,112 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
+import { chain } from 'lodash';
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
+
 import api from '@/Api';
+import Component from 'vue-class-component';
+import { Prop, Emit } from 'vue-property-decorator';
+import { Torrent } from '../../types';
 
 
-export default Vue.extend({
-  props: {
-    value: Array,
-  },
-  data() {
-    return {
-      step: 1,
-      valid: false,
-      submitting: false,
-      torrents: [],
-      search: '',
-      replace: '',
-      toEdit: [],
-      currentIndex: 0,
-    };
-  },
-  created() {
-    this.torrents = this.value;
-  },
+@Component({
   computed: {
     ...mapGetters(['allTorrents']),
-    phoneLayout() {
-      return this.$vuetify.breakpoint.xsOnly;
-    },
-    canNext() {
-      if (this.step === 1 && this.valid) {
-        return true;
-      }
-      if (this.step === 2 && this.toEdit.length > 0) {
-        return true;
-      }
-      if (this.step === 3 && !this.submitting) {
-        return true;
-      }
-      return false;
-    },
   },
-  methods: {
-    closeDialog() {
-      this.$emit('input', []);
-    },
-    calcResults() {
-      const regex = new RegExp(this.search);
+})
+export default class EditTrackerDialog extends Vue {
+  @Prop(Array)
+  readonly value!: Torrent[]
 
-      return _.chain(this.torrents)
-        .map(({ tracker, hash, name }) => {
-          const newUrl = tracker.replace(regex, this.replace);
-          return newUrl === tracker ? null : {
-            hash,
-            name,
-            origUrl: tracker,
-            newUrl,
-          };
-        }).compact().value();
-    },
-    back() {
-      if (this.step === 1) {
-        this.closeDialog();
-        return;
-      }
-      this.step--;
-    },
-    async foward() {
-      if (this.step === 1) {
-        this.toEdit = this.calcResults();
-        this.step++;
-        return;
-      }
-      if (this.step === 3) {
-        this.closeDialog();
-        return;
-      }
+  step = 1
+  valid = false
+  submitting = false
+  torrents: Torrent[] = []
+  search = ''
+  replace = ''
+  toEdit: any[] = []
+  currentIndex = 0
 
-      if (this.submitting) {
-        return;
-      }
+  allTorrents!: Torrent[]
 
-      this.submitting = true;
+  created() {
+    this.torrents = this.value
+  }
+
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.xsOnly;
+  }
+  get canNext() {
+    if (this.step === 1 && this.valid) {
+      return true;
+    }
+    if (this.step === 2 && this.toEdit.length > 0) {
+      return true;
+    }
+    if (this.step === 3 && !this.submitting) {
+      return true;
+    }
+    return false;
+  }
+
+  @Emit('input')
+  closeDialog() {
+    return []
+  }
+
+  calcResults(): any[] {
+    const regex = new RegExp(this.search);
+
+    return chain(this.torrents)
+      .map(({ tracker, hash, name }) => {
+        const newUrl = tracker.replace(regex, this.replace);
+        return newUrl === tracker ? null : {
+          hash,
+          name,
+          origUrl: tracker,
+          newUrl,
+        };
+      }).compact().value();
+  }
+
+  back() {
+    if (this.step === 1) {
+      this.closeDialog();
+      return;
+    }
+    this.step--;
+  }
+
+  async foward() {
+    if (this.step === 1) {
+      this.toEdit = this.calcResults();
       this.step++;
+      return;
+    }
+    if (this.step === 3) {
+      this.closeDialog();
+      return;
+    }
 
-      this.currentIndex = 0;
+    if (this.submitting) {
+      return;
+    }
 
-      for (const item of this.toEdit) {
-        await api.editTracker(item.hash, item.origUrl, item.newUrl);
-        this.currentIndex++;
-      }
+    this.submitting = true;
+    this.step++;
 
-      this.submitting = false;
-    },
-  },
-});
+    this.currentIndex = 0;
+
+    for (const item of this.toEdit) {
+      await api.editTracker(item.hash, item.origUrl, item.newUrl);
+      this.currentIndex++;
+    }
+
+    this.submitting = false;
+  }
+}
 </script>
 
 <style lang="scss" scoped>

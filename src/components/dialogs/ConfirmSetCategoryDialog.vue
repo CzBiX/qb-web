@@ -49,57 +49,64 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
-import { tr } from '@/locale';
 import api from '@/Api';
 import { findSameNamedTorrents } from '@/utils';
+import Component from 'vue-class-component';
+import { Prop, Emit } from 'vue-property-decorator';
+import { Torrent } from '../../types';
 
-export default Vue.extend({
-  props: {
-    value: Array,
-    category: String,
+@Component({
+  computed: {
+    ...mapGetters(['allTorrents']),
   },
-  data() {
-    return {
-      moveSameNamed: false,
-      submitting: false,
-      torrents: [],
-      sameNamedTorrents: [],
-    };
-  },
+})
+export default class ConfirmSetCategoryDialog extends Vue {
+  @Prop(Array)
+  readonly value!: Torrent[]
+
+  @Prop(String)
+  readonly category!: string
+
+  moveSameNamed = false
+  submitting = false
+  torrents: Torrent[] = []
+  sameNamedTorrents: Torrent[] = []
+
+  allTorrents!: Torrent[]
+
   created() {
     this.torrents = this.value;
     this.sameNamedTorrents = findSameNamedTorrents(this.allTorrents, this.torrents);
-  },
-  computed: {
-    ...mapGetters(['allTorrents']),
-    phoneLayout() {
-      return this.$vuetify.breakpoint.xsOnly;
-    },
-  },
-  methods: {
-    closeDialog() {
-      this.$emit('input', []);
-    },
-    async submit() {
-      if (this.submitting) {
-        return;
-      }
+  }
 
-      this.submitting = true;
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.xsOnly;
+  }
 
-      let torrentsToMove;
-      if (this.moveSameNamed) {
-        torrentsToMove = this.torrents.concat(this.sameNamedTorrents);
-      } else {
-        torrentsToMove = this.torrents;
-      }
-      const hashes = torrentsToMove.map((t: any) => t.hash);
-      await api.setTorrentsCategory(hashes, this.category);
+  @Emit('input')
+  closeDialog() {
+    return []
+  }
 
-      this.closeDialog();
-    },
-  },
-});
+  async submit() {
+    if (this.submitting) {
+      return;
+    }
+
+    this.submitting = true;
+
+    let torrentsToMove;
+    if (this.moveSameNamed) {
+      torrentsToMove = this.torrents.concat(this.sameNamedTorrents);
+    } else {
+      torrentsToMove = this.torrents;
+    }
+    const hashes = torrentsToMove.map((t: any) => t.hash);
+    await api.setTorrentsCategory(hashes, this.category);
+
+    this.closeDialog();
+  }
+}
 </script>
 
 <style lang="scss" scoped>

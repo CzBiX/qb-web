@@ -49,8 +49,9 @@ export interface Torrent extends BaseTorrent {
 }
 
 export interface Category {
-  name: string;
-  savePath: string;
+  key: string
+  name: string
+  savePath?: string
 }
 
 export interface ServerState {
@@ -125,4 +126,40 @@ export interface RssRule {
   addPaused: boolean,
   assignedCategory: string,
   savepath: string,
+}
+
+export interface TorrentProperties {
+  addition_date: number;
+  comment: string;
+  completion_date: number;
+  created_by: string;
+  creation_date: number;
+  dl_limit: number;
+  dl_speed: number;
+  dl_speed_avg: number;
+  eta: number;
+  last_seen: number;
+  nb_connections: number;
+  nb_connections_limit: number;
+  peers: number;
+  peers_total: number;
+  piece_size: number;
+  pieces_have: number;
+  pieces_num: number;
+  reannounce: number;
+  save_path: string;
+  seeding_time: number;
+  seeds: number;
+  seeds_total: number;
+  share_ratio: number;
+  time_elapsed: number;
+  total_downloaded: number;
+  total_downloaded_session: number;
+  total_size: number;
+  total_uploaded: number;
+  total_uploaded_session: number;
+  total_wasted: number;
+  up_limit: number;
+  up_speed: number;
+  up_speed_avg: number;
 }

@@ -21,12 +21,12 @@ export default class HasTask extends Vue {
   async runTask() {
     this.cancelTask()
 
-    const r = this.call!()
+    let r = this.call!()
     if (r instanceof Promise) {
-      await r
+      r = await r
     }
 
-    if (this.destroy) {
+    if (this.destroy || r) {
       return
     }
 

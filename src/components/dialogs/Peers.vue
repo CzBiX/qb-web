@@ -39,42 +39,16 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
+import { map, merge, cloneDeep } from 'lodash';
 import Vue from 'vue';
 import { codeToFlag, isWindows } from '../../utils';
-import Taskable from '@/mixins/taskable';
 import api from '../../Api';
 import { formatSize } from '../../filters';
+import BaseTorrentInfo from './baseTorrentInfo';
+import Component from 'vue-class-component';
+import { Prop } from 'vue-property-decorator';
 
-export default Vue.extend({
-  mixins: [Taskable],
-
-  props: {
-    hash: String,
-    isActive: Boolean,
-  },
-  data() {
-    const headers = [
-      { text: 'IP', value: 'ip' },
-      { text: 'Connection', value: 'connection' },
-      { text: 'Flags', value: 'flags' },
-      { text: 'Client', value: 'client' },
-      { text: 'Progress', value: 'progress' },
-      { text: 'DL Speed', value: 'dl_speed' },
-      { text: 'Downloaded', value: 'downloaded' },
-      { text: 'UP Speed', value: 'up_speed' },
-      { text: 'Uploaded', value: 'uploaded' },
-      { text: 'Relevance', value: 'relevance' },
-      { text: 'Files', value: 'files' },
-    ];
-
-    return {
-      headers,
-      peersObj: null,
-      rid: null,
-      isWindows,
-    };
-  },
+@Component({
   filters: {
     networkSpeed(speed: number) {
       if (speed === 0) {
@@ -91,57 +65,62 @@ export default Vue.extend({
       return formatSize(size);
     },
   },
-  computed: {
-    peers() {
-      return _.map(this.peersObj, (value, key) => _.merge({}, value, { key }));
-    },
-  },
-  methods: {
-    codeToFlag(code: string) {
-      if (code) {
-        return codeToFlag(code);
-      }
+})
+export default class Peers extends BaseTorrentInfo {
+  @Prop(String)
+  readonly hash!: string
 
-      return {};
-    },
-    async getPeers() {
-      const resp = await api.getTorrentPeers(this.hash, this.rid);
-      this.rid = resp.rid;
+  headers = [
+    { text: 'IP', value: 'ip' },
+    { text: 'Connection', value: 'connection' },
+    { text: 'Flags', value: 'flags' },
+    { text: 'Client', value: 'client' },
+    { text: 'Progress', value: 'progress' },
+    { text: 'DL Speed', value: 'dl_speed' },
+    { text: 'Downloaded', value: 'downloaded' },
+    { text: 'UP Speed', value: 'up_speed' },
+    { text: 'Uploaded', value: 'uploaded' },
+    { text: 'Relevance', value: 'relevance' },
+    { text: 'Files', value: 'files' },
+  ]
 
-      if (resp.full_update) {
-        this.peersObj = resp.peers;
-      } else {
-        const tmp: any = _.cloneDeep(this.peersObj);
-        if (resp.peers_removed) {
-          for (const key of resp.peers_removed) {
-            delete tmp[key];
-          }
-        }
-        this.peersObj = _.merge(tmp, resp.peers);
-      }
+  peersObj: any = null
+  rid: number | null = null
+  isWindows: boolean = isWindows
 
-      if (!this.isActive || this.destroy) {
-        return;
-      }
+  get peers() {
+    return map(this.peersObj, (value, key) => merge({}, value, { key }));
+  }
 
-      this.task = setTimeout(this.getPeers, 2000);
-    },
-  },
-  async created() {
-    if (this.isActive) {
-      await this.getPeers();
+  codeToFlag(code: string) {
+    if (code) {
+      return codeToFlag(code);
     }
-  },
-  watch: {
-    async isActive(v) {
-      if (v) {
-        await this.getPeers();
-      } else {
-        this.cancelTask();
+
+    return {};
+  }
+
+  async getPeers() {
+    const resp = await api.getTorrentPeers(this.hash, this.rid || undefined);
+    this.rid = resp.rid;
+
+    if (resp.full_update) {
+      this.peersObj = resp.peers;
+    } else {
+      const tmp: any = cloneDeep(this.peersObj);
+      if (resp.peers_removed) {
+        for (const key of resp.peers_removed) {
+          delete tmp[key];
+        }
       }
-    },
-  },
-});
+      this.peersObj = merge(tmp, resp.peers);
+    }
+  }
+
+  startTask() {
+    this.setTaskAndRun(this.doTask, 2000)
+  }
+}
 </script>
 
 <style lang="scss" scoped>

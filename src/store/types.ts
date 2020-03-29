@@ -7,8 +7,19 @@ export interface RootState {
   pasteUrl: string | null;
 }
 
+export interface TorrentFilter {
+  state: string
+  category: string
+  site: string
+}
+
 export interface ConfigState {
   userConfig: any;
+}
+
+export interface ConfigPayload {
+  key: string,
+  value: any,
 }
 
 export enum DialogType {

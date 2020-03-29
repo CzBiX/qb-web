@@ -43,64 +43,22 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
+import { chunk, countBy } from 'lodash';
 
 import Vue from 'vue';
 import api from '../../Api';
-import Taskable from '@/mixins/taskable';
 import {
   formatDuration, formatSize, formatTimestamp, toPrecision,
 } from '@/filters';
 
-/* eslint-disable camelcase */
-interface Properties {
-  addition_date: number;
-  comment: string;
-  completion_date: number;
-  created_by: string;
-  creation_date: number;
-  dl_limit: number;
-  dl_speed: number;
-  dl_speed_avg: number;
-  eta: number;
-  last_seen: number;
-  nb_connections: number;
-  nb_connections_limit: number;
-  peers: number;
-  peers_total: number;
-  piece_size: number;
-  pieces_have: number;
-  pieces_num: number;
-  reannounce: number;
-  save_path: string;
-  seeding_time: number;
-  seeds: number;
-  seeds_total: number;
-  share_ratio: number;
-  time_elapsed: number;
-  total_downloaded: number;
-  total_downloaded_session: number;
-  total_size: number;
-  total_uploaded: number;
-  total_uploaded_session: number;
-  total_wasted: number;
-  up_limit: number;
-  up_speed: number;
-  up_speed_avg: number;
-}
-/* eslint-enable camelcase */
+import { TorrentProperties, Torrent } from '@/types'
+import Component from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
+import BaseTorrentInfo from './baseTorrentInfo';
 
 interface Item {
   label: string;
-  value: (prop: Properties) => string;
-}
-
-interface Data {
-  properties?: Properties;
-  transfer: Array<Item>;
-  information: Array<Item>;
-  pieces: Array<PieceState>;
-  canvas: CanvasRenderingContext2D | null;
+  value: (prop: TorrentProperties) => string;
 }
 
 enum PieceState {
@@ -109,120 +67,105 @@ enum PieceState {
   Downloaded,
 }
 
-export default Vue.extend({
-  mixins: [Taskable],
+@Component({
 
-  props: {
-    torrent: Object,
-    isActive: Boolean,
-  },
-  data(): Data {
-    return {
-      properties: undefined,
-      transfer: [
-        {
-          label: 'Time active',
-          value: prop => formatDuration(prop.time_elapsed) + (prop.seeding_time ? ` (seeded ${formatDuration(prop.seeding_time)})` : ''),
-        },
-        { label: 'ETA', value: prop => formatDuration(prop.eta, { dayLimit: 100 }) },
-        { label: 'Connections', value: prop => `${prop.nb_connections} (${prop.nb_connections_limit} max)` },
-        { label: 'Downloaded', value: prop => `${formatSize(prop.total_downloaded_session)}/${formatSize(prop.total_downloaded)}` },
-        { label: 'Uploaded', value: prop => `${formatSize(prop.total_uploaded_session)}/${formatSize(prop.total_uploaded)}` },
-        { label: 'Seeds', value: prop => `${prop.seeds} (${prop.seeds_total} total)` },
-        { label: 'DL speed', value: prop => `${formatSize(prop.dl_speed)}/s` },
-        { label: 'UP speed', value: prop => `${formatSize(prop.up_speed)}/s` },
-        { label: 'Peers', value: prop => `${prop.peers} (${prop.peers_total} total)` },
-        { label: 'Wasted', value: prop => formatSize(prop.total_wasted) },
-        { label: 'Share ratio', value: prop => toPrecision(prop.share_ratio, 3) },
-        { label: 'Reannounce', value: prop => formatDuration(prop.reannounce) },
-        { label: 'Last seen', value: prop => formatTimestamp(prop.last_seen) },
-      ],
-      information: [
-        { label: 'Total size', value: prop => formatSize(prop.total_size) },
-        { label: 'Pieces', value: prop => `${prop.pieces_num} x ${formatSize(prop.piece_size)} (have ${prop.pieces_have})` },
-        { label: 'Created by', value: prop => prop.created_by },
-        { label: 'Created on', value: prop => formatTimestamp(prop.creation_date) },
-        { label: 'Added on', value: prop => formatTimestamp(prop.addition_date) },
-        { label: 'Completed on', value: prop => formatTimestamp(prop.completion_date) },
-        { label: 'Torrent hash', value: prop => this.torrent.hash },
-        { label: 'Save path', value: prop => prop.save_path },
-        { label: 'Comment', value: prop => prop.comment },
-      ],
-      pieces: [],
-      canvas: null,
-    };
-  },
-  methods: {
-    async getData() {
-      this.properties = await api.getTorrentProperties(this.torrent.hash);
-      this.pieces = await api.getTorrentPieceStates(this.torrent.hash);
-      if (!this.isActive || this.destroy) {
-        return;
-      }
+})
+export default class TorrentInfo extends BaseTorrentInfo {
+  @Prop()
+  readonly torrent!: Torrent
 
-      this.task = setTimeout(this.getData, 5000);
+  properties: TorrentProperties | null = null
+
+  transfer: Item[] = [
+    {
+      label: 'Time active',
+      value: prop => formatDuration(prop.time_elapsed) + (prop.seeding_time ? ` (seeded ${formatDuration(prop.seeding_time)})` : ''),
     },
-    initCanvas(el: HTMLCanvasElement) {
-      const { clientWidth, clientHeight } = el;
-      /* eslint-disable no-param-reassign */
-      el.width = clientWidth;
-      el.height = clientHeight;
-      /* eslint-enable no-param-reassign */
+    { label: 'ETA', value: prop => formatDuration(prop.eta, { dayLimit: 100 }) },
+    { label: 'Connections', value: prop => `${prop.nb_connections} (${prop.nb_connections_limit} max)` },
+    { label: 'Downloaded', value: prop => `${formatSize(prop.total_downloaded_session)}/${formatSize(prop.total_downloaded)}` },
+    { label: 'Uploaded', value: prop => `${formatSize(prop.total_uploaded_session)}/${formatSize(prop.total_uploaded)}` },
+    { label: 'Seeds', value: prop => `${prop.seeds} (${prop.seeds_total} total)` },
+    { label: 'DL speed', value: prop => `${formatSize(prop.dl_speed)}/s` },
+    { label: 'UP speed', value: prop => `${formatSize(prop.up_speed)}/s` },
+    { label: 'Peers', value: prop => `${prop.peers} (${prop.peers_total} total)` },
+    { label: 'Wasted', value: prop => formatSize(prop.total_wasted) },
+    { label: 'Share ratio', value: prop => toPrecision(prop.share_ratio, 3) },
+    { label: 'Reannounce', value: prop => formatDuration(prop.reannounce) },
+    { label: 'Last seen', value: prop => formatTimestamp(prop.last_seen) },
+  ]
 
-      const ctx = el.getContext('2d')!;
-      return ctx;
-    },
-  },
-  async mounted() {
-    if (this.isActive) {
-      await this.getData();
+  information: Item[] = [
+    { label: 'Total size', value: prop => formatSize(prop.total_size) },
+    { label: 'Pieces', value: prop => `${prop.pieces_num} x ${formatSize(prop.piece_size)} (have ${prop.pieces_have})` },
+    { label: 'Created by', value: prop => prop.created_by },
+    { label: 'Created on', value: prop => formatTimestamp(prop.creation_date) },
+    { label: 'Added on', value: prop => formatTimestamp(prop.addition_date) },
+    { label: 'Completed on', value: prop => formatTimestamp(prop.completion_date) },
+    { label: 'Torrent hash', value: prop => this.torrent.hash },
+    { label: 'Save path', value: prop => prop.save_path },
+    { label: 'Comment', value: prop => prop.comment },
+  ]
+  pieces: PieceState[] = []
+  canvas: CanvasRenderingContext2D | null = null
+
+  async getData() {
+    this.properties = await api.getTorrentProperties(this.torrent.hash);
+    this.pieces = await api.getTorrentPieceStates(this.torrent.hash);
+  }
+
+  initCanvas(el: HTMLCanvasElement) {
+    const { clientWidth, clientHeight } = el;
+    /* eslint-disable no-param-reassign */
+    el.width = clientWidth;
+    el.height = clientHeight;
+    /* eslint-enable no-param-reassign */
+
+    const ctx = el.getContext('2d')!;
+    return ctx;
+  }
+
+  fetchInfo() {
+    return this.getData()
+  }
+
+  @Watch('pieces')
+  onPiecesChanged(v: PieceState[]) {
+    let ctx;
+    if (this.canvas) {
+      ctx = this.canvas
+    } else {
+      ctx = this.initCanvas(this.$refs.canvas as HTMLCanvasElement)
+      this.canvas = ctx
     }
-  },
-  watch: {
-    async isActive(v) {
-      if (v) {
-        await this.getData();
+
+    const { clientHeight, clientWidth } = ctx.canvas;
+    const partNum = clientWidth / 2;
+    ctx.clearRect(0, 0, clientWidth, clientHeight);
+
+    const offset = clientWidth / partNum;
+    const chunkSize = v.length / partNum;
+
+    const chunks = chunk(v, chunkSize);
+    for (let i = 0; i < partNum; i++) {
+      const states = countBy(chunks[i]);
+      const downloading = states[PieceState.Downloading];
+      const empty = states[PieceState.Empty];
+      const downloaded = states[PieceState.Downloaded];
+      let color;
+      if (downloading) {
+        color = 'green';
+      } else if (downloaded >= empty) {
+        color = 'blue';
       } else {
-        this.cancelTask();
-      }
-    },
-    pieces(v) {
-      let ctx;
-      if (this.canvas) {
-        ctx = this.canvas!;
-      } else {
-        ctx = this.initCanvas(this.$refs.canvas as HTMLCanvasElement);
-        this.canvas = ctx;
+        continue;
       }
 
-      const { clientHeight, clientWidth } = ctx.canvas;
-      const partNum = clientWidth / 2;
-      ctx.clearRect(0, 0, clientWidth, clientHeight);
-
-      const offset = clientWidth / partNum;
-      const chunkSize = v.length / partNum;
-
-      const chunks = _.chunk(v, chunkSize);
-      for (let i = 0; i < partNum; i++) {
-        const states = _.countBy(chunks[i]);
-        const downloading = states[PieceState.Downloading];
-        const empty = states[PieceState.Empty];
-        const downloaded = states[PieceState.Downloaded];
-        let color;
-        if (downloading) {
-          color = 'green';
-        } else if (downloaded >= empty) {
-          color = 'blue';
-        } else {
-          continue;
-        }
-
-        ctx.fillStyle = color;
-        ctx.fillRect(i * offset, 0, offset, clientHeight);
-      }
-    },
-  },
-});
+      ctx.fillStyle = color;
+      ctx.fillRect(i * offset, 0, offset, clientHeight);
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

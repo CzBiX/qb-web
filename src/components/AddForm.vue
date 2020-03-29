@@ -151,6 +151,8 @@ import { mapState } from 'vuex';
 
 import { tr } from '@/locale';
 import api from '../Api';
+import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
 
 const defaultParams = {
   urls: null,
@@ -162,30 +164,7 @@ const defaultParams = {
   firstLastPiecePrio: false,
 };
 
-interface Data {
-  tr: any,
-  dialog: boolean,
-  valid: boolean,
-  files: any[],
-  userParams: any,
-  error: string | null,
-  submitting: boolean,
-  showMore: boolean,
-}
-
-export default {
-  data(): Data {
-    return {
-      tr,
-      dialog: false,
-      valid: false,
-      files: [],
-      userParams: {},
-      error: null,
-      submitting: false,
-      showMore: false,
-    };
-  },
+@Component({
   computed: {
     ...mapState({
       pasteUrl: 'pasteUrl',
@@ -196,113 +175,136 @@ export default {
         return getters.allCategories.map((c: any) => ({ text: c.name, value: c.key }));
       },
     }),
-    params() {
-      return Object.assign({}, defaultParams, this.userParams);
-    },
-    phoneLayout() {
-      return this.$vuetify.breakpoint.xsOnly;
-    },
-    autoStart: {
-      get(): boolean {
-        return !this.params.paused;
-      },
-      set(value: boolean) {
-        const paused = !value;
-        const tmp = defaultParams.paused === paused ? null : paused;
-        this.setParams('paused', tmp);
-      },
-    },
   },
+})
+export default class AddForm extends Vue {
+  dialog = false
+  valid = false
+  files: FileList | [] = []
+  userParams = {}
+  error: string | null = null
+  submitting = false
+  showMore = false
+
+  pasteUrl!: string | null
+  prefs!: any
+  $refs!: {
+    form: any,
+    file: any,
+    fileZone: HTMLElement,
+  }
+  
+  get params() {
+    return Object.assign({}, defaultParams, this.userParams);
+  }
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.xsOnly;
+  }
+
+  get autoStart() {
+    return !this.params.paused;
+  }
+
+  set autoStart(value: boolean) {
+    const paused = !value;
+    const tmp = defaultParams.paused === paused ? null : paused;
+    this.setParams('paused', tmp);
+  }
+
   created() {
     defaultParams.paused = this.prefs.start_paused_enabled;
     defaultParams.root_path = this.prefs.create_subfolder_enabled;
     this.showMore = !this.phoneLayout;
-  },
+  }
+
   mounted() {
-    (this.$refs.fileZone as HTMLElement).addEventListener('drop', this.onDrop, true);
-  },
+    this.$refs.fileZone.addEventListener('drop', this.onDrop, true);
+  }
+
   beforeDestroy() {
-    (this.$refs.fileZone as HTMLElement).removeEventListener('drop', this.onDrop, true);
-  },
+    this.$refs.fileZone.removeEventListener('drop', this.onDrop, true);
+  }
 
-  methods: {
-    setParams(key: string, value: any) {
-      if (_.isNil(value)) {
-        Vue.delete(this.userParams, key);
-      } else {
-        Vue.set(this.userParams, key, value);
-      }
-    },
-    async submit() {
-      if (this.submitting) {
-        return;
-      }
+  setParams(key: string, value: any) {
+    if (_.isNil(value)) {
+      Vue.delete(this.userParams, key);
+    } else {
+      Vue.set(this.userParams, key, value);
+    }
+  }
 
-      this.submitting = true;
-      this.error = null;
-      let files;
-      if (this.files.length) {
-        ({ files } = this);
-        Vue.delete(this.userParams, 'urls');
-      } else {
-        files = null;
-      }
+  async submit() {
+    if (this.submitting) {
+      return;
+    }
 
-      try {
-        const resp = await api.addTorrents(this.userParams, files);
-
-        if (resp !== 'Ok.') {
-          this.error = resp;
-        }
-      } catch (e) {
-        this.error = e.message;
-      }
-
-      this.submitting = false;
-
-      if (this.error) {
-        return;
-      }
-
-      this.dialog = false;
-
+    this.submitting = true;
+    this.error = null;
+    let files;
+    if (this.files.length) {
+      ({ files } = this);
       Vue.delete(this.userParams, 'urls');
-      this.files = [];
+    } else {
+      files = null;
+    }
 
-      this.$refs.form.resetValidation();
-    },
-    selectFiles() {
-      const input = this.$refs.file.$el.querySelector('input[type=file]');
-      input.click();
-    },
-    onDrop(e: DragEvent) {
-      const transfer = e.dataTransfer!;
-      const { files } = transfer;
-      if (!files.length) {
-        return;
+    try {
+      const resp = await api.addTorrents(this.userParams, files);
+
+      if (resp !== 'Ok.') {
+        this.error = resp;
       }
+    } catch (e) {
+      this.error = e.message;
+    }
 
-      e.preventDefault();
-      this.files = files;
-    },
-  },
+    this.submitting = false;
 
-  watch: {
-    pasteUrl(v) {
-      if (!v) {
-        return;
-      }
+    if (this.error) {
+      return;
+    }
 
-      if (!this.dialog) {
-        Vue.set(this.userParams, 'urls', v);
-        this.dialog = true;
-      }
-    },
-    files(v) {
-      this.$refs.form.validate();
-    },
-  },
-};
+    this.dialog = false;
+
+    Vue.delete(this.userParams, 'urls');
+    this.files = [];
+
+    this.$refs.form.resetValidation();
+  }
+
+  selectFiles() {
+    const input = this.$refs.file.$el.querySelector('input[type=file]');
+    input.click();
+  }
+
+  onDrop(e: DragEvent) {
+    const transfer = e.dataTransfer!;
+    const { files } = transfer;
+    if (!files.length) {
+      return;
+    }
+
+    e.preventDefault();
+    this.files = files;
+  }
+
+  @Watch('pasteUrl')
+  onPasteUrl(v: string) {
+    if (!v) {
+      return;
+    }
+
+    if (!this.dialog) {
+      Vue.set(this.userParams, 'urls', v);
+      this.dialog = true;
+    }
+  }
+
+  @Watch('files')
+  onFilesChange(v: FileList) {
+    this.$refs.form.validate();
+  }
+}
 </script>
 
 <style lang="scss" scoped>

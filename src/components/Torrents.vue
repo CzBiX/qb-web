@@ -148,20 +148,23 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { mapState, mapGetters, mapMutations } from 'vuex';
-import _ from 'lodash';
+import Vue from 'vue'
+import { mapState, mapGetters, mapMutations } from 'vuex'
+import { intersection, difference } from 'lodash'
 
-import { tr } from '@/locale';
-import ConfirmDeleteDialog from './dialogs/ConfirmDeleteDialog.vue';
-import ConfirmSetCategoryDialog from './dialogs/ConfirmSetCategoryDialog.vue';
-import EditTrackerDialog from './dialogs/EditTrackerDialog.vue';
-import InfoDialog from './dialogs/InfoDialog.vue';
-import api from '../Api';
-import { formatSize, formatDuration } from '../filters';
-import { torrentIsState } from '../utils';
-import { StateType } from '../consts';
-import { DialogType } from '../store/types';
+import { tr } from '@/locale'
+import ConfirmDeleteDialog from './dialogs/ConfirmDeleteDialog.vue'
+import ConfirmSetCategoryDialog from './dialogs/ConfirmSetCategoryDialog.vue'
+import EditTrackerDialog from './dialogs/EditTrackerDialog.vue'
+import InfoDialog from './dialogs/InfoDialog.vue'
+import api from '../Api'
+import { formatSize, formatDuration } from '../filters'
+import { torrentIsState } from '../utils'
+import { StateType } from '../consts'
+import { DialogType, TorrentFilter, ConfigPayload, DialogConfig, SnackBarConfig } from '../store/types'
+import Component from 'vue-class-component'
+import { Torrent, Category } from '../types'
+import { Watch } from 'vue-property-decorator'
 
 function getStateInfo(state: string) {
   let icon;
@@ -238,54 +241,13 @@ function getStateInfo(state: string) {
   return icon;
 }
 
-export default Vue.extend({
-  name: 'torrents',
-
+@Component({
   components: {
     ConfirmDeleteDialog,
     ConfirmSetCategoryDialog,
     EditTrackerDialog,
     InfoDialog,
   },
-
-  data() {
-    const headers = [
-      { text: tr('name'), value: 'name' },
-      { text: tr('size'), value: 'size' },
-      { text: tr('progress'), value: 'progress' },
-      { text: tr('status'), value: 'state' },
-      { text: tr('seeds'), value: 'num_complete' },
-      { text: tr('peers'), value: 'num_incomplete' },
-      { text: tr('dl_speed'), value: 'dlspeed' },
-      { text: tr('up_speed'), value: 'upspeed' },
-      { text: tr('eta'), value: 'eta' },
-      { text: tr('ratio'), value: 'ratio' },
-      { text: tr('added_on'), value: 'added_on' },
-    ];
-
-    const footerProps = {
-      'items-per-page-options': [10, 20, 50, -1],
-    };
-
-    return {
-      tr,
-      headers,
-      selectedRows: [],
-      toDelete: [],
-      toSetCategory: [],
-      categoryToSet: null,
-      toShowInfo: [],
-      toEditTracker: [],
-      infoTab: null,
-      pageOptions: null,
-      footerProps,
-    };
-  },
-
-  created() {
-    this.pageOptions = this.$store.getters.config.pageOptions;
-  },
-
   computed: {
     ...mapGetters([
       'isDataReady',
@@ -300,38 +262,7 @@ export default Vue.extend({
         return getters.config.filter;
       },
     }),
-    loading() {
-      return !this.isDataReady;
-    },
-    hasSelected() {
-      return !!this.selectedRows.length;
-    },
-    selectedHashes() {
-      return this.selectedRows.map(_.property('hash'));
-    },
-    torrents() {
-      if (!this.isDataReady) {
-        return [];
-      }
-      let list = this.allTorrents;
-      if (this.filter.site !== null) {
-        list = _.intersection(list, this.torrentGroupBySite[this.filter.site]);
-      }
-      if (this.filter.category !== null) {
-        list = _.intersection(list, this.torrentGroupByCategory[this.filter.category]);
-      }
-      if (this.filter.state !== null) {
-        list = _.intersection(list, this.torrentGroupByState[this.filter.state]);
-      }
-
-      return list;
-    },
-    hasSelectedAll() {
-      return this.hasSelected && this.selectedRows.length
-        === Math.min(this.torrents.length, this.pageOptions.rowsPerPage);
-    },
   },
-
   filters: {
     progressColorClass(progress: number) {
       const color = progress >= 0.5 ? 'white' : 'black';
@@ -357,107 +288,191 @@ export default Vue.extend({
       return item.color || '#0008';
     },
   },
-
   methods: {
     ...mapMutations([
       'updateConfig',
       'showDialog',
       'showSnackBar',
     ]),
-    confirmDelete() {
-      this.toDelete = this.selectedRows;
-    },
-    showInfo(row?: any) {
-      this.toShowInfo = row ? [row] : this.selectedRows;
-    },
-    async resumeTorrents() {
-      await api.resumeTorrents(this.selectedHashes);
-    },
-    async pauseTorrents() {
-      await api.pauseTorrents(this.selectedHashes);
-    },
-    async reannounceTorrents() {
-      if (!this.hasSelected) {
-        this.selectedRows = this.allTorrents;
-      }
-      const v = await new Promise((resolve) => {
-        this.showDialog({
-          content: {
-            title: 'Reannounce Torrents',
-            text: 'Are you sure want to reannounce torrents?',
-            type: DialogType.OkCancel,
-            callback: resolve,
-          },
-        });
-      });
-
-      if (!v) {
-        return;
-      }
-
-      await api.reannounceTorrents(this.selectedHashes);
-
-      this.showSnackBar('Reannounced');
-    },
-    async recheckTorrents() {
-      const v = await new Promise((resolve) => {
-        this.showDialog({
-          content: {
-            title: 'Recheck Torrents',
-            text: 'Are you sure want to recheck torrents?',
-            type: DialogType.OkCancel,
-            callback: resolve,
-          },
-        });
-      });
-
-      if (!v) {
-        return;
-      }
-      await api.recheckTorrents(this.selectedHashes);
-
-      this.showSnackBar('Rechecking');
-    },
-    setTorrentsCategory(category: string) {
-      this.categoryToSet = category;
-      this.toSetCategory = this.selectedRows;
-    },
-    editTracker() {
-      if (this.hasSelected) {
-        this.selectedRows = this.allTorrents;
-      }
-      this.toEditTracker = this.selectedRows;
-    },
   },
+})
+export default class Torrents extends Vue {
+  readonly headers = [
+    { text: tr('name'), value: 'name' },
+    { text: tr('size'), value: 'size' },
+    { text: tr('progress'), value: 'progress' },
+    { text: tr('status'), value: 'state' },
+    { text: tr('seeds'), value: 'num_complete' },
+    { text: tr('peers'), value: 'num_incomplete' },
+    { text: tr('dl_speed'), value: 'dlspeed' },
+    { text: tr('up_speed'), value: 'upspeed' },
+    { text: tr('eta'), value: 'eta' },
+    { text: tr('ratio'), value: 'ratio' },
+    { text: tr('added_on'), value: 'added_on' },
+  ]
 
-  watch: {
-    pageOptions: {
-      handler() {
-        this.updateConfig({
-          key: 'pageOptions',
-          value: this.pageOptions,
-        });
-      },
-      deep: true,
-    },
-    filter() {
-      this.selectedRows = [];
-    },
-    torrents(v) {
-      if (!this.hasSelected) {
-        return;
-      }
+  readonly footerProps = {
+    'items-per-page-options': [10, 20, 50, -1],
+  }
 
-      const torrentHashs = v.map(_.property('hash'));
-      const toRemove = _.difference(this.selectedHashes, torrentHashs);
-      if (!toRemove) {
-        return;
-      }
+  selectedRows: Torrent[] = []
+  toDelete: Torrent[] = []
+  toSetCategory: Torrent[] = []
+  categoryToSet: string | null = null
+  toShowInfo: Torrent[] = []
+  toEditTracker: Torrent[] = []
+  infoTab = null
+  pageOptions: any = null
 
-      this.selectedRows = this.selectedRows.filter(r => !toRemove.includes(r.hash));
-    },
-  },
-});
+  isDataReady!: boolean
+  allTorrents!: Torrent[]
+  allCategories!: Category[]
+  torrentGroupByCategory!: {[category: string]: Torrent[]}
+  torrentGroupBySite!: {[site: string]: Torrent[]}
+  torrentGroupByState!: {[state: string]: Torrent[]}
+  filter!: TorrentFilter
+
+  updateConfig!: (_: ConfigPayload) => void
+  showDialog!: (_: DialogConfig) => void
+  showSnackBar!: (_: SnackBarConfig) => void
+
+  get loading() {
+    return !this.isDataReady;
+  }
+  get hasSelected() {
+    return !!this.selectedRows.length;
+  }
+  get selectedHashes() {
+    return this.selectedRows.map(r => r.hash);
+  }
+
+  get torrents() {
+    if (!this.isDataReady) {
+      return [];
+    }
+    let list = this.allTorrents;
+    if (this.filter.site !== null) {
+      list = intersection(list, this.torrentGroupBySite[this.filter.site]);
+    }
+    if (this.filter.category !== null) {
+      list = intersection(list, this.torrentGroupByCategory[this.filter.category]);
+    }
+    if (this.filter.state !== null) {
+      list = intersection(list, this.torrentGroupByState[this.filter.state]);
+    }
+
+    return list;
+  }
+
+  get hasSelectedAll() {
+    return this.hasSelected && this.selectedRows.length
+      === Math.min(this.torrents.length, this.pageOptions.rowsPerPage);
+  }
+
+  created() {
+    this.pageOptions = this.$store.getters.config.pageOptions;
+  }
+
+  confirmDelete() {
+    this.toDelete = this.selectedRows;
+  }
+
+  showInfo(row?: any) {
+    this.toShowInfo = row ? [row] : this.selectedRows;
+  }
+
+  async resumeTorrents() {
+    await api.resumeTorrents(this.selectedHashes);
+  }
+
+  async pauseTorrents() {
+    await api.pauseTorrents(this.selectedHashes);
+  }
+
+  async reannounceTorrents() {
+    if (!this.hasSelected) {
+      this.selectedRows = this.allTorrents;
+    }
+    const v = await new Promise((resolve) => {
+      this.showDialog({
+        content: {
+          title: 'Reannounce Torrents',
+          text: 'Are you sure want to reannounce torrents?',
+          type: DialogType.OkCancel,
+          callback: resolve,
+        },
+      });
+    });
+
+    if (!v) {
+      return;
+    }
+
+    await api.reannounceTorrents(this.selectedHashes);
+
+    this.showSnackBar({text: 'Reannounced'});
+  }
+
+  async recheckTorrents() {
+    const v = await new Promise((resolve) => {
+      this.showDialog({
+        content: {
+          title: 'Recheck Torrents',
+          text: 'Are you sure want to recheck torrents?',
+          type: DialogType.OkCancel,
+          callback: resolve,
+        },
+      });
+    });
+
+    if (!v) {
+      return;
+    }
+    await api.recheckTorrents(this.selectedHashes);
+
+    this.showSnackBar({text: 'Rechecking'});
+  }
+
+  setTorrentsCategory(category: string) {
+    this.categoryToSet = category;
+    this.toSetCategory = this.selectedRows;
+  }
+
+  editTracker() {
+    if (this.hasSelected) {
+      this.selectedRows = this.allTorrents;
+    }
+    this.toEditTracker = this.selectedRows;
+  }
+
+  @Watch('pageOptions', { deep: true})
+  onPageOptionsChanged() {
+    this.updateConfig({
+      key: 'pageOptions',
+      value: this.pageOptions,
+    })
+  }
+
+  @Watch('filter')
+  onFilterChanged() {
+    this.selectedRows = []
+  }
+
+  @Watch('torrents')
+  onTorrentsChanged(v: Torrent[]) {
+    if (!this.hasSelected) {
+      return;
+    }
+
+    const torrentHashs = v.map(t => t.hash);
+    const toRemove = difference(this.selectedHashes, torrentHashs);
+    if (!toRemove) {
+      return;
+    }
+
+    this.selectedRows = this.selectedRows.filter(r => !toRemove.includes(r.hash));
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -534,30 +549,8 @@ export default Vue.extend({
   }
 }
 
-// .toolbar {
-//   position: sticky;
-//   top: 0;
-//   z-index: 2;
-// }
-
-// .category-actions .v-list__tile__action {
-//   min-width: 40px;
-// }
-
-// .menu-check {
-//   padding: 0;
-// }
-
 .icon-label {
   display: flex;
   align-items: center;
 }
-
-// ::v-deep .v-datatable {
-//   // table-layout: fixed;
-// }
-
-// ::v-deep.hide-headers .v-datatable thead {
-//   display: none;
-// }
 </style>

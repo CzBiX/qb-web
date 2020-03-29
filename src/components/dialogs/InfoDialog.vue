@@ -13,7 +13,7 @@
         <span>Info</span>
       </v-card-title>
       <v-card-text>
-        <v-tabs v-model="mTab">
+        <v-tabs v-model="tab">
           <v-tab href="#general">
             General
           </v-tab>
@@ -27,7 +27,7 @@
             Content
           </v-tab>
         </v-tabs>
-        <v-tabs-items :value="mTab" touchless>
+        <v-tabs-items :value="tab" touchless>
           <v-tab-item value="general">
             <panel
               v-for="torrent in torrents"
@@ -50,7 +50,7 @@
             >
               <trackers
                 :hash="torrent.hash"
-                :isActive="mTab === 'trackers'"
+                :isActive="tab === 'trackers'"
               />
             </panel>
           </v-tab-item>
@@ -63,7 +63,7 @@
             >
               <peers
                 :hash="torrent.hash"
-                :isActive="mTab === 'peers'"
+                :isActive="tab === 'peers'"
               />
             </panel>
           </v-tab-item>
@@ -76,7 +76,7 @@
             >
               <torrent-content
                 :hash="torrent.hash"
-                :isActive="mTab === 'content'"
+                :isActive="tab === 'content'"
               />
             </panel>
           </v-tab-item>
@@ -98,8 +98,11 @@ import TorrentContent from './TorrentContent.vue';
 import Trackers from './Trackers.vue';
 import Peers from './Peers.vue';
 import Panel from './Panel.vue';
+import Component from 'vue-class-component';
+import { Prop, Emit, Watch, PropSync } from 'vue-property-decorator';
+import { Torrent } from '../../types';
 
-export default Vue.extend({
+@Component({
   components: {
     TorrentInfo,
     TorrentContent,
@@ -107,40 +110,32 @@ export default Vue.extend({
     Peers,
     Panel,
   },
+})
+export default class InfoDialog extends Vue {
+  @Prop(Array)
+  readonly value!: Torrent[]
 
-  props: {
-    value: Array,
-    tab: String,
-  },
-  data() {
-    return {
-      torrents: [],
-      mTab: null,
-    };
-  },
+  @PropSync('tab', String)
+  tab!: string
+
+  torrents!: Torrent[]
+
   created() {
-    this.torrents = this.value;
-    this.mTab = this.tab;
-  },
-  computed: {
-    phoneLayout() {
-      return this.$vuetify.breakpoint.xsOnly;
-    },
-    dialogWidth() {
-      return this.phoneLayout ? '100%' : '80%';
-    },
-  },
-  methods: {
-    closeDialog() {
-      this.$emit('input', []);
-    },
-  },
-  watch: {
-    mTab(v) {
-      this.$emit('change', v);
-    },
-  },
-});
+    this.torrents = this.value
+  }
+
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.xsOnly;
+  }
+  get dialogWidth() {
+    return this.phoneLayout ? '100%' : '80%';
+  }
+
+  @Emit('input')
+  closeDialog() {
+    return false
+  }
+}
 </script>
 
 <style lang="scss" scoped>

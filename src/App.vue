@@ -77,12 +77,14 @@ import LogsDialog from './components/dialogs/LogsDialog.vue';
 import RssDialog from './components/dialogs/RssDialog.vue';
 
 import api from './Api';
-import { sleep } from './utils';
+import { timeout } from './utils';
+import Component from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import { MainData } from './types';
 
 let appWrapEl: HTMLElement;
 
-export default Vue.extend({
-  name: 'app',
+@Component({
   components: {
     AddForm,
     Drawer,
@@ -95,28 +97,6 @@ export default Vue.extend({
     GlobalSnackBar,
     RssDialog,
   },
-  data() {
-    return {
-      needAuth: false,
-      drawer: true,
-      drawerOptions: {
-        showLogs: false,
-        showRss: false,
-      },
-      task: 0,
-    };
-  },
-  async created() {
-    await this.getInitData();
-    appWrapEl = (this.$refs.app as any).$el.querySelector('.v-application--wrap');
-    appWrapEl.addEventListener('paste', this.onPaste);
-  },
-  beforeDestroy() {
-    if (this.task) {
-      clearTimeout(this.task);
-    }
-    appWrapEl.removeEventListener('paste', this.onPaste);
-  },
   computed: {
     ...mapState([
       'mainData',
@@ -124,9 +104,6 @@ export default Vue.extend({
       'preferences',
     ]),
     ...mapGetters(['config']),
-    phoneLayout() {
-      return this.$vuetify.breakpoint.xsOnly;
-    },
   },
   methods: {
     ...mapMutations([
@@ -134,64 +111,105 @@ export default Vue.extend({
       'updatePreferences',
       'setPasteUrl',
     ]),
-    async getInitData() {
-      try {
-        await this.getMainData();
-      } catch (e) {
-        if (e.response.status === 403) {
-          this.needAuth = true;
-        }
+  }
+})
+export default class App extends Vue {
+  needAuth = false
+  drawer = true
+  drawerOptions = {
+    showLogs: false,
+    showRss: false,
+  }
+  task = 0
 
-        return;
+  mainData!: MainData
+  rid!: number
+  preferences!: any
+  config!: any
+
+  updateMainData!: (_: any) => void
+  updatePreferences!: (_: any) => void
+  setPasteUrl!: (_: any) => void
+
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.xsOnly;
+  }
+
+  async created() {
+    await this.getInitData();
+    appWrapEl = (this.$refs.app as any).$el.querySelector('.v-application--wrap');
+    appWrapEl.addEventListener('paste', this.onPaste);
+  }
+
+  beforeDestroy() {
+    if (this.task) {
+      clearTimeout(this.task);
+    }
+    appWrapEl.removeEventListener('paste', this.onPaste);
+  }
+
+  async getInitData() {
+    try {
+      await this.getMainData();
+    } catch (e) {
+      if (e.response.status === 403) {
+        this.needAuth = true;
       }
 
-      await this.getPreferences();
-    },
-    async getPreferences() {
-      const resp = await api.getAppPreferences();
+      return;
+    }
 
-      this.updatePreferences(resp.data);
-    },
-    async getMainData() {
-      const rid = this.rid ? this.rid : null;
-      const resp = await api.getMainData(rid);
-      const mainData = resp.data;
+    await this.getPreferences();
+  }
 
-      this.updateMainData(mainData);
+  async getPreferences() {
+    const resp = await api.getAppPreferences();
 
-      this.task = setTimeout(this.getMainData, this.config.updateInterval);
-    },
-    async drawerFooterOpen(v: boolean) {
-      if (!v) {
-        return;
-      }
-      await sleep(3000);
+    this.updatePreferences(resp.data);
+  }
 
-      (this.$refs.end as HTMLElement).scrollIntoView({
-        behavior: 'smooth',
+  async getMainData() {
+    const rid = this.rid ? this.rid : undefined;
+    const resp = await api.getMainData(rid);
+    const mainData = resp.data;
+
+    this.updateMainData(mainData);
+
+    this.task = setTimeout(this.getMainData, this.config.updateInterval);
+  }
+
+  async drawerFooterOpen(v: boolean) {
+    if (!v) {
+      return;
+    }
+
+    await timeout(3000);
+
+    (this.$refs.end as HTMLElement).scrollIntoView({
+      behavior: 'smooth',
+    });
+  }
+
+  onPaste(e: ClipboardEvent) {
+    if ((e.target as HTMLElement).tagName === 'INPUT') {
+      return;
+    }
+
+    const text = e.clipboardData!.getData('text');
+    if (text) {
+      this.setPasteUrl({
+        url: text,
       });
-    },
-    onPaste(e: ClipboardEvent) {
-      if ((e.target as HTMLElement).tagName === 'INPUT') {
-        return;
-      }
+    }
+  }
 
-      const text = e.clipboardData!.getData('text');
-      if (text) {
-        this.setPasteUrl({
-          url: text,
-        });
-      }
-    },
-  },
-  watch: {
-    async needAuth(v) {
-      if (!v) {
-        await this.getInitData();
-      }
-    },
-  },
-});
+  @Watch('needAuth')
+  onNeedAuth(v: boolean) {
+    if (!v) {
+      this.getInitData();
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

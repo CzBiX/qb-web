@@ -132,19 +132,12 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import api from '../Api';
+import Component from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
+import { Torrent, ServerState } from '../types';
 
-export default Vue.extend({
-  props: {
-    phoneLayout: Boolean,
-  },
 
-  data() {
-    return {
-      app: null,
-      speedLimited: false,
-    };
-  },
-
+@Component({
   filters: {
     connectionIcon(status: string) {
       const statusMap: any = {
@@ -163,7 +156,6 @@ export default Vue.extend({
       return statusMap[status];
     },
   },
-
   computed: {
     ...mapState({
       info(state: any) {
@@ -174,69 +166,84 @@ export default Vue.extend({
       'isDataReady',
       'allTorrents',
     ]),
-    totalSize() {
-      return _.sumBy(this.allTorrents, 'size');
-    },
-    speedModeBind() {
-      if (this.speedLimited) {
-        return {
-          class: 'speed-limited',
-          color: 'warning',
-        };
-      }
+  },
+})
+export default class Footer extends Vue {
+  @Prop(Boolean)
+  readonly phoneLayout!: boolean
 
+  app: any = null
+  speedLimited = false
+
+  info!: ServerState
+  isDataReady!: boolean
+  allTorrents!: Torrent[]
+
+  get totalSize() {
+    return _.sumBy(this.allTorrents, 'size');
+  }
+
+  get speedModeBind() {
+    if (this.speedLimited) {
       return {
-        class: null,
-        color: 'success',
+        class: 'speed-limited',
+        color: 'warning',
       };
-    },
-    topLayoutClass() {
-      const v = this.phoneLayout;
-      if (v) {
-        return ['in-drawer', 'flex-column'];
-      }
+    }
 
-      return ['mx-4', 'justify-space-between'];
-    },
-  },
+    return {
+      class: null,
+      color: 'success',
+    };
+  }
 
-  methods: {
-    async getAppInfo() {
-      let resp = await api.getAppVersion();
-      const version = resp.data;
+  get topLayoutClass() {
+    const v = this.phoneLayout;
+    if (v) {
+      return ['in-drawer', 'flex-column'];
+    }
 
-      resp = await api.getApiVersion();
-      const apiVersion = resp.data;
+    return ['mx-4', 'justify-space-between'];
+  }
 
-      this.app = {
-        version, apiVersion,
-      };
-    },
-    async toggleSpeedLimitsMode() {
-      this.speedLimited = !this.speedLimited;
-      await api.toggleSpeedLimitsMode();
-    },
-  },
+  async getAppInfo() {
+    let resp = await api.getAppVersion();
+    const version = resp.data;
 
-  async created() {
+    resp = await api.getApiVersion();
+    const apiVersion = resp.data;
+
+    this.app = {
+      version, apiVersion,
+    };
+  }
+
+  async toggleSpeedLimitsMode() {
+    this.speedLimited = !this.speedLimited;
+    await api.toggleSpeedLimitsMode();
+  }
+
+  created() {
     if (!this.isDataReady) {
       return;
     }
-    this.speedLimited = this.info.use_alt_speed_limits;
-    await this.getAppInfo();
-  },
 
-  watch: {
-    async isDataReady(v) {
-      if (v && this.app === null) {
-        await this.getAppInfo();
-      }
-    },
-    'info.use_alt_speed_limits': function (v) {
-      this.speedLimited = v;
-    },
-  },
-});
+    this.speedLimited = this.info.use_alt_speed_limits;
+    this.getAppInfo();
+  }
+
+  @Watch('isDataReady')
+  onDataReady(v: boolean) {
+    if (v && this.app === null) {
+      this.getAppInfo();
+    }
+  }
+
+  @Watch('info.use_alt_speed_limits')
+  onSpeedLimitChanged (v: boolean) {
+    this.speedLimited = v;
+  }
+}
 </script>
 
 <style lang="scss" scoped>

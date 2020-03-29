@@ -38,20 +38,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import api from '@/Api';
-import { sleep } from '@/utils';
-import Taskable from '@/mixins/taskable';
+import Component from 'vue-class-component';
+import HasTask from '../../mixins/hasTask';
+import { Prop, Emit } from 'vue-property-decorator';
 
-export default Vue.extend({
-  mixins: [Taskable],
-
-  props: {
-    value: Boolean,
-  },
-  data() {
-    return {
-      logs: [],
-    };
-  },
+@Component({
   filters: {
     formatType(type: number) {
       const map: any = {
@@ -72,41 +63,46 @@ export default Vue.extend({
       return map[type];
     },
   },
-  computed: {
-    dialogWidth() {
-      return this.$vuetify.breakpoint.smAndDown ? '100%' : '70%';
-    },
-    phoneLayout() {
-      return this.$vuetify.breakpoint.xsOnly;
-    },
-  },
-  methods: {
-    closeDialog() {
-      this.$emit('input', false);
-    },
-    async getLogs() {
-      const lastId = this.logs.length ? this.logs[this.logs.length - 1].id : -1;
-      const logs = await api.getLogs(lastId);
+})
+export default class LogsDialog extends HasTask {
+  @Prop(Boolean)
+  readonly value!: boolean
 
-      if (this.destory) {
-        return;
-      }
+  logs: any[] = []
 
-      if (logs.length) {
-        this.logs = this.logs.concat(logs);
+  get dialogWidth() {
+    return this.$vuetify.breakpoint.smAndDown ? '100%' : '70%';
+  }
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.xsOnly;
+  }
 
-        await this.$nextTick();
+  @Emit('input')
+  closeDialog() {
+    return false
+  }
 
-        this.$refs.end.scrollIntoView();
-      }
+  async getLogs() {
+    const lastId = this.logs.length ? this.logs[this.logs.length - 1].id : -1;
+    const logs = await api.getLogs(lastId);
 
-      this.task = setTimeout(this.getLogs, 2000);
-    },
-  },
-  async created() {
-    await this.getLogs();
-  },
-});
+    if (this.destroy) {
+      return;
+    }
+
+    if (logs.length) {
+      this.logs = this.logs.concat(logs);
+
+      await this.$nextTick();
+
+      (this.$refs.end as HTMLElement).scrollIntoView();
+    }
+  }
+
+  created() {
+    this.setTaskAndRun(this.getLogs)
+  }
+}
 </script>
 
 <style lang="scss" scoped>

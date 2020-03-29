@@ -46,62 +46,66 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import Vue, { PropType } from 'vue';
+import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
-import { tr } from '@/locale';
 import api from '@/Api';
 import { findSameNamedTorrents } from '@/utils';
 import { Torrent } from '../../types';
+import Component from 'vue-class-component';
+import { Emit, Prop } from 'vue-property-decorator';
 
-export default Vue.extend({
-  props: {
-    value: Array as PropType<Torrent[]>,
+@Component({
+  computed: {
+    ...mapGetters(['allTorrents']),
   },
-  data() {
-    return {
-      tr,
-      deleteFiles: false,
-      deleteSameNamed: false,
-      submitting: false,
-      torrents: [],
-      sameNamedTorrents: [],
-    };
-  },
+})
+export default class ConfirmDeleteDialog extends Vue {
+  @Prop(Array)
+  readonly value!: Torrent[]
+
+  deleteFiles = false
+  deleteSameNamed = false
+  moveSameNamed = false
+  submitting = false
+  torrents: Torrent[] = []
+  sameNamedTorrents: Torrent[] = []
+
+  allTorrents!: Torrent[]
+
   created() {
     this.torrents = this.value;
     this.sameNamedTorrents = findSameNamedTorrents(this.allTorrents, this.torrents);
-  },
-  computed: {
-    ...mapGetters(['allTorrents']),
-    phoneLayout() {
-      return this.$vuetify.breakpoint.xsOnly;
-    },
-  },
-  methods: {
-    closeDialog() {
-      this.$emit('input', []);
-    },
-    async submit() {
-      if (this.submitting) {
-        return;
-      }
+  }
 
-      this.submitting = true;
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.xsOnly;
+  }
 
-      let torrentsToDelete;
-      if (this.deleteSameNamed) {
-        torrentsToDelete = this.torrents.concat(this.sameNamedTorrents);
-      } else {
-        torrentsToDelete = this.torrents;
-      }
-      const hashes = torrentsToDelete.map((t: any) => t.hash);
-      await api.deleteTorrents(hashes, this.deleteFiles);
+  @Emit('input')
+  closeDialog() {
+    return []
+  }
 
-      this.closeDialog();
-    },
-  },
-});
+  async submit() {
+    if (this.submitting) {
+      return;
+    }
+
+    this.submitting = true;
+
+    let torrentsToDelete;
+    if (this.deleteSameNamed) {
+      torrentsToDelete = this.torrents.concat(this.sameNamedTorrents);
+    } else {
+      torrentsToDelete = this.torrents;
+    }
+    const hashes = torrentsToDelete.map((t: any) => t.hash);
+    await api.deleteTorrents(hashes, this.deleteFiles);
+
+    this.closeDialog();
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -56,16 +56,18 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
+import { sortBy, sumBy, defaultTo, isUndefined } from 'lodash';
 import Vue from 'vue';
 import { mapState, mapMutations, mapGetters } from 'vuex';
 
 import { tr } from '@/locale';
-import { Torrent } from '@/types';
+import { Torrent, Category } from '@/types';
 import FilterGroup from './drawer/FilterGroup.vue';
 import api from '../Api';
 import { formatSize } from '../filters';
 import { SiteMap, StateType, AllStateTypes } from '../consts';
+import Component from 'vue-class-component';
+import { Prop, Emit } from 'vue-property-decorator';
 
 const stateList = [
   {
@@ -131,40 +133,10 @@ interface Data {
   endItems: MenuItem[],
 }
 
-export default {
+@Component({
   components: {
     FilterGroup,
   },
-
-  props: {
-    value: Object,
-  },
-
-  data(): Data {
-    const basicItems = [
-      { icon: 'mdi-settings', title: tr('settings'), click: () => alert(tr('todo')) },
-    ];
-    const endItems = [
-      { icon: 'mdi-delta', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
-    ];
-
-    return {
-      tr,
-      basicItems,
-      endItems,
-    };
-  },
-  created() {
-    if (this.phoneLayout) {
-      return
-    }
-
-    this.endItems = this.endItems.concat([
-      { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
-      { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
-    ])
-  },
-
   computed: {
     ...mapGetters([
       'isDataReady',
@@ -174,111 +146,152 @@ export default {
       'torrentGroupBySite',
       'torrentGroupByState',
     ]),
-    phoneLayout() {
-      return this.$vuetify.breakpoint.smAndDown;
-    },
-    items(): Array<any> {
-      if (!this.isDataReady) {
-        return _.concat(this.basicItems, this.endItems);
+  },
+})
+export default class Drawer extends Vue {
+  @Prop()
+  readonly value: any
+
+  basicItems: MenuItem[] = [
+    { icon: 'mdi-settings', title: tr('settings'), click: () => alert(tr('todo')) },
+  ]
+
+  endItems: MenuItem[] = [
+    { icon: 'mdi-delta', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
+  ]
+
+  isDataReady!: boolean
+  allTorrents!: Torrent[]
+  allCategories!: Category[]
+  torrentGroupByCategory!: {[category: string]: Torrent[]}
+  torrentGroupBySite!: {[site: string]: Torrent[]}
+  torrentGroupByState!: {[state: string]: Torrent[]}
+
+  created() {
+    if (this.phoneLayout) {
+      return
+    }
+
+    this.endItems = this.endItems.concat([
+      { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
+      { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
+    ])
+  }
+  
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.smAndDown;
+  }
+
+  buildStateGroup(): MenuChildrenItem[] {
+    return stateList.map((item) => {
+      let value = this.torrentGroupByState[item.state];
+      if (isUndefined(value)) {
+        value = [];
       }
+      const size = formatSize(sumBy(value, 'size'));
+      const title = `${item.title} (${value.length})`;
+      const append = `[${size}]`;
+      return {
+        icon: `mdi-${item.icon}`, title, key: item.state, append,
+      };
+    })
+  }
 
-      const filterGroups: MenuItem[] = [];
-      const totalSize = formatSize(_.sumBy(this.allTorrents, 'size'));
+  buildCategoryGroup(): MenuChildrenItem[] {
+    return [{
+      key: '',
+      name: tr('uncategorized'),
+    }].concat(this.allCategories).map((category) => {
+      let value = this.torrentGroupByCategory[category.key];
+      if (isUndefined(value)) {
+        value = [];
+      }
+      const size = formatSize(sumBy(value, 'size'));
+      const title = `${category.name} (${value.length})`;
+      const append = `[${size}]`;
+      return {
+        icon: 'mdi-folder-open', title, key: category.key, append,
+      };
+    });
+  }
 
-      const states = stateList.map((item) => {
-        let value = this.torrentGroupByState[item.state];
-        if (_.isUndefined(value)) {
-          value = [];
-        }
-        const size = formatSize(_.sumBy(value, 'size'));
-        const title = `${item.title} (${value.length})`;
-        const append = `[${size}]`;
-        return {
-          icon: `mdi-${item.icon}`, title, key: item.state, append,
-        };
-      });
-      filterGroups.push({
-        icon: 'mdi-menu-up',
-        'icon-alt': 'mdi-menu-down',
-        title: tr('state._'),
-        model: false,
-        select: 'state',
-        children: [
-          {
-            icon: 'mdi-filter-remove', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
-          },
-          ...states,
-        ],
-      });
+  buildSiteGroup(): MenuChildrenItem[] {
+    return sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
+      const size = formatSize(sumBy(value, 'size'));
+      const site = (SiteMap as any)[key];
+      const title = `${site ? site.name : (key || tr('others'))} (${value.length})`;
+      const icon = defaultTo(site ? site.icon : null, 'mdi-server');
+      const append = `[${size}]`;
+      return {
+        icon, title, key, append,
+      };
+    }), 'title');
+  }
 
-      const categories: any[] = [{
-        key: '',
-        name: tr('uncategorized'),
-      }].concat(this.allCategories).map((category) => {
-        let value = this.torrentGroupByCategory[category.key];
-        if (_.isUndefined(value)) {
-          value = [];
-        }
-        const size = formatSize(_.sumBy(value, 'size'));
-        const title = `${category.name} (${value.length})`;
-        const append = `[${size}]`;
-        return {
-          icon: 'mdi-folder-open', title, key: category.key, append,
-        };
-      });
-      filterGroups.push({
-        icon: 'mdi-menu-up',
-        'icon-alt': 'mdi-menu-down',
-        title: tr('category', 0),
-        model: !this.$vuetify.breakpoint.xsOnly,
-        select: 'category',
-        children: [
-          {
-            icon: 'mdi-folder-open', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
-          },
-          ...categories,
-        ],
-      });
+  get items() {
+    if (!this.isDataReady) {
+      return this.basicItems.concat(this.endItems);
+    }
 
-      const sites: any[] = _.sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
-        const size = formatSize(_.sumBy(value, 'size'));
-        const site = (SiteMap as any)[key];
-        const title = `${site ? site.name : (key || tr('others'))} (${value.length})`;
-        const icon = _.defaultTo(site ? site.icon : null, 'mdi-server');
-        const append = `[${size}]`;
-        return {
-          icon, title, key, append,
-        };
-      }), 'title');
-      filterGroups.push({
-        icon: 'mdi-menu-up',
-        'icon-alt': 'mdi-menu-down',
-        title: tr('sites'),
-        model: false,
-        select: 'site',
-        children: [
-          {
-            icon: 'mdi-server', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
-          },
-          ...sites,
-        ],
-      });
+    const filterGroups: MenuItem[] = [];
+    const totalSize = formatSize(sumBy(this.allTorrents, 'size'));
 
-      return _.concat(this.basicItems, [{filterGroups}] as any, this.endItems);
-    },
-  },
+    filterGroups.push({
+      icon: 'mdi-menu-up',
+      'icon-alt': 'mdi-menu-down',
+      title: tr('state._'),
+      model: false,
+      select: 'state',
+      children: [
+        {
+          icon: 'mdi-filter-remove', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+        },
+        ...this.buildStateGroup(),
+      ],
+    });
 
-  methods: {
-    async switchUi() {
-      await api.switchToOldUi();
+    filterGroups.push({
+      icon: 'mdi-menu-up',
+      'icon-alt': 'mdi-menu-down',
+      title: tr('category', 0),
+      model: !this.$vuetify.breakpoint.xsOnly,
+      select: 'category',
+      children: [
+        {
+          icon: 'mdi-folder-open', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+        },
+        ...this.buildCategoryGroup(),
+      ],
+    });
 
-      window.location.reload(true);
-    },
-    updateOptions(key: string, value: any) {
-      this.$emit('input', Object.assign({}, this.value, { [key]: value }));
-    },
-  },
-};
+    filterGroups.push({
+      icon: 'mdi-menu-up',
+      'icon-alt': 'mdi-menu-down',
+      title: tr('sites'),
+      model: false,
+      select: 'site',
+      children: [
+        {
+          icon: 'mdi-server', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+        },
+        ...this.buildSiteGroup(),
+      ],
+    });
+
+    return this.basicItems.concat([{filterGroups}] as any, this.endItems);
+  }
+
+  async switchUi() {
+    await api.switchToOldUi();
+
+    window.location.reload(true);
+  }
+
+  @Emit('input')
+  updateOptions(key: string, value: any) {
+    return Object.assign({}, this.value, { [key]: value })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
