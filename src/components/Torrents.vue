@@ -501,6 +501,10 @@ export default class Torrents extends Vue {
     display: flex;
     flex-direction: column;
 
+    ::v-deep .v-data-table__wrapper {
+      flex: 1;
+    }
+
     ::v-deep thead th, td {
       white-space: nowrap;
       padding: 0 4px;
