@@ -27,9 +27,9 @@ describe('format size', () => {
 describe('format duration', () => {
   test.each([
     [0, undefined, '0s'],
-    [0, { minUnit: 1}, '1m'],
-    [2 * 60 + 35, undefined, '1m 35s'],
-    [2 * 60 + 35, { minUnit: 1}, '1m'],
+    [0, { minUnit: 1}, '0m'],
+    [2 * 60 + 35, undefined, '2m 35s'],
+    [2 * 60 + 35, { minUnit: 1}, '2m'],
     [3600 * 24, { dayLimit: 1 }, '∞'],
     [3600 * 24, undefined, '1d'],
     [3600 * 26, undefined, '1d 2h'],
