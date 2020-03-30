@@ -75,7 +75,7 @@ export default {
       if (!userConfig.value) {
         return null;
       }
-      return Object.assign(DefaultConfig, userConfig.value) as DialogConfig;
+      return Object.assign({}, DefaultConfig, userConfig.value) as DialogConfig;
     });
     const content = computed(() => (config.value ? config.value.content : null));
     const value = ref<boolean>();
@@ -102,13 +102,14 @@ export default {
 
     watch(config, (v) => {
       value.value = !!v;
+      if (!v) {
+        input.value = undefined
+      }
     });
-    watch(value, async (v) => {
+    watch(value, (v) => {
       if (v || !config.value) {
         return
       }
-
-      input.value = undefined;
 
       clickBtn(null);
     }, { lazy: true });
