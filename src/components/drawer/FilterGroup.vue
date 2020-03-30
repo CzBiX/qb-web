@@ -58,7 +58,7 @@ export default class FilterGroup extends Vue {
   @Prop()
   readonly group!: Group
 
-  model = false
+  model = this.group.model
   selected: string | null = null
 
   created() {
