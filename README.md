@@ -16,4 +16,6 @@ see: [INSTALL.md](./INSTALL.md)
 ## Screenshot
 
 ![Main](./screenshot/main.png)
-![Add torrents](./screenshot/add-torrents.png)
+![Add Torrents](./screenshot/add-torrents.png)
+![RSS](./screenshot/rss.png)
+![RSS Rule](./screenshot/rss-rule.png)
