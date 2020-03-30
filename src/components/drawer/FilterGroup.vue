@@ -18,9 +18,15 @@
       @click.stop="select(child.key)"
     >
       <v-list-item-icon>
-        <v-icon v-if="isFontIcon(child.icon)">{{ child.icon }}</v-icon>
+        <v-icon v-if="isFontIcon(child.icon)">
+          {{ child.icon }}
+        </v-icon>
         <div v-else>
-          <v-img :src="child.icon" width='20px' height="20px" />
+          <v-img
+            :src="child.icon"
+            width="20px"
+            height="20px"
+          />
         </div>
       </v-list-item-icon>
       <v-list-item-content>
@@ -42,25 +48,19 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
-import { mapState, mapMutations } from 'vuex';
-import { FilterGroup as types } from '../types';
+import Vue from 'vue';
+import Component from 'vue-class-component';
+import { Prop } from 'vue-property-decorator';
+import { Group } from '../types'
 
-interface Data {
-  model: boolean;
-  selected: string | null;
-}
+@Component
+export default class FilterGroup extends Vue {
+  @Prop()
+  readonly group!: Group
 
-export default Vue.extend({
-  props: {
-    group: Object as PropType<types.Group>,
-  },
-  data(): Data {
-    return {
-      model: this.group.model,
-      selected: null,
-    };
-  },
+  model = false
+  selected: string | null = null
+
   created() {
     const s = this.$store.getters.config.filter[this.group.select];
     if (this.group.children.some(child => child.key === s)) {
@@ -68,22 +68,22 @@ export default Vue.extend({
     } else {
       this.select(null);
     }
-  },
-  methods: {
-    select(key: string | null) {
-      this.selected = this.selected === key ? null : key;
-      this.$store.commit('updateConfig', {
-        key: 'filter',
-        value: {
-          [this.group.select]: this.selected,
-        },
-      });
-    },
-    isFontIcon(icon: string) {
-      return icon.startsWith('mdi-');
-    },
-  },
-});
+  }
+
+  select(key: string | null) {
+    this.selected = this.selected === key ? null : key;
+    this.$store.commit('updateConfig', {
+      key: 'filter',
+      value: {
+        [this.group.select]: this.selected,
+      },
+    });
+  }
+
+  isFontIcon(icon: string) {
+    return icon.startsWith('mdi-');
+  }
+}
 </script>
 
 <style lang="scss" scoped>

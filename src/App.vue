@@ -13,12 +13,19 @@
         <v-divider />
         <v-expansion-panels
           class="drawer-footer"
+        >
+          <v-expansion-panel
+            lazy
+            @input="drawerFooterOpen"
           >
-          <v-expansion-panel lazy @input="drawerFooterOpen">
             <v-expansion-panel-header>
               <div class="d-flex align-center">
-                <v-icon class="footer-icon shrink">mdi-information-outline</v-icon>
-                <span class="footer-title">Status info</span>
+                <v-icon class="footer-icon shrink">
+                  mdi-information-outline
+                </v-icon>
+                <span class="footer-title">
+                  Status info
+                </span>
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -36,8 +43,14 @@
     </v-content>
 
     <add-form v-if="preferences" />
-    <login-form v-if="needAuth" v-model="needAuth" />
-    <logs-dialog v-if="drawerOptions.showLogs" v-model="drawerOptions.showLogs" />
+    <login-form
+      v-if="needAuth"
+      v-model="needAuth"
+    />
+    <logs-dialog
+      v-if="drawerOptions.showLogs"
+      v-model="drawerOptions.showLogs"
+    />
     <RssDialog
       v-if="drawerOptions.showRss"
       v-model="drawerOptions.showRss"
@@ -60,10 +73,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import {
-  mapActions, mapGetters, mapState, mapMutations,
-} from 'vuex';
-import Axios, { AxiosError } from 'axios';
+import { mapGetters, mapState, mapMutations } from 'vuex';
 import GlobalDialog from './components/GlobalDialog.vue';
 import GlobalSnackBar from './components/GlobalSnackBar.vue';
 

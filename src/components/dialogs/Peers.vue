@@ -15,16 +15,20 @@
               :title="row.item.country"
               :alt="codeToFlag(row.item.country_code).char"
               :src="codeToFlag(row.item.country_code).url"
-            />
+            >
             <template v-else>
               {{ codeToFlag(row.item.country_code).char }}
             </template>
           </template>
           {{ row.item.ip }}
-          <span class="grey--text">:{{ row.item.port }}</span>
+          <span class="grey--text">
+            :{{ row.item.port }}
+          </span>
         </td>
         <td>{{ row.item.connection }}</td>
-        <td :title="row.item.flags_desc">{{ row.item.flags }}</td>
+        <td :title="row.item.flags_desc">
+          {{ row.item.flags }}
+        </td>
         <td>{{ row.item.client }}</td>
         <td>{{ row.item.progress | progress }}</td>
         <td>{{ row.item.dl_speed | networkSpeed }}</td>
@@ -40,7 +44,6 @@
 
 <script lang="ts">
 import { map, merge, cloneDeep } from 'lodash';
-import Vue from 'vue';
 import { codeToFlag, isWindows } from '../../utils';
 import api from '../../Api';
 import { formatSize } from '../../filters';

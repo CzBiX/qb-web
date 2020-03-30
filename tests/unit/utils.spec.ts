@@ -1,6 +1,4 @@
-import {
-  findSameNamedTorrents, timeout, codeToFlag, sleep,
-} from '@/utils';
+import { findSameNamedTorrents, codeToFlag, sleep } from '@/utils';
 import { mockTorrent } from './utils';
 
 test('timeout', async () => {

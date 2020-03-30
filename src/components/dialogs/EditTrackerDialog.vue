@@ -16,11 +16,26 @@
       <v-card-text class="pa-0">
         <v-stepper v-model="step">
           <v-stepper-header>
-            <v-stepper-step :complete="step > 1" step="1">Search</v-stepper-step>
+            <v-stepper-step
+              :complete="step > 1"
+              step="1"
+            >
+              Search
+            </v-stepper-step>
             <v-divider />
-            <v-stepper-step :complete="step > 2" step="2">Preview</v-stepper-step>
+            <v-stepper-step
+              :complete="step > 2"
+              step="2"
+            >
+              Preview
+            </v-stepper-step>
             <v-divider />
-            <v-stepper-step :complete="step > 3" step="3">Result</v-stepper-step>
+            <v-stepper-step
+              :complete="step > 3"
+              step="3"
+            >
+              Result
+            </v-stepper-step>
           </v-stepper-header>
           <v-stepper-items>
             <v-stepper-content step="1">
@@ -41,7 +56,10 @@
             <v-stepper-content step="2">
               {{ toEdit.length }} torrent(s) to update.
               <ol class="torrents pt-6">
-                <li v-for="(row, i) in toEdit" :key="i">
+                <li
+                  v-for="(row, i) in toEdit"
+                  :key="i"
+                >
                   {{ row.name }}
                   <br>
                   {{ row.origUrl }}
@@ -69,7 +87,9 @@
           @click="back"
           v-if="step < 3"
           v-text="step == 1 ? 'Cancel' : 'Back'"
-        >Back</v-btn>
+        >
+          Back
+        </v-btn>
         <v-btn
           @click="foward"
           color="warning"

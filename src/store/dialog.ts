@@ -2,7 +2,7 @@ import { merge, isString, cloneDeep } from 'lodash'
 import { Module } from 'vuex';
 import { DialogState } from './types';
 
-export const dialogStore : Module<DialogState, any> = {
+export const dialogStore: Module<DialogState, any> = {
   state() {
     return {
       config: null,

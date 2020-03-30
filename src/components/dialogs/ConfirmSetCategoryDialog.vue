@@ -1,5 +1,10 @@
 <template>
-  <v-dialog :value="true" @input="closeDialog" :fullscreen="phoneLayout" width="40em">
+  <v-dialog
+    :value="true"
+    @input="closeDialog"
+    :fullscreen="phoneLayout"
+    width="40em"
+  >
     <v-card>
       <v-card-title
         class="headline grey lighten-4"
@@ -15,7 +20,10 @@
           {{ $t('dialog.set_category.reset') }}
         </template>
         <ol class="torrents pt-6">
-          <li v-for="(row, i) in torrents" :key="i">
+          <li
+            v-for="(row, i) in torrents"
+            :key="i"
+          >
             {{ row.name }}
           </li>
         </ol>
@@ -25,12 +33,17 @@
           v-model="moveSameNamed"
           prepend-icon="mdi-file-multiple"
           class="mt-0"
-          :label="$t('dialog.set_category.also.move_same_name_torrents', sameNamedTorrents.length)"
+          :label="$t('dialog.set_category.also_move_same_name_torrents', sameNamedTorrents.length)"
         />
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="closeDialog">{{ $t('cancel') }}</v-btn>
+        <v-btn
+          text
+          @click="closeDialog"
+        >
+          {{ $t('cancel') }}
+        </v-btn>
         <v-btn
           @click="submit"
           color="warning"

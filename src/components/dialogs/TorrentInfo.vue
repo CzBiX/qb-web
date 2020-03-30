@@ -78,7 +78,6 @@
 <script lang="ts">
 import { chunk, countBy } from 'lodash';
 
-import Vue from 'vue';
 import api from '../../Api';
 import {
   formatDuration, formatSize, formatTimestamp, toPrecision,
@@ -135,7 +134,7 @@ export default class TorrentInfo extends BaseTorrentInfo {
     { label: 'Created on', value: prop => formatTimestamp(prop.creation_date) },
     { label: 'Added on', value: prop => formatTimestamp(prop.addition_date) },
     { label: 'Completed on', value: prop => formatTimestamp(prop.completion_date) },
-    { label: 'Torrent hash', value: prop => this.torrent.hash },
+    { label: 'Torrent hash', value: () => this.torrent.hash },
     { label: 'Save path', value: prop => prop.save_path },
     { label: 'Comment', value: prop => prop.comment },
   ]

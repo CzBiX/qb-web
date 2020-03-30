@@ -47,6 +47,7 @@ describe('all torrents getter', () => {
     store.replaceState(mockState({
       mainData: {
         categories: {},
+        // eslint-disable-next-line @typescript-eslint/camelcase
         server_state: undefined as any,
         torrents: {
           a: mockBaseTorrent({}),

@@ -41,7 +41,11 @@
           :group="child"
         />
       </template>
-      <v-list-item v-else :key="item.title" @click="item.click ? item.click() : null">
+      <v-list-item
+        v-else
+        :key="item.title"
+        @click="item.click ? item.click() : null"
+      >
         <v-list-item-icon>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-item-icon>
@@ -58,14 +62,14 @@
 <script lang="ts">
 import { sortBy, sumBy, defaultTo, isUndefined } from 'lodash';
 import Vue from 'vue';
-import { mapState, mapMutations, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 
 import { tr } from '@/locale';
 import { Torrent, Category } from '@/types';
 import FilterGroup from './drawer/FilterGroup.vue';
 import api from '../Api';
 import { formatSize } from '../filters';
-import { SiteMap, StateType, AllStateTypes } from '../consts';
+import { SiteMap, StateType } from '../consts';
 import Component from 'vue-class-component';
 import { Prop, Emit } from 'vue-property-decorator';
 
@@ -113,24 +117,18 @@ const stateList = [
 ];
 
 interface MenuItem {
-  icon: string,
-  'icon-alt'?: string,
-  title: string,
-  model?: boolean,
-  select?: string,
-  click?: () => void,
-  children?: MenuChildrenItem[],
+  icon: string;
+  'icon-alt'?: string;
+  title: string;
+  model?: boolean;
+  select?: string;
+  click?: () => void;
+  children?: MenuChildrenItem[];
 }
 
 interface MenuChildrenItem extends MenuItem {
-  key: string | null,
-  append?: string,
-}
-
-interface Data {
-  tr: any,
-  basicItems: MenuItem[],
-  endItems: MenuItem[],
+  key: string | null;
+  append?: string;
 }
 
 @Component({

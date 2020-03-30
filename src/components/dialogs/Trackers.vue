@@ -21,10 +21,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import api from '../../Api';
 import Component from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 import BaseTorrentInfo from './baseTorrentInfo';
 
 @Component({

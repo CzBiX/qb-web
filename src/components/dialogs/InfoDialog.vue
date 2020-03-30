@@ -108,7 +108,7 @@ import Trackers from './Trackers.vue';
 import Peers from './Peers.vue';
 import Panel from './Panel.vue';
 import Component from 'vue-class-component';
-import { Prop, Emit, Watch, PropSync } from 'vue-property-decorator';
+import { Prop, Emit, PropSync } from 'vue-property-decorator';
 import { Torrent } from '../../types';
 
 @Component({

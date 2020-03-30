@@ -35,15 +35,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import {
-  computed, ref, watch, Ref,
-} from '@vue/composition-api';
+import { computed, ref, watch } from '@vue/composition-api';
 
 import { tr } from '@/locale';
 import { DialogType, DialogConfig } from '@/store/types';
 import { useMutations, useState } from '@/store';
-import { timeout } from '@/utils';
 
 const BUTTONS = {
   [DialogType.Alert]: [

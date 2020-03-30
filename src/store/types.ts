@@ -8,9 +8,9 @@ export interface RootState {
 }
 
 export interface TorrentFilter {
-  state: string
-  category: string
-  site: string
+  state: string;
+  category: string;
+  site: string;
 }
 
 export interface ConfigState {
@@ -18,8 +18,8 @@ export interface ConfigState {
 }
 
 export interface ConfigPayload {
-  key: string,
-  value: any,
+  key: string;
+  value: any;
 }
 
 export enum DialogType {
@@ -32,28 +32,28 @@ export enum DialogType {
 
 export interface DialogConfig {
   content: {
-    title?: String,
-    text: String,
-    callback?: CallableFunction,
-    type?: DialogType,
-    buttons?: any,
+    title?: string;
+    text: string;
+    callback?: CallableFunction;
+    type?: DialogType;
+    buttons?: any;
 
-    rules?: CallableFunction[],
-    placeholder?: string,
-  },
-  width?: string,
+    rules?: CallableFunction[];
+    placeholder?: string;
+  };
+  width?: string;
 }
 
 export interface DialogState {
-  config: DialogConfig | null,
+  config: DialogConfig | null;
 }
 
 export interface SnackBarConfig {
-  text: string,
-  btnText?: string,
-  callback?: CallableFunction,
+  text: string;
+  btnText?: string;
+  callback?: CallableFunction;
 }
 
 export interface SnackBarState {
-  config: SnackBarConfig | null,
+  config: SnackBarConfig | null;
 }

@@ -1,130 +1,180 @@
 <template>
-<div
-  class="footer d-flex"
-  :class="topLayoutClass"
-  v-if="isDataReady">
   <div
-    class="d-flex shrink"
-    :class="phoneLayout ? 'flex-column' : 'align-center'"
-    v-if="app"
+    class="footer d-flex"
+    :class="topLayoutClass"
+    v-if="isDataReady"
   >
-    <div v-if="!phoneLayout">
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <span v-on="on">
-            qBittorrent {{ app.version }}
+    <div
+      class="d-flex shrink"
+      :class="phoneLayout ? 'flex-column' : 'align-center'"
+      v-if="app"
+    >
+      <div v-if="!phoneLayout">
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <span v-on="on">
+              qBittorrent {{ app.version }}
+            </span>
+          </template>
+          <span>
+            API version: {{ app.apiVersion }}
           </span>
-        </template>
+        </v-tooltip>
+      </div>
+      <v-divider
+        vertical
+        class="mx-2"
+        v-if="!phoneLayout"
+      />
+      <div class="icon-label">
+        <v-icon>mdi-sprout</v-icon>
+        {{ allTorrents.length }} [{{ totalSize | formatSize }}]
+      </div>
+      <v-divider
+        vertical
+        class="mx-2"
+        v-if="!phoneLayout"
+      />
+      <div class="icon-label">
+        <v-icon>mdi-nas</v-icon>
+        {{ info.free_space_on_disk | formatSize }}
+      </div>
+      <v-divider
+        vertical
+        class="mx-2"
+        v-if="!phoneLayout"
+      />
+      <div
+        class="icon-label"
+        v-if="!phoneLayout"
+      >
+        <v-icon class="icon-upload-download">
+          mdi-swap-vertical-bold
+        </v-icon>
         <span>
-          API version: {{ app.apiVersion }}
+          {{ info.alltime_dl | formatSize }}/{{ info.alltime_ul | formatSize }}
         </span>
-      </v-tooltip>
+      </div>
     </div>
-    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-    <div class="icon-label">
-      <v-icon>mdi-sprout</v-icon>
-      {{ allTorrents.length }} [{{ totalSize | formatSize }}]
-    </div>
-    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-    <div class="icon-label">
-      <v-icon>mdi-nas</v-icon>
-      {{ info.free_space_on_disk | formatSize }}
-    </div>
-    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-    <div class="icon-label" v-if="!phoneLayout">
-      <v-icon class="icon-upload-download">mdi-swap-vertical-bold</v-icon>
-      <span>
-        {{ info.alltime_dl | formatSize }}/{{ info.alltime_ul | formatSize }}
-      </span>
-    </div>
-  </div>
-  <div
-    class="d-flex shrink"
-    :class="phoneLayout ? 'flex-column' : 'align-center'"
-    v-if="info"
-  >
-    <div v-if="!phoneLayout" class="icon-label">
-      <v-icon>mdi-access-point-network</v-icon>
-      {{ info.dht_nodes }} nodes
-    </div>
-    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-    <div class="icon-label">
-      <v-tooltip top>
-        <template v-slot:activator="{ on }">
-          <v-icon
-            v-on="on"
-            :color="info.connection_status | connectionIconColor"
-          >mdi-{{ info.connection_status | connectionIcon }}</v-icon>
-          <span v-if="phoneLayout">
+    <div
+      class="d-flex shrink"
+      :class="phoneLayout ? 'flex-column' : 'align-center'"
+      v-if="info"
+    >
+      <div
+        v-if="!phoneLayout"
+        class="icon-label"
+      >
+        <v-icon>mdi-access-point-network</v-icon>
+        {{ info.dht_nodes }} nodes
+      </div>
+      <v-divider
+        vertical
+        class="mx-2"
+        v-if="!phoneLayout"
+      />
+      <div class="icon-label">
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              v-on="on"
+              :color="info.connection_status | connectionIconColor"
+            >
+              mdi-{{ info.connection_status | connectionIcon }}
+            </v-icon>
+            <span v-if="phoneLayout">
+              Network {{ info.connection_status }}
+            </span>
+          </template>
+          <span>
             Network {{ info.connection_status }}
           </span>
-        </template>
+        </v-tooltip>
+      </div>
+      <v-divider
+        vertical
+        class="mx-2"
+        v-if="!phoneLayout"
+      />
+      <div class="icon-label">
+        <v-switch
+          v-if="phoneLayout"
+          hide-details
+          :value="speedLimited"
+          @change="toggleSpeedLimitsMode"
+          label="Alternative speed limits"
+          class="mt-0 pt-0 speed-switch"
+        >
+          <template v-slot:prepend>
+            <v-icon
+              v-bind="speedModeBind"
+            >
+              mdi-speedometer
+            </v-icon>
+          </template>
+        </v-switch>
+        <v-tooltip
+          top
+          v-else
+        >
+          <template v-slot:activator="{ on }">
+            <v-icon
+              v-on="on"
+              v-bind="speedModeBind"
+              @click="toggleSpeedLimitsMode"
+            >
+              mdi-speedometer
+            </v-icon>
+          </template>
+          <span>
+            Alternative speed limits {{ speedLimited ? 'enabled' : 'disabled' }}
+          </span>
+        </v-tooltip>
+      </div>
+      <v-divider
+        vertical
+        class="mx-2"
+        v-if="!phoneLayout"
+      />
+      <div class="icon-label">
+        <v-icon
+          :color=" info.dl_info_speed > 0 ? 'success' : null"
+        >
+          mdi-download
+        </v-icon>
         <span>
-          Network {{ info.connection_status }}
+          {{ info.dl_info_speed | formatSize }}/s
+          <template v-if="info.dl_rate_limit">
+            ({{ info.dl_rate_limit | formatSize }}/s)
+          </template>
+          <template v-if="!phoneLayout">
+            [{{ info.dl_info_data | formatSize }}]
+          </template>
         </span>
-      </v-tooltip>
-    </div>
-    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-    <div class="icon-label">
-      <v-switch
-        v-if="phoneLayout"
-        hide-details
-        :value="speedLimited"
-        @change="toggleSpeedLimitsMode"
-        label="Alternative speed limits"
-        class="mt-0 pt-0 speed-switch"
-      >
-        <template v-slot:prepend>
-          <v-icon
-            v-bind="speedModeBind"
-          >mdi-speedometer</v-icon>
-        </template>
-      </v-switch>
-      <v-tooltip top v-else>
-        <template v-slot:activator="{ on }">
-          <v-icon
-            v-on="on"
-            v-bind="speedModeBind"
-            @click="toggleSpeedLimitsMode"
-          >mdi-speedometer</v-icon>
-        </template>
+      </div>
+      <v-divider
+        vertical
+        class="mx-2"
+        v-if="!phoneLayout"
+      />
+      <div class="icon-label">
+        <v-icon
+          :color=" info.up_info_speed > 0 ? 'warning' : null"
+        >
+          mdi-upload
+        </v-icon>
         <span>
-          Alternative speed limits {{ speedLimited ? 'enabled' : 'disabled' }}
+          {{ info.up_info_speed | formatSize }}/s
+          <template v-if="info.up_rate_limit">
+            ({{ info.up_rate_limit | formatSize }}/s)
+          </template>
+          <template v-if="!phoneLayout">
+            [{{ info.up_info_data | formatSize }}]
+          </template>
         </span>
-      </v-tooltip>
-    </div>
-    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-    <div class="icon-label">
-      <v-icon
-        :color=" info.dl_info_speed > 0 ? 'success' : null"
-      >mdi-download</v-icon>
-      <span>
-        {{ info.dl_info_speed | formatSize }}/s
-        <template v-if="info.dl_rate_limit">
-          ({{ info.dl_rate_limit | formatSize}}/s)
-        </template>
-        <template v-if="!phoneLayout">
-          [{{ info.dl_info_data | formatSize }}]
-        </template>
-      </span>
-    </div>
-    <v-divider vertical class="mx-2" v-if="!phoneLayout"/>
-    <div class="icon-label">
-      <v-icon
-        :color=" info.up_info_speed > 0 ? 'warning' : null"
-      >mdi-upload</v-icon>
-      <span>
-        {{ info.up_info_speed | formatSize }}/s
-        <template v-if="info.up_rate_limit">
-          ({{ info.up_rate_limit | formatSize}}/s)
-        </template>
-        <template v-if="!phoneLayout">
-          [{{ info.up_info_data | formatSize }}]
-        </template>
-      </span>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script lang="ts">

@@ -31,7 +31,7 @@ export function loadConfig() {
   return JSON.parse(tmp);
 }
 
-export const configStore : Module<ConfigState, any> = {
+export const configStore: Module<ConfigState, any> = {
   state() {
     return {
       userConfig: loadConfig(),

@@ -49,9 +49,9 @@ export interface Torrent extends BaseTorrent {
 }
 
 export interface Category {
-  key: string
-  name: string
-  savePath?: string
+  key: string;
+  name: string;
+  savePath?: string;
 }
 
 export interface ServerState {
@@ -88,45 +88,45 @@ export interface MainData {
 }
 
 export interface RssTorrent {
-  category?: string
-  comment?: string
-  date?: string
-  description?: string
-  id: string
-  link: string
-  title: string
-  torrentURL: string
+  category?: string;
+  comment?: string;
+  date?: string;
+  description?: string;
+  id: string;
+  link: string;
+  title: string;
+  torrentURL: string;
 }
 
 export interface RssItem {
-  articles: RssTorrent[]
-  hasError: boolean
-  isLoading: boolean
-  lastBuildDate: string
-  title: string
-  uid: string
-  url: string
+  articles: RssTorrent[];
+  hasError: boolean;
+  isLoading: boolean;
+  lastBuildDate: string;
+  title: string;
+  uid: string;
+  url: string;
 }
 
 export interface RssNode {
-  [key: string]: RssNode | RssItem
+  [key: string]: RssNode | RssItem;
 }
 
 export interface RssRule {
-  enabled: boolean,
-  mustContain: string,
-  mustNotContain: string,
-  useRegex: boolean,
-  episodeFilter: string,
-  smartFilter: boolean,
-  previouslyMatchedEpisodes: string[],
-  affectedFeeds: string[],
-  createSubfolder: boolean | null,
-  ignoreDays: number,
-  lastMatch: string,
-  addPaused: boolean | null,
-  assignedCategory: string,
-  savepath: string,
+  enabled: boolean;
+  mustContain: string;
+  mustNotContain: string;
+  useRegex: boolean;
+  episodeFilter: string;
+  smartFilter: boolean;
+  previouslyMatchedEpisodes: string[];
+  affectedFeeds: string[];
+  createSubfolder: boolean | null;
+  ignoreDays: number;
+  lastMatch: string;
+  addPaused: boolean | null;
+  assignedCategory: string;
+  savepath: string;
 }
 
 export interface TorrentProperties {

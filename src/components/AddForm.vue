@@ -63,7 +63,10 @@
               </v-row>
               <v-row no-gutters>
                 <template v-if="showMore">
-                  <v-col cols="12" sm="6">
+                  <v-col
+                    cols="12"
+                    sm="6"
+                  >
                     <v-combobox
                       :label="$t('category', 1)"
                       prepend-icon="mdi-folder"
@@ -74,7 +77,10 @@
                       @input="setParams('category', $event.value)"
                     />
                   </v-col>
-                  <v-col cols="12" sm="6">
+                  <v-col
+                    cols="12"
+                    sm="6"
+                  >
                     <v-checkbox
                       prepend-icon="mdi-file-tree"
                       :label="$t('label.create_subfolder')"
@@ -83,14 +89,20 @@
                     />
                   </v-col>
                 </template>
-                <v-col cols="12" sm="6">
+                <v-col
+                  cols="12"
+                  sm="6"
+                >
                   <v-checkbox
                     v-model="autoStart"
                     :label="$t('label.start_torrent')"
                     prepend-icon="mdi-play-pause"
                   />
                 </v-col>
-                <v-col cols="12" sm="6">
+                <v-col
+                  cols="12"
+                  sm="6"
+                >
                   <v-checkbox
                     prepend-icon="mdi-progress-check"
                     :label="$t('label.skip_hash_check')"
@@ -99,7 +111,10 @@
                   />
                 </v-col>
                 <template v-if="showMore">
-                  <v-col cols="12" sm="6">
+                  <v-col
+                    cols="12"
+                    sm="6"
+                  >
                     <v-checkbox
                       :label="$t('label.in_sequential_order')"
                       prepend-icon="mdi-sort-descending"
@@ -107,7 +122,10 @@
                       @change="setParams('sequentialDownload', $event.value)"
                     />
                   </v-col>
-                  <v-col cols="12" sm="6">
+                  <v-col
+                    cols="12"
+                    sm="6"
+                  >
                     <v-checkbox
                       prepend-icon="mdi-ray-start-end"
                       :label="$t('label.first_and_last_pieces_first')"
@@ -126,9 +144,18 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn text @click="showMore = !showMore" v-text="showMore ? $t('less') : $t('more')" />
+          <v-btn
+            text
+            @click="showMore = !showMore"
+            v-text="showMore ? $t('less') : $t('more')"
+          />
           <v-spacer />
-          <v-btn text @click="dialog = false">{{ $t('cancel') }}</v-btn>
+          <v-btn
+            text
+            @click="dialog = false"
+          >
+            {{ $t('cancel') }}
+          </v-btn>
           <v-btn
             text
             @click="submit"
@@ -149,11 +176,11 @@ import { isNil } from 'lodash';
 import Vue from 'vue';
 import { mapState } from 'vuex';
 
-import { tr } from '@/locale';
 import api from '../Api';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 
+/* eslint-disable @typescript-eslint/camelcase */
 const defaultParams = {
   urls: null,
   category: null,
@@ -163,6 +190,7 @@ const defaultParams = {
   sequentialDownload: false,
   firstLastPiecePrio: false,
 };
+/* eslint-enable @typescript-eslint/camelcase */
 
 @Component({
   computed: {
@@ -189,9 +217,9 @@ export default class AddForm extends Vue {
   pasteUrl!: string | null
   prefs!: any
   $refs!: {
-    form: any,
-    file: any,
-    fileZone: HTMLElement,
+    form: any;
+    file: any;
+    fileZone: HTMLElement;
   }
   
   get params() {
@@ -213,6 +241,7 @@ export default class AddForm extends Vue {
 
   created() {
     defaultParams.paused = this.prefs.start_paused_enabled;
+    /* eslint-disable-next-line @typescript-eslint/camelcase */
     defaultParams.root_path = this.prefs.create_subfolder_enabled;
     this.showMore = !this.phoneLayout;
   }
@@ -301,7 +330,7 @@ export default class AddForm extends Vue {
   }
 
   @Watch('files')
-  onFilesChange(v: FileList) {
+  onFilesChange() {
     this.$refs.form.validate();
   }
 }

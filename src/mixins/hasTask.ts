@@ -6,7 +6,7 @@ export default class HasTask extends Vue {
   destroy?: boolean
   call?: CallableFunction
   taskId?: number
-  interval: number = 2000
+  interval = 2000
 
   setTaskAndRun(call: CallableFunction, interval?: number) {
     this.call = call

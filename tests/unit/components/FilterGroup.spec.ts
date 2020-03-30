@@ -2,7 +2,7 @@ import Vuex from 'vuex';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import '@/directives';
 import FilterGroup from '@/components/drawer/FilterGroup.vue';
-import { FilterGroup as types } from '@/components/types';
+import * as types from '@/components/types';
 import { mock } from '../utils';
 
 const localVue = createLocalVue();
@@ -101,7 +101,6 @@ test('unselect if can not found children', () => {
   const wrapper = mount({
     group,
   });
-  const { vm } = wrapper;
 
   expect((wrapper.vm as any).selected).toBeNull();
 });

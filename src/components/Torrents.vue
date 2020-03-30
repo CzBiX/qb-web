@@ -151,7 +151,9 @@
               <v-icon :color="row.item.state | stateColor">
                 {{ row.item.state | stateIcon }}
               </v-icon>
-              <span class="torrent-title">{{ row.item.name }}</span>
+              <span class="torrent-title">
+                {{ row.item.name }}
+              </span>
             </td>
             <td>{{ row.item.size | formatSize }}</td>
             <td>
@@ -215,9 +217,7 @@ import ConfirmSetCategoryDialog from './dialogs/ConfirmSetCategoryDialog.vue'
 import EditTrackerDialog from './dialogs/EditTrackerDialog.vue'
 import InfoDialog from './dialogs/InfoDialog.vue'
 import api from '../Api'
-import { formatSize, formatDuration } from '../filters'
-import { torrentIsState } from '../utils'
-import { StateType } from '../consts'
+import { formatSize } from '../filters'
 import { DialogType, TorrentFilter, ConfigPayload, DialogConfig, SnackBarConfig } from '../store/types'
 import Component from 'vue-class-component'
 import { Torrent, Category } from '../types'

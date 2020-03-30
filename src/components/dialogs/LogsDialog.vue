@@ -20,7 +20,11 @@
           v-if="!logs.length"
         />
         <ol class="logs caption">
-          <li v-for="(row, i) in logs" :key="i" :class="row.type | typeColor">
+          <li
+            v-for="(row, i) in logs"
+            :key="i"
+            :class="row.type | typeColor"
+          >
             [{{ row.type | formatType }} {{ row.timestamp / 1000 | formatTimestamp }}]
             <span v-html="row.message" />
           </li>
@@ -29,14 +33,18 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="closeDialog">Close</v-btn>
+        <v-btn
+          text
+          @click="closeDialog"
+        >
+          Close
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import api from '@/Api';
 import Component from 'vue-class-component';
 import HasTask from '../../mixins/hasTask';

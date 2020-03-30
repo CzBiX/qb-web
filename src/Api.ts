@@ -1,4 +1,5 @@
-import Axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+/* eslint-disable @typescript-eslint/camelcase */
+import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { RssNode, RssRule } from '@/types';
 
 class Api {
@@ -193,7 +194,7 @@ class Api {
     }).then(Api.handleResponse);
   }
 
-  public addRssFeed(url: string, path: string = '') {
+  public addRssFeed(url: string, path = '') {
     const params: any = {
       url,
       path,

@@ -21,11 +21,10 @@
 
 <script lang="ts">
 import { groupBy } from 'lodash';
-import Vue from 'vue';
 import api from '../../Api';
 import BaseTorrentInfo from './baseTorrentInfo'
 import Component from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 
 /* eslint-disable camelcase */
 interface File {

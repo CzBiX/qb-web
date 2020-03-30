@@ -12,31 +12,48 @@
         <v-icon class="mr-2">mdi-filter</v-icon>
         <span v-text="$t('dialog.rss_rule.title')" />
         <v-spacer />
-        <v-btn icon @click="closeDialog">
+        <v-btn
+          icon
+          @click="closeDialog"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text>
         <div class="toolbar">
-          <v-btn icon @click="addRssRule" :title="$t('dialog.rss_rule.add_rule')">
+          <v-btn
+            icon
+            @click="addRssRule"
+            :title="$t('dialog.rss_rule.add_rule')"
+          >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
-          <v-btn icon :disabled="!selectedRuleName" @click="deleteRssRule" :title="$t('delete')">
+          <v-btn
+            icon
+            :disabled="!selectedRuleName"
+            @click="deleteRssRule"
+            :title="$t('delete')"
+          >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </div>
         <v-divider />
         <div class="content">
-          <div v-if="!rssRules" class="loading">
-            <v-progress-circular indeterminate>
-            </v-progress-circular>
+          <div
+            v-if="!rssRules"
+            class="loading"
+          >
+            <v-progress-circular indeterminate />
           </div>
           <template v-else>
             <div class="rss-rules">
               <v-list
                 dense
               >
-                <v-list-item-group v-model="selectedRuleName" color="primary" >
+                <v-list-item-group
+                  v-model="selectedRuleName"
+                  color="primary"
+                >
                   <v-list-item
                     v-for="(value, key) in rssRules"
                     :key="key"
@@ -58,35 +75,50 @@
             <v-divider vertical />
             <div class="rule-details">
               <v-form class="rule-form">
-                <p class="form-title" v-text="$t('dialog.rss_rule.rule_settings')" />
+                <p
+                  class="form-title"
+                  v-text="$t('dialog.rss_rule.rule_settings')"
+                />
 
-                <v-checkbox dense :label="$t('dialog.rss_rule.use_regex')"
+                <v-checkbox
+                  dense
+                  :label="$t('dialog.rss_rule.use_regex')"
                   :disabled="!selectedRule.enabled"
                   :value="selectedRule.useRegex"
                   @change="editRule('useRegex', $event)"
                 />
-                <v-text-field dense :label="$t('dialog.rss_rule.must_contain')"
+                <v-text-field
+                  dense
+                  :label="$t('dialog.rss_rule.must_contain')"
                   :disabled="!selectedRule.enabled"
                   :value="selectedRule.mustContain"
                   @change="editRule('mustContain', $event)"
                 />
-                <v-text-field dense :label="$t('dialog.rss_rule.must_not_contain')"
+                <v-text-field
+                  dense
+                  :label="$t('dialog.rss_rule.must_not_contain')"
                   :disabled="!selectedRule.enabled"
                   :value="selectedRule.mustNotContain"
                   @change="editRule('mustNotContain', $event)"
                 />
-                <v-text-field dense :label="$t('dialog.rss_rule.episode_filter')"
+                <v-text-field
+                  dense
+                  :label="$t('dialog.rss_rule.episode_filter')"
                   :disabled="!selectedRule.enabled"
                   :value="selectedRule.episodeFilter"
                   @change="editRule('episodeFilter', $event)"
                 />
-                <v-checkbox dense :label="$t('dialog.rss_rule.smart_episode')"
+                <v-checkbox
+                  dense
+                  :label="$t('dialog.rss_rule.smart_episode')"
                   :disabled="!selectedRule.enabled"
                   :value="selectedRule.smartFilter"
                   @change="editRule('smartFilter', $event)"
                 />
 
-                <v-select dense :label="$t('dialog.rss_rule.assign_category')"
+                <v-select
+                  dense
+                  :label="$t('dialog.rss_rule.assign_category')"
                   :items="categoryItems"
                   :disabled="!selectedRule.enabled"
                   :value="selectedRule.assignedCategory"
@@ -94,9 +126,12 @@
                 />
               </v-form>
 
-              <v-divider/>
+              <v-divider />
 
-              <p class="feeds-title" v-text="$t('dialog.rss_rule.apply_to_feeds')"/>
+              <p
+                class="feeds-title"
+                v-text="$t('dialog.rss_rule.apply_to_feeds')"
+              />
               <v-list
                 dense
                 v-if="selectedRule.enabled"
@@ -132,7 +167,7 @@ import Component from 'vue-class-component';
 
 import { tr } from '@/locale'
 import { Prop, Emit, Watch } from 'vue-property-decorator';
-import { RssRule, Category, RssNode, RssItem } from '../../types';
+import { RssRule, Category, RssNode } from '../../types';
 import api from '../../Api';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { DialogConfig, DialogType, SnackBarConfig } from '../../store/types';

@@ -2,7 +2,7 @@ import { cloneDeep, isString } from 'lodash';
 import { Module } from 'vuex';
 import { SnackBarState } from './types';
 
-export const snackBarStore : Module<SnackBarState, any> = {
+export const snackBarStore: Module<SnackBarState, any> = {
   state() {
     return {
       config: null,

@@ -1,7 +1,14 @@
 <template>
-  <v-dialog v-model="value" persistent width="25em">
+  <v-dialog
+    v-model="value"
+    persistent
+    width="25em"
+  >
     <v-card>
-      <v-toolbar dark color="primary">
+      <v-toolbar
+        dark
+        color="primary"
+      >
         <v-toolbar-title>{{ $t('login') }}</v-toolbar-title>
       </v-toolbar>
       <v-card-text>
@@ -9,9 +16,11 @@
           ref="form"
           v-model="valid"
         >
-          <div class="pa-0"
-                        @keyup.enter.capture="submit"
-            v-bind="{ [`grid-list-${$vuetify.breakpoint.name}`]: true }">
+          <div
+            class="pa-0"
+            @keyup.enter.capture="submit"
+            v-bind="{ [`grid-list-${$vuetify.breakpoint.name}`]: true }"
+          >
             <v-text-field
               v-model="params.username"
               prepend-icon="mdi-account"

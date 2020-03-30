@@ -21,9 +21,6 @@
 <script>
 import { useMutations, useState } from '@/store';
 
-import { tr } from '@/locale';
-import { timeout } from '@/utils';
-
 export default {
   setup() {
     const mutations = useMutations(['closeSnackBar']);
@@ -48,7 +45,6 @@ export default {
     }
 
     return {
-      tr,
       config,
       changed,
       clickBtn,

@@ -1,6 +1,7 @@
 import { Torrent, BaseTorrent } from '@/types';
 
 const emptyBaseTorrent: BaseTorrent = {
+  /* eslint-disable @typescript-eslint/camelcase */
   added_on: 0,
   amount_left: 0,
   auto_tmm: false,
@@ -43,6 +44,7 @@ const emptyBaseTorrent: BaseTorrent = {
   uploaded: 0,
   uploaded_session: 0,
   upspeed: 0,
+  /* eslint-enable @typescript-eslint/camelcase */
 };
 
 const emptyTorrent: Torrent = Object.assign({}, emptyBaseTorrent, {

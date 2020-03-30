@@ -1,5 +1,4 @@
-function getSiteIcon(name: String) {
-  // eslint-disable-next-line
+function getSiteIcon(name: string) {
   return require(`@/assets/site_icons/${name}.png`);
 }
 

@@ -12,16 +12,28 @@
         <v-icon class="mr-2">mdi-rss-box</v-icon>
         <span>RSS</span>
         <v-spacer />
-        <v-btn icon @click="closeDialog">
+        <v-btn
+          icon
+          @click="closeDialog"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text>
         <div class="toolbar">
-          <v-btn icon @click="addRssItem" :title="$t('dialog.rss.add_feed')">
+          <v-btn
+            icon
+            @click="addRssItem"
+            :title="$t('dialog.rss.add_feed')"
+          >
             <v-icon>mdi-link-plus</v-icon>
           </v-btn>
-          <v-btn icon :disabled="!selectNode" @click="deleteRssItem" :title="$t('delete')">
+          <v-btn
+            icon
+            :disabled="!selectNode"
+            @click="deleteRssItem"
+            :title="$t('delete')"
+          >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
           <v-spacer />
@@ -38,16 +50,22 @@
             :label="$t('dialog.rss.auto_download')"
             hide-details
           />
-          <v-btn icon @click="showRulesDialog = true" :title="$t('settings')">
+          <v-btn
+            icon
+            @click="showRulesDialog = true"
+            :title="$t('settings')"
+          >
             <v-icon>mdi-settings</v-icon>
           </v-btn>
         </div>
         <v-divider />
         <div class="content">
           <div class="content-inner">
-            <div v-if="!rssNode" class="loading">
-              <v-progress-circular indeterminate>
-              </v-progress-circular>
+            <div
+              v-if="!rssNode"
+              class="loading"
+            >
+              <v-progress-circular indeterminate />
             </div>
             <template v-else>
               <div class="rss-items">
@@ -67,7 +85,10 @@
                       size="22"
                       width="2"
                     />
-                    <v-icon v-else v-text="getRowIcon(row)" />
+                    <v-icon
+                      v-else
+                      v-text="getRowIcon(row)"
+                    />
                   </template>
                   <template v-slot:label="row">
                     {{ row.item.name }}
@@ -82,17 +103,24 @@
                 <div class="rss-info">
                   <p>
                     {{ $t('title._') }}:
-                    <a v-if="selectItem" target="_blank" :href="selectItem.url">{{ selectItem.title }}</a>
+                    <a
+                      v-if="selectItem"
+                      target="_blank"
+                      :href="selectItem.url"
+                    >{{ selectItem.title }}</a>
                   </p>
                   <p>{{ $t('date') }}: {{ (selectItem ? selectItem.lastBuildDate : null) | date }}</p>
                 </div>
-                <v-divider/>
+                <v-divider />
                 <div class="list-wrapper">
                   <v-list
                     v-if="selectItem"
                     dense
                   >
-                    <v-list-item-group v-model="selectArticle" color="primary" >
+                    <v-list-item-group
+                      v-model="selectArticle"
+                      color="primary"
+                    >
                       <v-list-item
                         v-for="article in selectItem.articles"
                         :key="article.id"
@@ -100,11 +128,17 @@
                       >
                         <v-list-item-content>
                           <v-list-item-title>
-                            <span :title="article.title" v-text="article.title"/>
+                            <span
+                              :title="article.title"
+                              v-text="article.title"
+                            />
                           </v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-action>
-                          <v-btn icon @click.stop="downloadTorrent(article)">
+                          <v-btn
+                            icon
+                            @click.stop="downloadTorrent(article)"
+                          >
                             <v-icon>mdi-download</v-icon>
                           </v-btn>
                         </v-list-item-action>
@@ -118,13 +152,22 @@
                 <div class="rss-info">
                   <p>
                     {{ $t('title._') }}:
-                    <a v-if="selectArticle" target="_blank" :href="selectArticle.link">{{ selectArticle.title }}</a>
+                    <a
+                      v-if="selectArticle"
+                      target="_blank"
+                      :href="selectArticle.link"
+                    >{{ selectArticle.title }}</a>
                   </p>
                   <p>{{ `${$t('category', 1)}: ${selectArticle ? selectArticle.category: ''}` }}</p>
                   <p>{{ $t('date') }}: {{ (selectArticle ? selectArticle.date: null) | date }}</p>
                 </div>
-                <v-divider/>
-                <iframe class="iframe" sandbox="allow-same-origin" v-if="selectArticle" v-body="selectArticle.description" />
+                <v-divider />
+                <iframe
+                  class="iframe"
+                  sandbox="allow-same-origin"
+                  v-if="selectArticle"
+                  v-body="selectArticle.description"
+                />
               </div>
             </template>
           </div>
@@ -132,13 +175,16 @@
       </v-card-text>
     </v-card>
 
-    <RssRulesDialog v-if="showRulesDialog" :rss-node="rssNode" v-model="showRulesDialog"/>
+    <RssRulesDialog
+      v-if="showRulesDialog"
+      :rss-node="rssNode"
+      v-model="showRulesDialog"
+    />
   </v-dialog>
 </template>
 
 <script lang="ts">
 import { get } from 'lodash'
-import Vue from 'vue'
 import { mapActions, mapMutations, mapState } from 'vuex'
 import Component from 'vue-class-component'
 import { Prop, Watch, Emit } from 'vue-property-decorator'
