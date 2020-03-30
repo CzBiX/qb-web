@@ -62,29 +62,35 @@
 
                 <v-checkbox dense :label="$t('dialog.rss_rule.use_regex')"
                   :disabled="!selectedRule.enabled"
-                  v-model="selectedRule.useRegex"
+                  :value="selectedRule.useRegex"
+                  @change="editRule('useRegex', $event)"
                 />
                 <v-text-field dense :label="$t('dialog.rss_rule.must_contain')"
                   :disabled="!selectedRule.enabled"
-                  v-model="selectedRule.mustContain"
+                  :value="selectedRule.mustContain"
+                  @change="editRule('mustContain', $event)"
                 />
                 <v-text-field dense :label="$t('dialog.rss_rule.must_not_contain')"
                   :disabled="!selectedRule.enabled"
-                  v-model="selectedRule.mustNotContain"
+                  :value="selectedRule.mustNotContain"
+                  @change="editRule('mustNotContain', $event)"
                 />
                 <v-text-field dense :label="$t('dialog.rss_rule.episode_filter')"
                   :disabled="!selectedRule.enabled"
-                  v-model="selectedRule.episodeFilter"
+                  :value="selectedRule.episodeFilter"
+                  @change="editRule('episodeFilter', $event)"
                 />
                 <v-checkbox dense :label="$t('dialog.rss_rule.smart_episode')"
                   :disabled="!selectedRule.enabled"
-                  v-model="selectedRule.smartFilter"
+                  :value="selectedRule.smartFilter"
+                  @change="editRule('smartFilter', $event)"
                 />
 
                 <v-select dense :label="$t('dialog.rss_rule.assign_category')"
                   :items="categoryItems"
                   :disabled="!selectedRule.enabled"
-                  v-model="selectedRule.assignedCategory"
+                  :value="selectedRule.assignedCategory"
+                  @change="editRule('assignedCategory', $event)"
                 />
               </v-form>
 
@@ -169,6 +175,10 @@ export default class RssRulesDialog extends Vue {
 
     return this.rssRules![this.selectedRuleName]
   }
+  set selectedRule(v: RssRule) {
+    this.rssRules![this.selectedRuleName!] = v
+  }
+
   get categoryItems() {
     const uncategory: Category = {
       key: '',
@@ -200,7 +210,14 @@ export default class RssRulesDialog extends Vue {
       pull(feeds, url)
     }
 
-    this.rssRules![this.selectedRuleName!] = rule
+    this.selectedRule = rule
+  }
+
+  editRule(key: keyof RssRule, value: any) {
+    const rule: any = cloneDeep(this.selectedRule)
+    rule[key] = value
+
+    this.selectedRule = rule
   }
 
   buildRssItems(node: RssNode) {
