@@ -230,7 +230,12 @@ export default class RssDialog extends HasTask {
       return null
     }
 
-    const item = get(this.rssNode, this.selectNode)!
+    const item = get(this.rssNode, this.selectNode)
+    if (!item) {
+      // deleted
+      return null
+    }
+
     if ('uid' in item) {
       return item as RssItem
     }
