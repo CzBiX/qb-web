@@ -1,38 +1,45 @@
 import Polyglot from 'node-polyglot';
 import en from './en';
+import zhCn from './zh-CN';
 
 import { loadConfig } from '@/store/config';
 
+export const translations = {
+  en: en,
+  'zh-CN': zhCn,
+}
+
 const polyglot = new Polyglot({
-  phrases: en,
+  phrases: translations.en
 });
 
-export const locales: {[key: string]: string} = {
-  en: 'English',
-  'zh-CN': '中文',
-};
+function matchLocale() {
+  const { languages } = navigator;
 
-function updateLocale() {
-  let locale: string | undefined = loadConfig()['locale'];
-  if (!locale) {
-    const { languages } = navigator;
-
-    for (const code of languages) {
-      if (code in locales) {
-        locale = code;
-        break;
-      }
+  for (const code of languages) {
+    if (code in translations) {
+      return code as keyof typeof translations;
     }
   }
 
-  if (!locale || locale === 'en') {
+  return 'en'
+}
+
+export const defaultLocale = matchLocale()
+
+function updateLocale() {
+  let locale: keyof typeof translations | null = loadConfig()['locale'];
+
+  if (!locale) {
+    locale = defaultLocale;
+  }
+
+  if (locale === polyglot.locale()) {
     return;
   }
 
   polyglot.locale(locale);
-
-  const { default: translation } = require('./' + locale);
-  polyglot.extend(translation);
+  polyglot.extend(translations[locale]);
 }
 
 updateLocale();

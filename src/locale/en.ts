@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/camelcase */
 export default {
   lang: 'English',
+  auto: 'Auto',
 
   close: 'Close',
   no: 'No',

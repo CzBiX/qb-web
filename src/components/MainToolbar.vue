@@ -6,9 +6,17 @@
     class="app-bar pl-2"
   >
     <v-app-bar-nav-icon @click="toggle" />
-    <v-toolbar-title class="bar-title" v-class:sm-and-down="$vuetify.breakpoint.smAndDown">
-      <img class="icon" src="/favicon.ico">
-      <span class="title hidden-sm-and-down ml-3 mr-5">qBittorrent Web UI</span>
+    <v-toolbar-title
+      class="bar-title"
+      v-class:sm-and-down="$vuetify.breakpoint.smAndDown"
+    >
+      <img
+        class="icon"
+        src="/favicon.ico"
+      >
+      <span class="title hidden-sm-and-down ml-3 mr-5">
+        qBittorrent Web UI
+      </span>
     </v-toolbar-title>
     <v-spacer />
     <v-select
@@ -27,7 +35,7 @@
 import Vue from 'vue';
 import { mapMutations } from 'vuex';
 
-import i18n, { tr, locales } from '@/locale';
+import i18n, { tr, translations, defaultLocale } from '@/locale';
 import { DialogType } from '@/store/types';
 
 export default Vue.extend({
@@ -35,17 +43,25 @@ export default Vue.extend({
     value: Boolean,
   },
   data() {
-    const locales_ = Object.entries(locales).map(([key, value]) => {
+    let locales: {}[] = Object.entries(translations).map(([lang, translation]) => {
       return {
-        text: value,
-        value: key,
+        text: translation.lang,
+        value: lang,
       };
     });
+
+    locales = [
+      {
+        text: tr('auto'),
+        value: null,
+      },
+      ...locales
+    ]
 
     const locale = i18n.locale();
 
     return {
-      locales: locales_,
+      locales,
       oldLocale: locale,
       currentLocale: locale,
     };
@@ -58,15 +74,16 @@ export default Vue.extend({
     toggle() {
       this.$emit('input', !this.value);
     },
-    async switchLocale(locale: string) {
+    async switchLocale(locale: keyof typeof translations | null) {
       if (locale === this.oldLocale) {
         return;
       }
 
       const confirm = await new Promise((resolve) => {
+        const localeKey = !locale ? defaultLocale : locale
         this.showDialog({
           content: {
-            text: tr('dialog.switch_locale.msg', { lang: locales[locale] }),
+            text: tr('dialog.switch_locale.msg', { lang: translations[localeKey].lang }),
             type: DialogType.OkCancel,
             callback: resolve,
           },
