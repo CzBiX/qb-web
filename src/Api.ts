@@ -1,6 +1,5 @@
 import Axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
-import { RssNode } from '@/types';
-
+import { RssNode, RssRule } from '@/types';
 
 class Api {
   private axios: AxiosInstance;
@@ -211,6 +210,29 @@ class Api {
 
     const data = new URLSearchParams(params)
     return this.axios.post('/rss/removeItem', data).then(Api.handleResponse);
+  }
+
+  public getRssRules(): Promise<{[key: string]: RssRule}> {
+    return this.axios.get('/rss/rules').then(Api.handleResponse);
+  }
+
+  public setRssRule(name: string, def: any = {}) {
+    const params: any = {
+      ruleName: name,
+      ruleDef: JSON.stringify(def),
+    }
+
+    const data = new URLSearchParams(params)
+    return this.axios.post('/rss/setRule', data).then(Api.handleResponse);
+  }
+
+  public removeRssRule(name: string) {
+    const params: any = {
+      ruleName: name,
+    }
+
+    const data = new URLSearchParams(params)
+    return this.axios.post('/rss/removeRule', data).then(Api.handleResponse);
   }
 
   private actionTorrents(action: string, hashes: string[], extra?: any) {

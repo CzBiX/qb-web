@@ -121,9 +121,10 @@ export interface RssRule {
   smartFilter: boolean,
   previouslyMatchedEpisodes: string[],
   affectedFeeds: string[],
+  createSubfolder: boolean | null,
   ignoreDays: number,
   lastMatch: string,
-  addPaused: boolean,
+  addPaused: boolean | null,
   assignedCategory: string,
   savepath: string,
 }

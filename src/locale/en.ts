@@ -101,6 +101,22 @@ export default {
       delete_feeds: 'Are you sure to delete selected feeds?',
       date_format: '%{date} (%{duration} ago)',
     },
+    rss_rule: {
+      add_rule: 'Add Rule',
+      new_rule_name: 'The name of the new rule',
+      delete_rule: 'Are you sure to delete selected rule?',
+      title: 'RSS Downloader',
+      rule_settings: 'Rule Settings',
+
+      use_regex: 'Use Regex',
+      must_contain: 'Must Contain',
+      must_not_contain: 'Must Not Contain',
+      episode_filter: 'Episode Filter',
+      smart_episode: 'Use Smart Episode Filter',
+      assign_category: 'Assign Category',
+
+      apply_to_feeds: 'Apply Rule to Feeds',
+    },
   },
 
   state: {

@@ -4,7 +4,6 @@
     @input="$emit('input', $event)"
     fullscreen
     persistent
-    hide-overlay
   >
     <v-card>
       <v-card-title
@@ -13,7 +12,9 @@
         <v-icon class="mr-2">mdi-rss-box</v-icon>
         <span>RSS</span>
         <v-spacer />
-        <v-btn text @click="closeDialog">{{ $t('close') }}</v-btn>
+        <v-btn icon @click="closeDialog">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-text>
         <div class="toolbar">
@@ -30,12 +31,16 @@
             :label="$t('dialog.rss.auto_refresh')"
             hide-details
           />
+          <v-divider vertical />
           <v-switch
             :input-value="preferences.rss_auto_downloading_enabled"
             @change="changePreference('rss_auto_downloading_enabled', $event)"
             :label="$t('dialog.rss.auto_download')"
             hide-details
           />
+          <v-btn icon @click="showRulesDialog = true" :title="$t('settings')">
+            <v-icon>mdi-settings</v-icon>
+          </v-btn>
         </div>
         <v-divider />
         <div class="content">
@@ -87,10 +92,11 @@
                     v-if="selectItem"
                     dense
                   >
-                    <v-list-item-group v-model="selectArticleIndex" color="primary" >
+                    <v-list-item-group v-model="selectArticle" color="primary" >
                       <v-list-item
                         v-for="article in selectItem.articles"
                         :key="article.id"
+                        :value="article"
                       >
                         <v-list-item-content>
                           <v-list-item-title>
@@ -125,6 +131,8 @@
         </div>
       </v-card-text>
     </v-card>
+
+    <RssRulesDialog v-if="showRulesDialog" :rss-node="rssNode" v-model="showRulesDialog"/>
   </v-dialog>
 </template>
 
@@ -141,8 +149,12 @@ import { tr } from '@/locale'
 import { RssItem, RssNode, RssTorrent } from '@/types';
 import { DialogType, DialogConfig, SnackBarConfig } from '@/store/types'
 import { parseDate, formatTimestamp, formatAsDuration } from '../../filters'
+import RssRulesDialog from './RssRulesDialog.vue'
 
 @Component({
+  components: {
+    RssRulesDialog,
+  },
   computed: mapState([
     'preferences',
   ]),
@@ -198,7 +210,8 @@ export default class RssDialog extends HasTask {
 
   rssNode: RssNode | null = null
   selectNode: string | null = null
-  selectArticleIndex: number | null = null
+  selectArticle: RssTorrent | null = null
+  showRulesDialog = false
 
   preferences!: any
   asyncShowDialog!: (_: DialogConfig) => Promise<string | undefined>
@@ -224,13 +237,6 @@ export default class RssDialog extends HasTask {
 
     // Folder
     return null
-  }
-  get selectArticle() {
-    if (!this.selectItem || this.selectArticleIndex == null || this.selectArticleIndex < 0) {
-      return null
-    }
-
-    return this.selectItem!.articles[this.selectArticleIndex]
   }
 
   isItemLoading(row: any) {
@@ -345,15 +351,16 @@ export default class RssDialog extends HasTask {
 
   @Watch('selectNode')
   onSelectNodeChanged() {
-    this.selectArticleIndex = null
+    this.selectArticle = null
   }
 
   created() {
-    this.setTaskAndRun(this.fetchRssItems)
+    this.setTaskAndRun(this.fetchRssItems, 5000)
   }
 
+  @Emit('input')
   closeDialog() {
-    this.$emit('input', false);
+    return false
   }
 }
 </script>
@@ -382,11 +389,12 @@ export default class RssDialog extends HasTask {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  padding: 0 2em;
+  padding: 0 20px;
+  align-items: center;
 
   .v-input--switch {
-    margin-left: 1em;
-    margin-top: 0;
+    margin: 0 0.5em;
+    padding: 0;
   }
 }
 

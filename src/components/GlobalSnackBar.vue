@@ -1,18 +1,20 @@
 <template>
   <v-snackbar
-    v-if="!!config"
     v-bind="config"
-    :value="true"
+    :value="config"
     @input="changed"
   >
-    {{ config.text }}
-    <v-btn
-      text
-      color="info"
-      @click="clickBtn"
-    >
-      {{ config.btnText ? config.btnText : $t('close') }}
-    </v-btn>
+    <template v-if="config">
+      {{ config.text }}
+      <v-btn
+        v-if="config.callback"
+        text
+        color="info"
+        @click="clickBtn"
+      >
+        {{ config.btnText ? config.btnText : $t('close') }}
+      </v-btn>
+    </template>
   </v-snackbar>
 </template>
 
@@ -32,7 +34,6 @@ export default {
         return;
       }
 
-      await timeout(150);
       mutations.closeSnackBar();
     }
 

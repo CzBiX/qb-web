@@ -101,6 +101,22 @@ export default {
       delete_feeds: '确定要删除选中的订阅吗？',
       date_format: '%{date}（%{duration} 之前）',
     },
+    rss_rule: {
+      add_rule: '添加规则',
+      new_rule_name: '新规则的名称',
+      delete_rule: '确定要删除选中的规则吗？',
+      title: 'RSS 自动下载',
+      rule_settings: '规则设置',
+
+      use_regex: '使用正则',
+      must_contain: '必须包含',
+      must_not_contain: '必须排除',
+      episode_filter: '剧集过滤',
+      smart_episode: '使用智能剧集过滤',
+      assign_category: '分配分类',
+
+      apply_to_feeds: '应用到订阅',
+    },
   },
 
   state: {
