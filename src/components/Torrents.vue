@@ -1,26 +1,58 @@
 <template>
-  <div class="torrents" v-class:phone-layout="$vuetify.breakpoint.xsOnly">
+  <div
+    class="torrents"
+    v-class:phone-layout="$vuetify.breakpoint.xsOnly"
+  >
     <div class="toolbar-wrapper">
       <div class="toolbar">
-        <v-btn icon @click="confirmDelete" :title="$t('delete')" :disabled="!hasSelected">
+        <v-btn
+          icon
+          @click="confirmDelete"
+          :title="$t('delete')"
+          :disabled="!hasSelected"
+        >
           <v-icon>mdi-delete</v-icon>
         </v-btn>
-        <v-divider vertical inset />
-        <v-btn icon @click="resumeTorrents" :title="$t('resume')" :disabled="!hasSelected">
+        <v-divider
+          vertical
+          inset
+        />
+        <v-btn
+          icon
+          @click="resumeTorrents"
+          :title="$t('resume')"
+          :disabled="!hasSelected"
+        >
           <v-icon>mdi-play</v-icon>
         </v-btn>
-        <v-btn icon @click="pauseTorrents" :title="$t('pause')" :disabled="!hasSelected">
+        <v-btn
+          icon
+          @click="pauseTorrents"
+          :title="$t('pause')"
+          :disabled="!hasSelected"
+        >
           <v-icon>mdi-pause</v-icon>
         </v-btn>
-        <v-divider vertical inset />
-        <v-btn icon @click="showInfo()" :title="$t('info')"
+        <v-divider
+          vertical
+          inset
+        />
+        <v-btn
+          icon
+          @click="showInfo()"
+          :title="$t('info')"
           :disabled="!hasSelected || selectedRows.length > 5"
         >
           <v-icon>mdi-alert-circle</v-icon>
         </v-btn>
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" :title="$t('category')" :disabled="!hasSelected">
+            <v-btn
+              icon
+              v-on="on"
+              :title="$t('category')"
+              :disabled="!hasSelected"
+            >
               <v-icon>mdi-folder</v-icon>
             </v-btn>
           </template>
@@ -32,7 +64,7 @@
               v-for="(item, i) in allCategories"
               :key="i"
               @click="setTorrentsCategory(item.key)"
-              >
+            >
               <v-list-item-action>
                 <v-icon>mdi-folder-open</v-icon>
               </v-list-item-action>
@@ -56,14 +88,30 @@
           </v-list>
         </v-menu>
         <template v-if="!$vuetify.breakpoint.xsOnly">
-          <v-divider vertical inset />
-          <v-btn icon @click="reannounceTorrents" :title="$t('reannounce')">
+          <v-divider
+            vertical
+            inset
+          />
+          <v-btn
+            icon
+            @click="reannounceTorrents"
+            :title="$t('reannounce')"
+          >
             <v-icon>mdi-bullhorn</v-icon>
           </v-btn>
-          <v-btn icon @click="editTracker" :title="$t('title.edit_tracker')">
+          <v-btn
+            icon
+            @click="editTracker"
+            :title="$t('title.edit_tracker')"
+          >
             <v-icon>mdi-server</v-icon>
           </v-btn>
-          <v-btn icon @click="recheckTorrents" :title="$t('recheck')" :disabled="selectedRows.length == 0">
+          <v-btn
+            icon
+            @click="recheckTorrents"
+            :title="$t('recheck')"
+            :disabled="selectedRows.length == 0"
+          >
             <v-icon>mdi-backup-restore</v-icon>
           </v-btn>
         </template>
@@ -87,8 +135,7 @@
         :mobile-breakpoint="0"
       >
         <template v-slot:item="row">
-          <tr
-          >
+          <tr>
             <!-- @dblclick.prevent="showInfo(row.item)" -->
             <td>
               <v-checkbox
@@ -101,7 +148,9 @@
               :title="row.item.name"
               class="icon-label"
             >
-              <v-icon :color="row.item.state | stateColor">{{ row.item.state | stateIcon }}</v-icon>
+              <v-icon :color="row.item.state | stateColor">
+                {{ row.item.state | stateIcon }}
+              </v-icon>
               <span class="torrent-title">{{ row.item.name }}</span>
             </td>
             <td>{{ row.item.size | formatSize }}</td>
@@ -134,16 +183,24 @@
       </v-data-table>
     </div>
 
-    <confirm-delete-dialog v-if="toDelete.length" v-model="toDelete" />
-    <confirm-set-category-dialog v-if="toSetCategory.length"
-      :category="categoryToSet" v-model="toSetCategory"
+    <confirm-delete-dialog
+      v-if="toDelete.length"
+      v-model="toDelete"
     />
-    <edit-tracker-dialog v-if="toEditTracker.length" v-model="toEditTracker" />
+    <confirm-set-category-dialog
+      v-if="toSetCategory.length"
+      :category="categoryToSet"
+      v-model="toSetCategory"
+    />
+    <edit-tracker-dialog
+      v-if="toEditTracker.length"
+      v-model="toEditTracker"
+    />
     <info-dialog
       v-if="toShowInfo.length"
       v-model="toShowInfo"
-      :tab="infoTab"
-      @change="infoTab = $event" />
+      :tab.sync="infoTab"
+    />
   </div>
 </template>
 

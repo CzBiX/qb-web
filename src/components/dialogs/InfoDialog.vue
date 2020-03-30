@@ -9,11 +9,13 @@
       <v-card-title
         class="headline grey lighten-4"
       >
-        <v-icon class="mr-2">mdi-alert-circle</v-icon>
+        <v-icon class="mr-2">
+          mdi-alert-circle
+        </v-icon>
         <span>Info</span>
       </v-card-title>
       <v-card-text>
-        <v-tabs v-model="tab">
+        <v-tabs v-model="tabSync">
           <v-tab href="#general">
             General
           </v-tab>
@@ -27,7 +29,10 @@
             Content
           </v-tab>
         </v-tabs>
-        <v-tabs-items :value="tab" touchless>
+        <v-tabs-items
+          :value="tab"
+          touchless
+        >
           <v-tab-item value="general">
             <panel
               v-for="torrent in torrents"
@@ -37,8 +42,8 @@
             >
               <torrent-info
                 :torrent="torrent"
-                :isActive="mTab === 'general'"
-                />
+                :is-active="tab === 'general'"
+              />
             </panel>
           </v-tab-item>
           <v-tab-item value="trackers">
@@ -50,7 +55,7 @@
             >
               <trackers
                 :hash="torrent.hash"
-                :isActive="tab === 'trackers'"
+                :is-active="tab === 'trackers'"
               />
             </panel>
           </v-tab-item>
@@ -63,7 +68,7 @@
             >
               <peers
                 :hash="torrent.hash"
-                :isActive="tab === 'peers'"
+                :is-active="tab === 'peers'"
               />
             </panel>
           </v-tab-item>
@@ -76,7 +81,7 @@
             >
               <torrent-content
                 :hash="torrent.hash"
-                :isActive="tab === 'content'"
+                :is-active="tab === 'content'"
               />
             </panel>
           </v-tab-item>
@@ -84,7 +89,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="closeDialog">Close</v-btn>
+        <v-btn
+          text
+          @click="closeDialog"
+        >
+          Close
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -115,7 +125,7 @@ export default class InfoDialog extends Vue {
   readonly value!: Torrent[]
 
   @PropSync('tab', String)
-  tab!: string
+  tabSync!: string
 
   torrents!: Torrent[]
 
