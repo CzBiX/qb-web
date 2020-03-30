@@ -2,20 +2,38 @@
   <div class="torrent-info">
     <div class="progress">
       <span>Progress:</span>
-      <canvas ref="canvas" class="progress-inner" />
+      <canvas
+        ref="canvas"
+        class="progress-inner"
+      />
       <span>{{ torrent.progress | progress }}</span>
     </div>
     <fieldset>
       <legend>Transfer</legend>
-      <v-container v-if="properties" class="pa-1">
+      <v-container
+        v-if="properties"
+        class="pa-1"
+      >
         <v-row no-gutters>
           <template
             v-for="item in transfer"
           >
-            <v-col class="label" :key="item.label + '_l'" cols="3" sm="2" md="1">
+            <v-col
+              class="label"
+              :key="item.label + '_l'"
+              cols="3"
+              sm="2"
+              md="1"
+            >
               {{ item.label }}:
             </v-col>
-            <v-col class="value" :key="item.label + '_v'" cols="9" sm="4" md="2">
+            <v-col
+              class="value"
+              :key="item.label + '_v'"
+              cols="9"
+              sm="4"
+              md="2"
+            >
               {{ item.value(properties) }}
             </v-col>
           </template>
@@ -24,15 +42,30 @@
     </fieldset>
     <fieldset>
       <legend>Information</legend>
-      <v-container v-if="properties" class="pa-1">
+      <v-container
+        v-if="properties"
+        class="pa-1"
+      >
         <v-row no-gutters>
           <template
             v-for="item in information"
           >
-            <v-col class="label" :key="item.label + '_l'" cols="3" sm="2" md="1">
+            <v-col
+              class="label"
+              :key="item.label + '_l'"
+              cols="3"
+              sm="2"
+              md="1"
+            >
               {{ item.label }}:
             </v-col>
-            <v-col class="value" :key="item.label + '_v'" cols="9" sm="4" md="3">
+            <v-col
+              class="value"
+              :key="item.label + '_v'"
+              cols="9"
+              sm="4"
+              md="3"
+            >
               {{ item.value(properties) }}
             </v-col>
           </template>
@@ -140,23 +173,23 @@ export default class TorrentInfo extends BaseTorrentInfo {
     }
 
     const { clientHeight, clientWidth } = ctx.canvas;
-    const partNum = clientWidth / 2;
     ctx.clearRect(0, 0, clientWidth, clientHeight);
 
+    const partNum = clientWidth / 2;
     const offset = clientWidth / partNum;
-    const chunkSize = v.length / partNum;
+    const chunkSize = Math.floor(v.length / partNum);
 
     const chunks = chunk(v, chunkSize);
     for (let i = 0; i < partNum; i++) {
       const states = countBy(chunks[i]);
       const downloading = states[PieceState.Downloading];
-      const empty = states[PieceState.Empty];
+      const empty = states[PieceState.Empty] || 0;
       const downloaded = states[PieceState.Downloaded];
       let color;
       if (downloading) {
-        color = 'green';
+        color = 'lightgreen';
       } else if (downloaded >= empty) {
-        color = 'blue';
+        color = 'lightblue';
       } else {
         continue;
       }
