@@ -317,7 +317,7 @@ export default class AddForm extends Vue {
     this.files = files;
   }
 
-  @Watch('pasteUrl')
+  @Watch('pasteUrl', {immediate: true})
   onPasteUrl(v: string) {
     if (!v) {
       return;

@@ -74,6 +74,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mapGetters, mapState, mapMutations } from 'vuex';
+import { registerProtocolHandler, checkDownloadUrl } from './protocolHandler';
+
 import GlobalDialog from './components/GlobalDialog.vue';
 import GlobalSnackBar from './components/GlobalSnackBar.vue';
 
@@ -145,7 +147,20 @@ export default class App extends Vue {
     return this.$vuetify.breakpoint.xsOnly;
   }
 
+  initProtocolHandler() {
+    registerProtocolHandler();
+    const url = checkDownloadUrl();
+
+    if (url) {
+      this.setPasteUrl({
+        url,
+      });
+    }
+  }
+
   async created() {
+    this.initProtocolHandler();
+
     await this.getInitData();
     appWrapEl = (this.$refs.app as any).$el.querySelector('.v-application--wrap');
     appWrapEl.addEventListener('paste', this.onPaste);
