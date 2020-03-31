@@ -184,7 +184,7 @@
 </template>
 
 <script lang="ts">
-import { get } from 'lodash'
+import { get, toPath } from 'lodash'
 import { mapActions, mapMutations, mapState } from 'vuex'
 import Component from 'vue-class-component'
 import { Prop, Watch, Emit } from 'vue-property-decorator'
@@ -312,9 +312,13 @@ export default class RssDialog extends HasTask {
 
   buildRssTree(node: RssNode, parent?: string) {
     const result: any = [];
+    function escapeKey(key: string) {
+      const escaped = key.replace('\\', '\\\\').replace('\'', '\\\'');
+      return `['${escaped}']`
+    }
 
     for (const [key, value] of Object.entries(node)) {
-      const path = parent ? `${parent}.${key}` : key
+      const path = parent ? (parent + escapeKey(key)) : escapeKey(key)
 
       if ('uid' in value) {
         result.push({
@@ -372,8 +376,12 @@ export default class RssDialog extends HasTask {
       text: tr('label.deleting'),
     })
 
+    const path = toPath(this.selectNode!).map(p => {
+      return p.replace('\\\'', '\'').replace('\\\\', '\\');
+    }).join('\\');
+
     try {
-      await api.removeRssFeed(this.selectNode!.replace('.', '\\'));
+      await api.removeRssFeed(path);
     } catch (e) {
       this.showSnackBar({
         text: e.response ? e.response.data : e.message,
