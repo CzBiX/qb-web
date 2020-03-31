@@ -1,8 +1,13 @@
-function getSiteIcon(name: string) {
+function getSiteIcon(name: string): string {
   return require(`@/assets/site_icons/${name}.png`);
 }
 
-export default {
+export interface SiteInfo {
+  name: string;
+  icon: string;
+}
+
+const sites: {[key: string]: SiteInfo} = {
   'tracker.m-team.cc': {
     name: 'M-Team',
     icon: getSiteIcon('m-team'),
@@ -32,3 +37,5 @@ export default {
     icon: getSiteIcon('u2'),
   },
 };
+
+export default sites;

@@ -69,7 +69,8 @@ import { Torrent, Category } from '@/types';
 import FilterGroup from './drawer/FilterGroup.vue';
 import api from '../Api';
 import { formatSize } from '../filters';
-import { SiteMap, StateType } from '../consts';
+import { StateType } from '../consts';
+import SiteMap from '@/sites'
 import Component from 'vue-class-component';
 import { Prop, Emit } from 'vue-property-decorator';
 
@@ -216,7 +217,7 @@ export default class Drawer extends Vue {
   buildSiteGroup(): MenuChildrenItem[] {
     return sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
       const size = formatSize(sumBy(value, 'size'));
-      const site = (SiteMap as any)[key];
+      const site = SiteMap[key];
       const title = `${site ? site.name : (key || tr('others'))} (${value.length})`;
       const icon = defaultTo(site ? site.icon : null, 'mdi-server');
       const append = `[${size}]`;

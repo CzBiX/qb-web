@@ -1,7 +1,3 @@
-import sites from './sites';
-
-export const SiteMap = sites;
-
 export const enum StateType {
   Downloading = 'downloading',
   Seeding = 'seeding',
