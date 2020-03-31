@@ -4,11 +4,12 @@
     :scroll-off-screen="!$vuetify.breakpoint.lgAndUp"
     app
     class="app-bar pl-2"
+    :class="{'phone-layout': phoneLayout}"
   >
     <v-app-bar-nav-icon @click="toggle" />
     <v-toolbar-title
       class="bar-title"
-      v-class:sm-and-down="$vuetify.breakpoint.smAndDown"
+      v-show="!searchBarExpanded"
     >
       <img
         class="icon"
@@ -18,13 +19,14 @@
         qBittorrent Web UI
       </span>
     </v-toolbar-title>
-    <v-spacer />
+    <v-spacer v-if="!phoneLayout" />
     <v-text-field
+      class="search-bar"
       :flat="!focusedSearch"
       :solo="focusedSearch"
       :solo-inverted="!focusedSearch"
       hide-details
-      clearable
+      :clearable="!phoneLayout || searchBarExpanded"
       prepend-inner-icon="mdi-magnify"
       :label="$t('search')"
       @focus="focusedSearch = true"
@@ -32,8 +34,9 @@
       @input="onSearch"
       :value="searchQuery"
     />
-    <v-spacer />
+    <v-spacer v-if="!phoneLayout" />
     <v-select
+      v-show="!searchBarExpanded"
       class="locales"
       :items="locales"
       prepend-inner-icon="mdi-translate"
@@ -77,6 +80,14 @@ export default class MainToolbar extends Vue {
 
   get searchQuery() {
     return this.$store.getters.config.filter.query;
+  }
+
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.smAndDown;
+  }
+
+  get searchBarExpanded() {
+    return this.phoneLayout && (this.focusedSearch || !!this.searchQuery);
   }
 
   buildLocales() {
@@ -157,20 +168,27 @@ export default class MainToolbar extends Vue {
   .bar-title {
     display: flex;
     align-items: center;
+    margin-left: -16px;
 
     .icon {
       width: 40px;
       height: 40px;
     }
   }
-}
-.v-toolbar__title {
-  margin-left: -16px;
-  width: 280px;
 
-  &.sm-and-down {
-    margin-left: -12px;
-    width: 60px;
+  .search-bar {
+    transition: width 0.4s;
+  }
+
+  &.phone-layout {
+    .search-bar {
+      flex: 1;
+      margin: 0 0.5em 0 1em;
+    }
+    
+    .locales ::v-deep .v-select__slot {
+      display: none;
+    }
   }
 }
 
