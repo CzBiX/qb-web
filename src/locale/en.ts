@@ -18,6 +18,7 @@ export default {
   info: 'Info',
   reset: 'Reset',
   login: 'Login',
+  search: 'Search',
 
   reannounce: 'Reannounce',
   recheck: 'Recheck',

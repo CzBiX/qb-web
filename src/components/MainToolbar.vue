@@ -19,6 +19,20 @@
       </span>
     </v-toolbar-title>
     <v-spacer />
+    <v-text-field
+      :flat="!focusedSearch"
+      :solo="focusedSearch"
+      :solo-inverted="!focusedSearch"
+      hide-details
+      clearable
+      prepend-inner-icon="mdi-magnify"
+      :label="$t('search')"
+      @focus="focusedSearch = true"
+      @blur="focusedSearch = false"
+      @input="onSearch"
+      :value="searchQuery"
+    />
+    <v-spacer />
     <v-select
       class="locales"
       :items="locales"
@@ -32,85 +46,110 @@
 </template>
 
 <script lang="ts">
+import { throttle } from 'lodash';
 import Vue from 'vue';
 import { mapMutations } from 'vuex';
 
 import i18n, { tr, translations, defaultLocale } from '@/locale';
-import { DialogType } from '@/store/types';
+import { DialogType, DialogConfig, SnackBarConfig } from '@/store/types';
+import Component from 'vue-class-component';
+import { Prop, Emit, Watch } from 'vue-property-decorator';
 
-export default Vue.extend({
-  props: {
-    value: Boolean,
+@Component({
+  methods: {
+    ...mapMutations([
+      'showDialog',
+      'showSnackBar',
+    ]),
   },
-  data() {
-    let locales: {}[] = Object.entries(translations).map(([lang, translation]) => {
+})
+export default class MainToolbar extends Vue {
+  @Prop(Boolean)
+  readonly value!: boolean
+
+  showDialog!: (_: DialogConfig) => void
+  showSnackBar!: (_: SnackBarConfig) => void
+
+  locales = this.buildLocales()
+  currentLocale = i18n.locale()
+  oldLocale = this.currentLocale
+  focusedSearch = false
+
+  get searchQuery() {
+    return this.$store.getters.config.filter.query;
+  }
+
+  buildLocales() {
+    const locales: {}[] = Object.entries(translations).map(([lang, translation]) => {
       return {
         text: translation.lang,
         value: lang,
       };
     });
 
-    locales = [
+    return [
       {
         text: tr('auto'),
         value: null,
       },
       ...locales
     ]
+  }
 
-    const locale = i18n.locale();
+  @Emit('input')
+  toggle() {
+    return !this.value;
+  }
 
-    return {
-      locales,
-      oldLocale: locale,
-      currentLocale: locale,
-    };
-  },
-  methods: {
-    ...mapMutations([
-      'showDialog',
-      'showSnackBar',
-    ]),
-    toggle() {
-      this.$emit('input', !this.value);
-    },
-    async switchLocale(locale: keyof typeof translations | null) {
-      if (locale === this.oldLocale) {
-        return;
-      }
+  onSearch = throttle(async (v: string) => {
+    // avoid hang input
+    await this.$nextTick();
+    this.$store.commit('updateConfig', {
+      key: 'filter',
+      value: {
+        query: v,
+      },
+    });
+  }, 400)
 
-      const confirm = await new Promise((resolve) => {
-        const localeKey = !locale ? defaultLocale : locale
-        this.showDialog({
-          content: {
-            text: tr('dialog.switch_locale.msg', { lang: translations[localeKey].lang }),
-            type: DialogType.OkCancel,
-            callback: resolve,
-          },
-        });
+  async switchLocale(locale: keyof typeof translations | null) {
+    if (locale === this.oldLocale) {
+      return;
+    }
+
+    const confirm = await new Promise((resolve) => {
+      const localeKey = !locale ? defaultLocale : locale
+      this.showDialog({
+        content: {
+          text: tr('dialog.switch_locale.msg', { lang: translations[localeKey].lang }),
+          type: DialogType.OkCancel,
+          callback: resolve,
+        },
       });
+    });
 
-      if (!confirm) {
-        this.currentLocale = this.oldLocale;
-        return;
-      }
+    if (!confirm) {
+      this.currentLocale = this.oldLocale;
+      return;
+    }
 
-      this.$store.commit('updateConfig', {
-        key: 'locale',
-        value: locale,
-      });
+    this.$store.commit('updateConfig', {
+      key: 'locale',
+      value: locale,
+    });
 
-      this.showSnackBar(tr('label.reloading'))
+    this.showSnackBar({
+      text: tr('label.reloading'),
+    })
 
-      location.reload();
-    },
-  },
-  watch: {
-    currentLocale(v) {
-      this.switchLocale(v);
-    },
-  },
-});
+    location.reload();
+  }
+
+  @Watch('currentLocale')
+  onCurrentLocaleChanged(v: keyof typeof translations) {
+    this.switchLocale(v)
+  }
+}
 </script>
 
 <style lang="scss" scoped>

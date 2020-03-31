@@ -14,6 +14,7 @@ const defaultConfig = {
     state: null,
     category: null,
     site: null,
+    query: null,
   },
   locale: null,
 };

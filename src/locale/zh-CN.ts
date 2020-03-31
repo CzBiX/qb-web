@@ -18,6 +18,7 @@ export default {
   info: '信息',
   reset: '重置',
   login: '登录',
+  search: '搜索',
 
   reannounce: '重新通告',
   recheck: '重新检查',

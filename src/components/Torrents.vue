@@ -407,6 +407,7 @@ export default class Torrents extends Vue {
     if (!this.isDataReady) {
       return [];
     }
+
     let list = this.allTorrents;
     if (this.filter.site !== null) {
       list = intersection(list, this.torrentGroupBySite[this.filter.site]);
@@ -416,6 +417,15 @@ export default class Torrents extends Vue {
     }
     if (this.filter.state !== null) {
       list = intersection(list, this.torrentGroupByState[this.filter.state]);
+    }
+    if (this.filter.query) {
+      const q = this.filter.query.toLowerCase();
+
+      list = list.filter(t => {
+        return t.name.toLowerCase().includes(q) ||
+          t.tracker.toLowerCase().includes(q) ||
+          t.category.toLowerCase().includes(q);
+      });
     }
 
     return list;

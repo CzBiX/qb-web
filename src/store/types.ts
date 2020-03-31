@@ -11,6 +11,7 @@ export interface TorrentFilter {
   state: string;
   category: string;
   site: string;
+  query: string;
 }
 
 export interface ConfigState {
