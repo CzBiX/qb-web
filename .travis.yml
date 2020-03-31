@@ -8,9 +8,9 @@ before_install:
   - export TZ=Asia/Shanghai COMMIT_ID=${TRAVIS_COMMIT::6}
 
 script:
-  - npm run lint
-  - npm run test:unit
-  - npm run build
+  - yarn run lint
+  - yarn run test:unit
+  - yarn run build
 
 before_deploy:
   # Add tag if missing
