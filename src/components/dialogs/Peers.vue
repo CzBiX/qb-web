@@ -120,6 +120,10 @@ export default class Peers extends BaseTorrentInfo {
     }
   }
 
+  fetchInfo() {
+    return this.getPeers()
+  }
+
   startTask() {
     this.setTaskAndRun(this.doTask, 2000)
   }
