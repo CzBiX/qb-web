@@ -10563,10 +10563,10 @@ vuetify-loader@^1.4.3:
   dependencies:
     loader-utils "^1.2.0"
 
-vuetify@2.2.3:
-  version "2.2.3"
-  resolved "https://registry.npm.taobao.org/vuetify/download/vuetify-2.2.3.tgz#8e39b0298c3dbe943c18df3b5b658cca7305e7c9"
-  integrity sha1-jjmwKYw9vpQ8GN87W2WMynMF58k=
+vuetify@^2.2.20:
+  version "2.2.20"
+  resolved "https://registry.npm.taobao.org/vuetify/download/vuetify-2.2.20.tgz#8cb042f7274f39130f8d40d85d23d62d1c33cae4"
+  integrity sha1-jLBC9ydPORMPjUDYXSPWLRwzyuQ=
 
 vuex@^3.1.3:
   version "3.1.3"
