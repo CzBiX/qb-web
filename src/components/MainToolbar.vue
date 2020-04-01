@@ -35,22 +35,6 @@
       :value="searchQuery"
     />
     <v-spacer v-if="!phoneLayout" />
-    <v-btn
-      icon
-      @click="toggleDarkMode"
-    >
-      <v-icon v-text="darkModeIcon" />
-    </v-btn>
-    <v-select
-      v-show="!searchBarExpanded"
-      class="locales"
-      :items="locales"
-      prepend-inner-icon="mdi-translate"
-      v-model="currentLocale"
-      hide-details
-      solo
-      flat
-    />
   </v-app-bar>
 </template>
 
@@ -59,16 +43,13 @@ import { throttle } from 'lodash';
 import Vue from 'vue';
 import { mapMutations } from 'vuex';
 
-import i18n, { tr, translations, defaultLocale } from '@/locale';
-import { DialogType, DialogConfig, SnackBarConfig, ConfigPayload } from '@/store/types';
 import Component from 'vue-class-component';
-import { Prop, Emit, Watch } from 'vue-property-decorator';
+import { Prop, Emit } from 'vue-property-decorator';
+import { ConfigPayload } from '@/store/types';
 
 @Component({
   methods: {
     ...mapMutations([
-      'showDialog',
-      'showSnackBar',
       'updateConfig',
     ]),
   },
@@ -77,18 +58,9 @@ export default class MainToolbar extends Vue {
   @Prop(Boolean)
   readonly value!: boolean
 
-  showDialog!: (_: DialogConfig) => void
-  showSnackBar!: (_: SnackBarConfig) => void
   updateConfig!: (_: ConfigPayload) => void
 
-  locales = this.buildLocales()
-  currentLocale = i18n.locale()
-  oldLocale = this.currentLocale
   focusedSearch = false
-
-  get darkModeIcon() {
-    return this.$vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-6';
-  }
 
   get searchQuery() {
     return this.$store.getters.config.filter.query;
@@ -102,30 +74,13 @@ export default class MainToolbar extends Vue {
     return this.phoneLayout && (this.focusedSearch || !!this.searchQuery);
   }
 
-  buildLocales() {
-    const locales: {}[] = Object.entries(translations).map(([lang, translation]) => {
-      return {
-        text: translation.lang,
-        value: lang,
-      };
-    });
-
-    return [
-      {
-        text: tr('auto'),
-        value: null,
-      },
-      ...locales
-    ]
-  }
-
   @Emit('input')
   toggle() {
     return !this.value;
   }
 
   onSearch = throttle(async (v: string) => {
-    // avoid hang input
+    // avoid input lag
     await this.$nextTick();
     this.updateConfig({
       key: 'filter',
@@ -134,54 +89,6 @@ export default class MainToolbar extends Vue {
       },
     });
   }, 400)
-
-  async switchLocale(locale: keyof typeof translations | null) {
-    if (locale === this.oldLocale) {
-      return;
-    }
-
-    const confirm = await new Promise((resolve) => {
-      const localeKey = !locale ? defaultLocale : locale
-      this.showDialog({
-        content: {
-          text: tr('dialog.switch_locale.msg', { lang: translations[localeKey].lang }),
-          type: DialogType.OkCancel,
-          callback: resolve,
-        },
-      });
-    });
-
-    if (!confirm) {
-      this.currentLocale = this.oldLocale;
-      return;
-    }
-
-    this.$store.commit('updateConfig', {
-      key: 'locale',
-      value: locale,
-    });
-
-    this.showSnackBar({
-      text: tr('label.reloading'),
-    })
-
-    location.reload();
-  }
-
-  toggleDarkMode() {
-    const { theme } = this.$vuetify;
-    theme.dark = !theme.dark;
-
-    this.updateConfig({
-      key: 'darkMode',
-      value: theme.dark,
-    });
-  }
-
-  @Watch('currentLocale')
-  onCurrentLocaleChanged(v: keyof typeof translations) {
-    this.switchLocale(v)
-  }
 }
 </script>
 
@@ -206,26 +113,6 @@ export default class MainToolbar extends Vue {
     .search-bar {
       flex: 1;
       margin: 0 0.5em 0 1em;
-    }
-    
-    .locales ::v-deep .v-select__slot {
-      display: none;
-    }
-  }
-}
-
-// Fix width
-// see: https://github.com/vuetifyjs/vuetify/issues/6275
-.locales {
-  flex-grow: 0;
-
-  &::v-deep .v-select__selections {
-    .v-select__selection {
-      max-width: none;
-    }
-
-    input {
-      width: 0;
     }
   }
 }

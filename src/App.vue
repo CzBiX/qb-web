@@ -8,32 +8,9 @@
       width="300"
     >
       <drawer v-model="drawerOptions" />
-      <template v-if="phoneLayout">
-        <v-spacer />
-        <v-divider />
-        <v-expansion-panels
-          class="drawer-footer"
-        >
-          <v-expansion-panel
-            lazy
-            @input="drawerFooterOpen"
-          >
-            <v-expansion-panel-header>
-              <div class="d-flex align-center">
-                <v-icon class="footer-icon shrink">
-                  mdi-information-outline
-                </v-icon>
-                <span class="footer-title">
-                  Status info
-                </span>
-              </div>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <app-footer phone-layout />
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <div ref="end" />
-        </v-expansion-panels>
+
+      <template #append>
+        <DrawerFooter />
       </template>
     </v-navigation-drawer>
     <main-toolbar v-model="drawer" />
@@ -87,9 +64,9 @@ import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/dialogs/LogsDialog.vue';
 import RssDialog from './components/dialogs/RssDialog.vue';
+import DrawerFooter from './components/drawer/DrawerFooter.vue';
 
 import api from './Api';
-import { timeout } from './utils';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { MainData } from './types';
@@ -108,6 +85,7 @@ let appWrapEl: HTMLElement;
     GlobalDialog,
     GlobalSnackBar,
     RssDialog,
+    DrawerFooter,
   },
   computed: {
     ...mapState([
@@ -203,18 +181,6 @@ export default class App extends Vue {
     this.task = setTimeout(this.getMainData, this.config.updateInterval);
   }
 
-  async drawerFooterOpen(v: boolean) {
-    if (!v) {
-      return;
-    }
-
-    await timeout(3000);
-
-    (this.$refs.end as HTMLElement).scrollIntoView({
-      behavior: 'smooth',
-    });
-  }
-
   onPaste(e: ClipboardEvent) {
     if ((e.target as HTMLElement).tagName === 'INPUT') {
       return;
@@ -238,26 +204,6 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.phone-layout ::v-deep .v-navigation-drawer__content {
-  display: flex;
-  flex-direction: column;
-
-  .drawer-footer .v-expansion-panel-header {
-    padding: 12px 16px 12px 16px;
-
-    .footer-icon {
-      font-size: 22px;
-      margin-left: 10px;
-      margin-right: 34px;
-    }
-
-    .footer-title {
-      font-size: 13px;
-      font-weight: 500;
-    }
-  }
-}
-
 .v-footer {
   min-height: 36px;
 }

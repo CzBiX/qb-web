@@ -9,6 +9,8 @@ export const translations = {
   'zh-CN': zhCn,
 }
 
+export type LocaleKey = keyof typeof translations | null;
+
 const polyglot = new Polyglot({
   phrases: translations.en
 });
@@ -18,7 +20,7 @@ function matchLocale() {
 
   for (const code of languages) {
     if (code in translations) {
-      return code as keyof typeof translations;
+      return (code as LocaleKey)!;
     }
   }
 
@@ -28,7 +30,7 @@ function matchLocale() {
 export const defaultLocale = matchLocale()
 
 function updateLocale() {
-  let locale: keyof typeof translations | undefined | null = loadConfig()['locale'];
+  let locale: LocaleKey | undefined = loadConfig()['locale'];
 
   if (!locale) {
     locale = defaultLocale;

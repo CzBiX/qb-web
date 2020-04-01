@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div class="add-form">
     <v-btn
       fab
       bottom
       color="primary"
       fixed
       right
+      small
       @click="dialog = !dialog"
       class="btn-add"
       :class="{'with-footer': $vuetify.breakpoint.smAndUp}"
