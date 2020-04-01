@@ -543,6 +543,8 @@ export default class Torrents extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '~@/assets/styles.scss';
+
 .toolbar {
   display: flex;
   margin-left: 2px;
@@ -559,7 +561,7 @@ export default class Torrents extends Vue {
   flex: 1;
   position: relative;
 
-  .v-data-table {
+  @include theme(v-data-table) using ($material) {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -583,7 +585,7 @@ export default class Torrents extends Vue {
     }
 
     tr:nth-child(2n) {
-      background-color: #eee;
+      background-color: map-deep-get($material, 'table', 'hover');
     }
 
     td {

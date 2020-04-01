@@ -6,9 +6,7 @@
     width="50%"
   >
     <v-card>
-      <v-card-title
-        class="headline grey lighten-4"
-      >
+      <v-card-title class="headline">
         <v-icon class="mr-2">mdi-filter</v-icon>
         <span v-text="$t('dialog.rss_rule.title')" />
         <v-spacer />
@@ -347,6 +345,10 @@ export default class RssRulesDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '~@/assets/styles.scss';
+
+@include dialog-title;
+
 .v-card {
   display: flex;
   flex-direction: column;

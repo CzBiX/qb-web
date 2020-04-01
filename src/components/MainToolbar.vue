@@ -35,6 +35,12 @@
       :value="searchQuery"
     />
     <v-spacer v-if="!phoneLayout" />
+    <v-btn
+      icon
+      @click="toggleDarkMode"
+    >
+      <v-icon v-text="darkModeIcon" />
+    </v-btn>
     <v-select
       v-show="!searchBarExpanded"
       class="locales"
@@ -54,7 +60,7 @@ import Vue from 'vue';
 import { mapMutations } from 'vuex';
 
 import i18n, { tr, translations, defaultLocale } from '@/locale';
-import { DialogType, DialogConfig, SnackBarConfig } from '@/store/types';
+import { DialogType, DialogConfig, SnackBarConfig, ConfigPayload } from '@/store/types';
 import Component from 'vue-class-component';
 import { Prop, Emit, Watch } from 'vue-property-decorator';
 
@@ -63,6 +69,7 @@ import { Prop, Emit, Watch } from 'vue-property-decorator';
     ...mapMutations([
       'showDialog',
       'showSnackBar',
+      'updateConfig',
     ]),
   },
 })
@@ -72,11 +79,16 @@ export default class MainToolbar extends Vue {
 
   showDialog!: (_: DialogConfig) => void
   showSnackBar!: (_: SnackBarConfig) => void
+  updateConfig!: (_: ConfigPayload) => void
 
   locales = this.buildLocales()
   currentLocale = i18n.locale()
   oldLocale = this.currentLocale
   focusedSearch = false
+
+  get darkModeIcon() {
+    return this.$vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-6';
+  }
 
   get searchQuery() {
     return this.$store.getters.config.filter.query;
@@ -115,7 +127,7 @@ export default class MainToolbar extends Vue {
   onSearch = throttle(async (v: string) => {
     // avoid hang input
     await this.$nextTick();
-    this.$store.commit('updateConfig', {
+    this.updateConfig({
       key: 'filter',
       value: {
         query: v,
@@ -154,6 +166,16 @@ export default class MainToolbar extends Vue {
     })
 
     location.reload();
+  }
+
+  toggleDarkMode() {
+    const { theme } = this.$vuetify;
+    theme.dark = !theme.dark;
+
+    this.updateConfig({
+      key: 'darkMode',
+      value: theme.dark,
+    });
   }
 
   @Watch('currentLocale')

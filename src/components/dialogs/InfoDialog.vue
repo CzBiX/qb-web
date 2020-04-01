@@ -6,9 +6,7 @@
     :fullscreen="phoneLayout"
   >
     <v-card>
-      <v-card-title
-        class="headline grey lighten-4"
-      >
+      <v-card-title class="headline">
         <v-icon class="mr-2">
           mdi-alert-circle
         </v-icon>
@@ -148,6 +146,10 @@ export default class InfoDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '~@/assets/styles.scss';
+
+@include dialog-title;
+
 ::v-deep .v-dialog {
   max-width: 1100px;
 

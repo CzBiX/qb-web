@@ -19,9 +19,7 @@
       width="40em"
     >
       <v-card>
-        <v-card-title
-          class="headline grey lighten-4"
-        >
+        <v-card-title class="headline">
           <v-icon class="mr-2">mdi-link-plus</v-icon>
           <span>{{ $t('title.add_torrents') }}</span>
         </v-card-title>
@@ -337,6 +335,10 @@ export default class AddForm extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '~@/assets/styles.scss';
+
+@include dialog-title;
+
 .btn-add.with-footer {
   margin-bottom: 36px;
 }

@@ -6,9 +6,7 @@
     persistent
   >
     <v-card>
-      <v-card-title
-        class="headline grey lighten-4"
-      >
+      <v-card-title class="headline">
         <v-icon class="mr-2">mdi-rss-box</v-icon>
         <span>RSS</span>
         <v-spacer />
@@ -425,6 +423,10 @@ export default class RssDialog extends HasTask {
 </script>
 
 <style lang="scss" scoped>
+@import '~@/assets/styles.scss';
+
+@include dialog-title;
+
 .v-card {
   display: flex;
   flex-direction: column;

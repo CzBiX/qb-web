@@ -7,9 +7,7 @@
     :width="dialogWidth"
   >
     <v-card>
-      <v-card-title
-        class="headline grey lighten-4"
-      >
+      <v-card-title class="headline">
         <v-icon class="mr-2">mdi-delta</v-icon>
         <span>Logs</span>
       </v-card-title>
@@ -63,7 +61,7 @@ import { Prop, Emit } from 'vue-property-decorator';
     },
     typeColor(type: number) {
       const map: any = {
-        1: 'secondary--text',
+        1: null,
         2: 'info--text',
         4: 'warn--text',
         8: 'error--text',
@@ -114,6 +112,10 @@ export default class LogsDialog extends HasTask {
 </script>
 
 <style lang="scss" scoped>
+@import '~@/assets/styles.scss';
+
+@include dialog-title;
+
 .logs {
   font-family: monospace;
 

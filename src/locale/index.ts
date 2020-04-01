@@ -28,7 +28,7 @@ function matchLocale() {
 export const defaultLocale = matchLocale()
 
 function updateLocale() {
-  let locale: keyof typeof translations | null = loadConfig()['locale'];
+  let locale: keyof typeof translations | undefined | null = loadConfig()['locale'];
 
   if (!locale) {
     locale = defaultLocale;

@@ -1,4 +1,5 @@
 import { MainData } from '@/types';
+import { Config } from './config';
 
 export interface RootState {
   rid: number;
@@ -19,7 +20,7 @@ export interface ConfigState {
 }
 
 export interface ConfigPayload {
-  key: string;
+  key: keyof Config;
   value: any;
 }
 

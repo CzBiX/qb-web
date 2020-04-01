@@ -17,13 +17,16 @@ const defaultConfig = {
     query: null,
   },
   locale: null,
+  darkMode: null,
 };
+
+export type Config = typeof defaultConfig
 
 function saveConfig(obj: any) {
   localStorage.setItem(configKey, JSON.stringify(obj));
 }
 
-export function loadConfig() {
+export function loadConfig(): Partial<Config> {
   const tmp = localStorage.getItem(configKey);
   if (!tmp) {
     return {};
