@@ -561,7 +561,7 @@ export default class Torrents extends Vue {
   flex: 1;
   position: relative;
 
-  @include theme(v-data-table) using ($material) {
+  .v-data-table {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -584,8 +584,13 @@ export default class Torrents extends Vue {
       padding-left: 4px;
     }
 
-    tr:nth-child(2n) {
-      background-color: map-deep-get($material, 'table', 'hover');
+    @include dark-mode-value(
+      map-deep-get($material-light, 'table', 'hover'),
+      map-get($material-dark-elevation-colors, '4'),
+    ) using ($color) {
+      tr:nth-child(2n) {
+        background-color: $color;
+      }
     }
 
     td {

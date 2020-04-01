@@ -7,3 +7,12 @@
     }
   }
 }
+
+@mixin dark-mode-value($light, $dark) {
+  &.theme--light {
+    @content($light);
+  }
+  &.theme--dark {
+    @content($dark);
+  }
+}
