@@ -66,10 +66,13 @@ import Component from 'vue-class-component';
 import { mapMutations } from 'vuex';
 import { Watch } from 'vue-property-decorator';
 
-import i18n, { tr, translations, defaultLocale, LocaleKey } from '@/locale';
+import { tr, translations, defaultLocale, LocaleKey } from '@/locale';
 import { DialogType, DialogConfig, SnackBarConfig, ConfigPayload } from '@/store/types';
 import AppFooter from '@/components/Footer.vue';
 
+const AUTO_KEY = 'auto';
+
+type AllLocaleKey = NonNullable<LocaleKey> | typeof AUTO_KEY;
 
 @Component({
   components: {
@@ -85,7 +88,7 @@ import AppFooter from '@/components/Footer.vue';
 })
 export default class DrawerFooter extends Vue {
   locales = this.buildLocales()
-  currentLocale = i18n.locale()
+  currentLocale = this.$store.getters.config.locale || AUTO_KEY;
   oldLocale = this.currentLocale
   showInfo = false
 
@@ -112,19 +115,19 @@ export default class DrawerFooter extends Vue {
     return [
       {
         text: tr('auto'),
-        value: null,
+        value: 'auto',
       },
       ...locales
     ]
   }
 
-  async switchLocale(locale: LocaleKey) {
+  async switchLocale(locale: AllLocaleKey) {
     if (locale === this.oldLocale) {
       return;
     }
 
     const confirm = await new Promise((resolve) => {
-      const localeKey = !locale ? defaultLocale : locale
+      const localeKey = locale === AUTO_KEY ? defaultLocale : locale
       this.showDialog({
         content: {
           text: tr('dialog.switch_locale.msg', { lang: translations[localeKey].lang }),
@@ -141,7 +144,7 @@ export default class DrawerFooter extends Vue {
 
     this.updateConfig({
       key: 'locale',
-      value: locale,
+      value: locale === AUTO_KEY ? null : locale,
     });
 
     this.showSnackBar({
@@ -162,7 +165,7 @@ export default class DrawerFooter extends Vue {
   }
 
   @Watch('currentLocale')
-  onCurrentLocaleChanged(v: LocaleKey) {
+  onCurrentLocaleChanged(v: AllLocaleKey) {
     this.switchLocale(v)
   }
 }
