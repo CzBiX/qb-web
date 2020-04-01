@@ -152,7 +152,7 @@ export default class Drawer extends Vue {
   readonly value: any
 
   basicItems: MenuItem[] = [
-    { icon: 'mdi-settings', title: tr('settings'), click: () => alert(tr('todo')) },
+    { icon: 'mdi-cog-box', title: tr('settings'), click: () => alert(tr('todo')) },
   ]
 
   endItems: MenuItem[] = [

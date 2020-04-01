@@ -53,7 +53,7 @@
             @click="showRulesDialog = true"
             :title="$t('settings')"
           >
-            <v-icon>mdi-settings</v-icon>
+            <v-icon>mdi-cog-box</v-icon>
           </v-btn>
         </div>
         <v-divider />
