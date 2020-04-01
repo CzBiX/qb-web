@@ -20,3 +20,7 @@ see: [INSTALL.md](./INSTALL.md)
 ![Add Torrents](./screenshot/add-torrents.png)
 ![RSS](./screenshot/rss.png)
 ![RSS Rule](./screenshot/rss-rule.png)
+
+## Wiki
+
+[Use Nginx to running multi WebUI at the same time](https://github.com/CzBiX/qb-web/wiki/Use-Nginx-to-running-multi-WebUI-at-the-same-time)
