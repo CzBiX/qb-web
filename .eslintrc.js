@@ -1,3 +1,5 @@
+const isProdEnv = process.env.NODE_ENV === 'production';
+
 module.exports = {
   root: true,
   env: {
@@ -11,8 +13,8 @@ module.exports = {
     '@vue/typescript/recommended',
   ],
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': isProdEnv ? 'error' : 'warn',
+    'no-debugger': isProdEnv ? 'error' : 'warn',
 
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-explicit-any': 'off',

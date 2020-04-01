@@ -1,3 +1,7 @@
+import debug from 'debug';
+
+const log = debug('app:protocolHandler');
+
 function registerProtocolHandler() {
   if (!('registerProtocolHandler' in navigator)) {
     return;
@@ -6,7 +10,7 @@ function registerProtocolHandler() {
   try {
     navigator.registerProtocolHandler('magnet', location.origin + '#url=%s', document.title);
   } catch (e) {
-    console.log('Register protocol handler failed.', e);
+    log('Register protocol handler failed.', e);
   }
 }
 
