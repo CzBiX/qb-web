@@ -17,7 +17,8 @@
       v-model="dialog"
       eager
       persistent
-      width="40em"
+      scrollable
+      :width="phoneLayout ? '100%' : '40em'"
     >
       <v-card>
         <v-card-title class="headline">
@@ -31,9 +32,7 @@
           >
             <v-container>
               <v-row no-gutters>
-                <v-col
-                  ref="fileZone"
-                >
+                <v-col ref="fileZone">
                   <v-file-input
                     v-show="files.length"
                     v-model="files"
@@ -66,20 +65,6 @@
                     cols="12"
                     sm="6"
                   >
-                    <v-combobox
-                      :label="$t('category', 1)"
-                      prepend-icon="mdi-folder"
-                      clearable
-                      hide-no-data
-                      :items="categories"
-                      :value="params.category"
-                      @input="setParams('category', $event.value)"
-                    />
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                  >
                     <v-checkbox
                       prepend-icon="mdi-file-tree"
                       :label="$t('label.create_subfolder')"
@@ -87,20 +72,62 @@
                       @change="setParams('root_path', $event)"
                     />
                   </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                  >
+                    <v-checkbox
+                      prepend-icon="mdi-car-shift-pattern"
+                      :label="$t('label.auto_tmm')"
+                      :input-value="params.autoTMM"
+                      @change="setParams('autoTMM', $event)"
+                    />
+                  </v-col>
                 </template>
                 <v-col
                   cols="12"
                   sm="6"
                 >
-                  <v-checkbox
-                    v-model="autoStart"
-                    :label="$t('label.start_torrent')"
-                    prepend-icon="mdi-play-pause"
+                  <v-combobox
+                    :label="$t('category', 1)"
+                    prepend-icon="mdi-folder"
+                    clearable
+                    hide-no-data
+                    :items="categoryItems"
+                    :value="params.category"
+                    @input="setParams('category', $event ? $event.value : null)"
                   />
                 </v-col>
                 <v-col
                   cols="12"
                   sm="6"
+                  v-if="!phoneLayout || showMore"
+                >
+                  <v-text-field
+                    :label="$t('location')"
+                    prepend-icon="mdi-folder-marker"
+                    clearable
+                    :disabled="params.autoTMM"
+                    :placeholder="defaultPath"
+                    :value="params.autoTMM ? null : userParams.savepath"
+                    @change="setParams('savepath', $event)"
+                  />
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="6"
+                >
+                  <v-checkbox
+                    :label="$t('label.start_torrent')"
+                    prepend-icon="mdi-play-pause"
+                    :input-value="!params.paused"
+                    @change="setParams('paused', !$event)"
+                  />
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="6"
+                  v-if="!phoneLayout || showMore"
                 >
                   <v-checkbox
                     prepend-icon="mdi-progress-check"
@@ -118,7 +145,7 @@
                       :label="$t('label.in_sequential_order')"
                       prepend-icon="mdi-sort-descending"
                       :ipnut-value="params.sequentialDownload"
-                      @change="setParams('sequentialDownload', $event.value)"
+                      @change="setParams('sequentialDownload', $event)"
                     />
                   </v-col>
                   <v-col
@@ -173,21 +200,24 @@
 <script lang="ts">
 import { isNil } from 'lodash';
 import Vue from 'vue';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import api from '../Api';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
+import { Preferences, Category } from '../types';
 
 /* eslint-disable @typescript-eslint/camelcase */
 const defaultParams = {
-  urls: null,
-  category: null,
+  urls: '',
+  category: '',
   paused: false,
+  savepath: '',
   skip_checking: false,
   root_path: false,
   sequentialDownload: false,
   firstLastPiecePrio: false,
+  autoTMM: false,
 };
 /* eslint-enable @typescript-eslint/camelcase */
 
@@ -197,24 +227,25 @@ const defaultParams = {
       pasteUrl: 'pasteUrl',
       prefs: 'preferences',
     }),
-    ...mapState({
-      categories(state, getters) {
-        return getters.allCategories.map((c: any) => ({ text: c.name, value: c.key }));
-      },
-    }),
+    ...mapGetters([
+      'allCategories',
+    ]),
   },
 })
 export default class AddForm extends Vue {
   dialog = false
   valid = false
   files: FileList | [] = []
+  defaultParams = defaultParams
   userParams = {}
   error: string | null = null
   submitting = false
   showMore = false
 
   pasteUrl!: string | null
-  prefs!: any
+  prefs!: Preferences
+  allCategories!: Category[]
+
   $refs!: {
     form: any;
     file: any;
@@ -227,22 +258,27 @@ export default class AddForm extends Vue {
   get phoneLayout() {
     return this.$vuetify.breakpoint.xsOnly;
   }
-
-  get autoStart() {
-    return !this.params.paused;
+  get categoryItems() {
+    return this.allCategories.map(c => ({ text: c.name, value: c.key }));
   }
+  get defaultPath() {
+    if (this.params.autoTMM && this.params.category) {
+      const category = this.allCategories.find(c => {
+        return c.key === this.params.category;
+      })!;
 
-  set autoStart(value: boolean) {
-    const paused = !value;
-    const tmp = defaultParams.paused === paused ? null : paused;
-    this.setParams('paused', tmp);
+      return category.savePath || category.name
+    }
+
+    return this.defaultParams.savepath;
   }
 
   created() {
     defaultParams.paused = this.prefs.start_paused_enabled;
     /* eslint-disable-next-line @typescript-eslint/camelcase */
     defaultParams.root_path = this.prefs.create_subfolder_enabled;
-    this.showMore = !this.phoneLayout;
+    defaultParams.savepath = this.prefs.save_path;
+    defaultParams.autoTMM = this.prefs.auto_tmm_enabled;
   }
 
   mounted() {
@@ -253,8 +289,8 @@ export default class AddForm extends Vue {
     this.$refs.fileZone.removeEventListener('drop', this.onDrop, true);
   }
 
-  setParams(key: string, value: any) {
-    if (isNil(value)) {
+  setParams(key: keyof typeof defaultParams, value: any) {
+    if (isNil(value) || value === defaultParams[key]) {
       Vue.delete(this.userParams, key);
     } else {
       Vue.set(this.userParams, key, value);
@@ -347,9 +383,8 @@ export default class AddForm extends Vue {
 .container {
   padding: 12px 0 0;
 
-  .col {
-    padding-top: 0;
-    padding-bottom: 0;
+  .col, [class*=col-] {
+    padding: 0 0.5em;
   }
 }
 </style>

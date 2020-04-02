@@ -19,6 +19,7 @@ export default {
   reset: '重置',
   login: '登录',
   search: '搜索',
+  location: '位置',
 
   reannounce: '重新通告',
   recheck: '重新检查',
@@ -69,6 +70,8 @@ export default {
     first_and_last_pieces_first: '先下载首尾文件块',
 
     also_delete_files: '同时删除文件',
+
+    auto_tmm: '自动种子管理',
 
     adding: '添加…',
     reloading: '刷新中…',

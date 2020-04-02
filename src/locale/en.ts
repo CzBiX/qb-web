@@ -19,6 +19,7 @@ export default {
   reset: 'Reset',
   login: 'Login',
   search: 'Search',
+  location: 'Location',
 
   reannounce: 'Reannounce',
   recheck: 'Recheck',
@@ -69,6 +70,8 @@ export default {
     first_and_last_pieces_first: 'First and last pieces first',
 
     also_delete_files: 'Also delete files',
+
+    auto_tmm: 'Auto TMM',
 
     adding: 'Adding…',
     reloading: 'Reloading…',
