@@ -21,9 +21,10 @@
           <li
             v-for="(row, i) in logs"
             :key="i"
+            class="log-item"
             :class="row.type | typeColor"
           >
-            [{{ row.type | formatType }} {{ row.timestamp / 1000 | formatTimestamp }}]
+            <span class="tag">[{{ row.type | formatType }} {{ row.timestamp / 1000 | formatTimestamp }}]</span>
             <span v-html="row.message" />
           </li>
         </ol>
@@ -117,10 +118,12 @@ export default class LogsDialog extends HasTask {
 @include dialog-title;
 
 .logs {
-  font-family: monospace;
-
-  li {
+  .log-item {
     line-height: 1.4em;
+
+    .tag {
+      font-family: monospace;
+    }
   }
 }
 </style>
