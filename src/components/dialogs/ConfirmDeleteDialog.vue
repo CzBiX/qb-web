@@ -31,7 +31,7 @@
           v-model="deleteSameNamed"
           prepend-icon="mdi-file-multiple"
           class="mt-0"
-          :label="$t('dialog.delete_torrents', sameNamedTorrents.length)"
+          :label="$t('dialog.delete_torrents.also_delete_same_name_torrents', sameNamedTorrents.length)"
         />
       </v-card-text>
       <v-card-actions>
