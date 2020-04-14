@@ -135,8 +135,10 @@
         :mobile-breakpoint="0"
       >
         <template v-slot:item="row">
-          <tr>
-            <!-- @dblclick.prevent="showInfo(row.item)" -->
+          <tr
+            :key="row.item.hash"
+            @dblclick.prevent="showInfo(row.item)"
+          >
             <td>
               <v-checkbox
                 :value="row.isSelected"
