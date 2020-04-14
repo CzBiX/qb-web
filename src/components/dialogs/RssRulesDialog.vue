@@ -122,6 +122,13 @@
                   :value="selectedRule.assignedCategory"
                   @change="editRule('assignedCategory', $event)"
                 />
+                <v-text-field
+                  dense
+                  :label="$t('location')"
+                  :disabled="!selectedRule.enabled"
+                  :value="selectedRule.savePath"
+                  @change="editRule('savePath', $event)"
+                />
               </v-form>
 
               <v-divider />
