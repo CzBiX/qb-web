@@ -59,6 +59,7 @@ export default {
     delete_torrents: '删除种子',
     set_category: '设置分类',
     edit_tracker: '编辑 Tracker',
+    set_location: '修改文件位置',
   },
 
   label: {
@@ -76,6 +77,8 @@ export default {
     adding: '添加…',
     reloading: '刷新中…',
     deleting: '删除中…',
+    moving: '移动中…',
+    moved: '已移动',
   },
 
   msg: {

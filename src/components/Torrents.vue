@@ -50,10 +50,10 @@
             <v-btn
               icon
               v-on="on"
-              :title="$t('category')"
+              :title="$t('title.set_category')"
               :disabled="!hasSelected"
             >
-              <v-icon>mdi-folder</v-icon>
+              <v-icon>mdi-folder-star</v-icon>
             </v-btn>
           </template>
           <v-list class="category-actions">
@@ -66,7 +66,7 @@
               @click="setTorrentsCategory(item.key)"
             >
               <v-list-item-action>
-                <v-icon>mdi-folder-open</v-icon>
+                <v-icon>mdi-folder</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
@@ -92,6 +92,14 @@
             vertical
             inset
           />
+          <v-btn
+            icon
+            @click="setTorrentLocation"
+            :title="$t('title.set_location')"
+            :disabled="selectedRows.length == 0"
+          >
+            <v-icon>mdi-folder-marker</v-icon>
+          </v-btn>
           <v-btn
             icon
             @click="reannounceTorrents"
@@ -210,8 +218,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapState, mapGetters, mapMutations } from 'vuex'
-import { intersection, difference } from 'lodash'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import { intersection, difference, uniqBy } from 'lodash'
 
 import { tr } from '@/locale'
 import ConfirmDeleteDialog from './dialogs/ConfirmDeleteDialog.vue'
@@ -353,6 +361,9 @@ function getStateInfo(state: string) {
       'showDialog',
       'showSnackBar',
     ]),
+    ...mapActions([
+      'asyncShowDialog',
+    ]),
   },
 })
 export default class Torrents extends Vue {
@@ -394,6 +405,7 @@ export default class Torrents extends Vue {
   updateConfig!: (_: ConfigPayload) => void
   showDialog!: (_: DialogConfig) => void
   showSnackBar!: (_: SnackBarConfig) => void
+  asyncShowDialog!: (_: DialogConfig) => Promise<string | undefined>
 
   get loading() {
     return !this.isDataReady;
@@ -462,15 +474,12 @@ export default class Torrents extends Vue {
     if (!this.hasSelected) {
       this.selectedRows = this.allTorrents;
     }
-    const v = await new Promise((resolve) => {
-      this.showDialog({
-        content: {
-          title: 'Reannounce Torrents',
-          text: 'Are you sure want to reannounce torrents?',
-          type: DialogType.OkCancel,
-          callback: resolve,
-        },
-      });
+    const v = await this.asyncShowDialog({
+      content: {
+        title: 'Reannounce Torrents',
+        text: 'Are you sure want to reannounce torrents?',
+        type: DialogType.OkCancel,
+      },
     });
 
     if (!v) {
@@ -500,6 +509,35 @@ export default class Torrents extends Vue {
     await api.recheckTorrents(this.selectedHashes);
 
     this.showSnackBar({text: 'Rechecking'});
+  }
+
+  async setTorrentLocation() {
+    const savePaths = uniqBy(this.selectedRows, 'save_path');
+
+    const oldPath = savePaths.length > 1 ? '' : savePaths[0].save_path
+    const v = await this.asyncShowDialog({
+      content: {
+        title: tr('title.set_location'),
+        text: '',
+        type: DialogType.Input,
+        value: oldPath,
+      },
+    });
+
+    if (!v) {
+      return;
+    }
+
+    this.showSnackBar({text: tr('label.moving')});
+
+    try {
+      await api.setTorrentLocation(this.selectedHashes, v);
+    } catch (e) {
+      this.showSnackBar({text: e});
+      return;
+    }
+
+    this.showSnackBar({text: tr('label.moved')});
   }
 
   setTorrentsCategory(category: string) {

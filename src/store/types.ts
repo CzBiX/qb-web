@@ -42,6 +42,7 @@ export interface DialogConfig {
 
     rules?: CallableFunction[];
     placeholder?: string;
+    value?: string;
   };
   width?: string;
 }

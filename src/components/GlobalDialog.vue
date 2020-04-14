@@ -101,6 +101,8 @@ export default {
       value.value = !!v;
       if (!v) {
         input.value = undefined
+      } else {
+        input.value = v.content.value
       }
     });
     watch(value, (v) => {

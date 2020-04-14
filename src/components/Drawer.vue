@@ -209,7 +209,7 @@ export default class Drawer extends Vue {
       const title = `${category.name} (${value.length})`;
       const append = `[${size}]`;
       return {
-        icon: 'mdi-folder-open', title, key: category.key, append,
+        icon: 'mdi-folder', title, key: category.key, append,
       };
     });
   }
@@ -257,7 +257,7 @@ export default class Drawer extends Vue {
       select: 'category',
       children: [
         {
-          icon: 'mdi-folder-open', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+          icon: 'mdi-folder', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
         },
         ...this.buildCategoryGroup(),
       ],

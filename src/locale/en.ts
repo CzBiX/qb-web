@@ -57,8 +57,9 @@ export default {
     _: 'Title',
     add_torrents: 'Add Torrents',
     delete_torrents: 'Delete Torrents',
-    set_category: 'Set category',
-    edit_tracker: 'Edit tracker',
+    set_category: 'Set Category',
+    edit_tracker: 'Edit Tracker',
+    set_location: 'Set Location',
   },
 
   label: {
@@ -76,6 +77,8 @@ export default {
     adding: 'Adding…',
     reloading: 'Reloading…',
     deleting: 'Deleting…',
+    moving: 'Moving…',
+    moved: 'Moved',
   },
 
   msg: {
