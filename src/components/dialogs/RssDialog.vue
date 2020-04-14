@@ -35,6 +35,7 @@
             <v-icon>mdi-delete</v-icon>
           </v-btn>
           <v-spacer />
+          <v-divider vertical />
           <v-switch
             :input-value="preferences.rss_processing_enabled"
             @change="changePreference('rss_processing_enabled', $event)"
@@ -48,6 +49,7 @@
             :label="$t('dialog.rss.auto_download')"
             hide-details
           />
+          <v-divider vertical />
           <v-btn
             icon
             @click="showRulesDialog = true"
