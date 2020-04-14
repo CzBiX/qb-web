@@ -616,18 +616,13 @@ export default class Torrents extends Vue {
       }
     }
     
-    ::v-deep .v-data-footer {
+    &::v-deep .v-data-footer {
       margin-right: 4em;
 
-      .phone-layout & {
-        justify-content: flex-start;
-
-        .v-data-footer__select {
-          display: none;
-        }
-
-        .v-data-footer__pagination {
-          margin-left: 0;
+      .v-data-footer__select .v-select {
+        margin: {
+          top: 10px;
+          bottom: 10px;
         }
       }
     }
@@ -635,9 +630,18 @@ export default class Torrents extends Vue {
 }
 
 .phone-layout {
-  .v-data-table ::v-deep .v-data-footer {
+  .v-data-table::v-deep .v-data-footer {
+    justify-content: flex-start;
     flex-wrap: nowrap;
     margin-right: 0;
+
+    .v-data-footer__select {
+      display: none;
+    }
+
+    .v-data-footer__pagination {
+      margin-left: 0;
+    }
   }
 }
 

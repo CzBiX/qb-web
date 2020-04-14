@@ -377,7 +377,7 @@ export default class AddForm extends Vue {
 @include dialog-title;
 
 .btn-add.with-footer {
-  margin-bottom: 36px;
+  margin-bottom: 27.5px;
 }
 
 .container {

@@ -13,6 +13,7 @@
           :rules="content.rules"
           :placeholder="content.placeholder"
           :hide-details="!content.rules"
+          autofocus
         />
         <template v-else>
           {{ content.text }}
