@@ -6,7 +6,11 @@
 
 ## Features
 Keywords: SPA, RSS, Responsive Design, Modern Design, i18n
+
 Languages: English, 中文
+
+TODO:
+ - [ ] Settings UI
 
 ## Download
 
