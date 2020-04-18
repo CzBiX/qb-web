@@ -13,7 +13,7 @@
     >
       <img
         class="icon"
-        src="/favicon.ico"
+        src="favicon.ico"
       >
       <span class="title hidden-sm-and-down ml-3 mr-5">
         qBittorrent Web UI

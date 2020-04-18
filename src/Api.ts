@@ -7,7 +7,7 @@ class Api {
 
   constructor() {
     this.axios = Axios.create({
-      baseURL: '/api/v2',
+      baseURL: 'api/v2',
     });
 
     this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
