@@ -1,25 +1,25 @@
 <template>
-  <v-treeview
-    open-on-click
-    :items="fileTree"
-    :value="selected"
-    selection-type="leaf"
-    selectable
-    dense
-    @input="selectChanged"
-  >
-    <template v-slot:prepend="row">
-      <v-icon v-text="getRowIcon(row)" />
-    </template>
-    <template v-slot:append="row">
-      <span>
-        [{{ getTotalSize(row.item) | size }}]
-      </span>
-      <span class="progress">
-        {{ getTotalProgress(row.item) | progress }}
-      </span>
-    </template>
-  </v-treeview>
+  <div class="torrent-content">
+    <v-treeview
+      open-on-click
+      :items="fileTree"
+      :value="selected"
+      selectable
+      @input="selectChanged"
+    >
+      <template v-slot:prepend="row">
+        <v-icon v-text="getRowIcon(row)" />
+      </template>
+      <template v-slot:append="row">
+        <span>
+          [{{ getTotalSize(row.item) | size }}]
+        </span>
+        <span class="progress">
+          {{ getTotalProgress(row.item) | progress }}
+        </span>
+      </template>
+    </v-treeview>
+  </div>
 </template>
 
 <script lang="ts">
@@ -27,7 +27,7 @@ import { groupBy, xor } from 'lodash';
 import api from '../../Api';
 import BaseTorrentInfo from './baseTorrentInfo'
 import Component from 'vue-class-component';
-import { Prop, Emit } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 
 enum EFilePriority {
   notDownload = 0,
@@ -111,7 +111,6 @@ export default class TorrentContent extends BaseTorrentInfo {
     return size;
   }
 
-  @Emit('input')
   selectChanged(items: Array<number>) {
     const previous = this.selected;
     const diff = xor(previous, items);
