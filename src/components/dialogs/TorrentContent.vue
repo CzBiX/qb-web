@@ -3,6 +3,9 @@
     <v-treeview
       open-on-click
       :items="fileTree"
+      :value="selected"
+      selectable
+      @input="selectChanged"
     >
       <template v-slot:prepend="row">
         <v-icon v-text="getRowIcon(row)" />
@@ -20,18 +23,25 @@
 </template>
 
 <script lang="ts">
-import { groupBy } from 'lodash';
+import { groupBy, xor } from 'lodash';
 import api from '../../Api';
 import BaseTorrentInfo from './baseTorrentInfo'
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
+
+enum EFilePriority {
+  notDownload = 0,
+  normal = 1,
+  high = 6,
+  maximal = 7
+}
 
 /* eslint-disable camelcase */
 interface File {
   name: string;
   size: number;
   progress: number;
-  priority: number;
+  priority: EFilePriority;
   is_seed: boolean;
   piece_range: Array<number>;
   availability: number;
@@ -39,6 +49,7 @@ interface File {
 /* eslint-disable camelcase */
 
 interface TreeItem {
+  id: number;
   name: string;
   item?: File;
   children?: Array<TreeItem>;
@@ -50,6 +61,8 @@ interface Data {
 
 const FILE_KEY = '/FILE/';
 
+const UNWANTED_FILE = '.unwanted';
+
 @Component
 export default class TorrentContent extends BaseTorrentInfo {
   @Prop(String)
@@ -57,8 +70,20 @@ export default class TorrentContent extends BaseTorrentInfo {
 
   files: File[] = []
 
-  get fileTree() {
+  get fileTree(): TreeItem[] {
     return this.buildTree(this.files, 0);
+  }
+
+  get selected(): number[] {
+    const list: number[] = [];
+
+    this.files.forEach((item, index) => {
+        if(item.priority !== EFilePriority.notDownload) {
+          list.push(index);
+        }
+      })
+
+    return list;
   }
 
   async getFiles() {
@@ -84,6 +109,17 @@ export default class TorrentContent extends BaseTorrentInfo {
     }
 
     return size;
+  }
+
+  selectChanged(items: Array<number>) {
+    const previous = this.selected;
+    const diff = xor(previous, items);
+
+    if(diff.length == 0) return;
+
+    api.setTorrentFilePriority(this.hash, diff,
+     items.length > previous.length ?
+      EFilePriority.normal : EFilePriority.notDownload);
   }
 
   getTotalProgress(item: TreeItem) {
@@ -115,6 +151,10 @@ export default class TorrentContent extends BaseTorrentInfo {
     return name.substring(start, index);
   }
 
+  getFileIndex(item: File): number {
+    return this.files.findIndex(value => value.name === item.name);
+  }
+
   buildTree(files: Array<File>, start: number): TreeItem[] {
     if (!files.length) {
       return [];
@@ -124,22 +164,38 @@ export default class TorrentContent extends BaseTorrentInfo {
 
     const result = [];
     for (const [folder, values] of Object.entries(entries)) {
+
+      // Push .unwanted file to current folder, just like original web ui
+      if(folder === UNWANTED_FILE) {
+          for (const item of values) {
+            result.push({
+              id: this.getFileIndex(item),
+              name: item.name.substring(start + folder.length + 1),
+              item,
+            });
+          }
+          continue;
+        }
+
       if (folder !== FILE_KEY) {
         const subTree = this.buildTree(values, start + folder.length + 1);
+        // Offset folder id to making sure it will not influence array content
         result.push({
+          id: this.files.length + start,
           name: folder,
           children: subTree,
         });
         continue;
       }
 
-      for (const item of values) {
-        result.push({
-          name: item.name.substring(start),
-          item,
-        });
+        for (const item of values) {
+          result.push({
+            id: this.getFileIndex(item),
+            name: item.name.substring(start),
+            item,
+          });
+        }
       }
-    }
 
     return result;
   }

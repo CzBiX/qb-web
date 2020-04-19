@@ -83,6 +83,18 @@ class Api {
     return this.axios.post('/app/setPreferences', data);
   }
 
+  public setTorrentFilePriority(hash: string, idList: Array<number>, priority: number) {
+    const idListStr = idList.join('|');
+    const params: any = {
+      hash,
+      id: idListStr,
+      priority,
+    }
+
+    const data = new URLSearchParams(params);
+    return this.axios.post(`/torrents/filePrio`, data).then(Api.handleResponse);
+  }
+
   public getLogs(lastId?: number) {
     const params = {
       last_known_id: lastId,
