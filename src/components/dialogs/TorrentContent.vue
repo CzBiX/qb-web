@@ -12,10 +12,10 @@
       </template>
       <template v-slot:append="row">
         <span>
-          [{{ getTotalSize(row.item) | size }}]
+          [{{ row.item.size | size }}]
         </span>
         <span class="progress">
-          {{ getTotalProgress(row.item) | progress }}
+          {{ row.item.progress | progress }}
         </span>
       </template>
     </v-treeview>
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { groupBy, xor } from 'lodash';
+import { groupBy, xor, sumBy } from 'lodash';
 import api from '../../Api';
 import BaseTorrentInfo from './baseTorrentInfo'
 import Component from 'vue-class-component';
@@ -53,6 +53,8 @@ interface TreeItem {
   name: string;
   item?: File;
   children?: Array<TreeItem>;
+  size: number;
+  progress: number;
 }
 
 interface Data {
@@ -69,6 +71,7 @@ export default class TorrentContent extends BaseTorrentInfo {
   readonly hash!: string
 
   files: File[] = []
+  folderIndex!: number
 
   get fileTree(): TreeItem[] {
     return this.buildTree(this.files, 0);
@@ -78,16 +81,17 @@ export default class TorrentContent extends BaseTorrentInfo {
     const list: number[] = [];
 
     this.files.forEach((item, index) => {
-        if(item.priority !== EFilePriority.notDownload) {
-          list.push(index);
-        }
-      })
+      if(item.priority !== EFilePriority.notDownload) {
+        list.push(index);
+      }
+    })
 
     return list;
   }
 
   async getFiles() {
     this.files = await api.getTorrentFiles(this.hash);
+    this.folderIndex = 0
   }
 
   getRowIcon(row: any) {
@@ -98,47 +102,14 @@ export default class TorrentContent extends BaseTorrentInfo {
     return row.open ? 'mdi-folder-open' : 'mdi-folder';
   }
 
-  getTotalSize(item: TreeItem) {
-    if (item.item) {
-      return item.item.size;
-    }
-
-    let size = 0;
-    for (const child of item.children!) {
-      size += this.getTotalSize(child);
-    }
-
-    return size;
-  }
-
   selectChanged(items: Array<number>) {
     const previous = this.selected;
     const diff = xor(previous, items);
 
     if(diff.length == 0) return;
 
-    api.setTorrentFilePriority(this.hash, diff,
-     items.length > previous.length ?
+    api.setTorrentFilePriority(this.hash, diff, items.length > previous.length ?
       EFilePriority.normal : EFilePriority.notDownload);
-  }
-
-  getTotalProgress(item: TreeItem) {
-    if (item.item) {
-      return item.item.progress;
-    }
-
-    let count = 0;
-    let progress = 0;
-    for (const child of item.children!) {
-      count++;
-      progress += this.getTotalProgress(child);
-    }
-
-    if (count === 0) {
-      return 1;
-    }
-
-    return progress / count;
   }
 
   getFileFolder(item: File, start: number) {
@@ -164,38 +135,43 @@ export default class TorrentContent extends BaseTorrentInfo {
 
     const result = [];
     for (const [folder, values] of Object.entries(entries)) {
-
       // Push .unwanted file to current folder, just like original web ui
       if(folder === UNWANTED_FILE) {
-          for (const item of values) {
-            result.push({
-              id: this.getFileIndex(item),
-              name: item.name.substring(start + folder.length + 1),
-              item,
-            });
-          }
-          continue;
+        for (const item of values) {
+          result.push({
+            id: this.getFileIndex(item),
+            name: item.name.substring(start + folder.length + 1),
+            item,
+            size: item.size,
+            progress: item.progress,
+          });
         }
+        continue;
+      }
 
       if (folder !== FILE_KEY) {
         const subTree = this.buildTree(values, start + folder.length + 1);
         // Offset folder id to making sure it will not influence array content
         result.push({
-          id: this.files.length + start,
+          id: this.files.length + this.folderIndex++,
           name: folder,
           children: subTree,
+          size: sumBy(subTree, 'size'),
+          progress: sumBy(subTree, 'progress') / subTree.length,
         });
         continue;
       }
 
-        for (const item of values) {
-          result.push({
-            id: this.getFileIndex(item),
-            name: item.name.substring(start),
-            item,
-          });
-        }
+      for (const item of values) {
+        result.push({
+          id: this.getFileIndex(item),
+          name: item.name.substring(start),
+          item,
+          size: item.size,
+          progress: item.progress,
+        });
       }
+    }
 
     return result;
   }
