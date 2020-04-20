@@ -19,6 +19,7 @@ export default {
   reset: '重置',
   login: '登录',
   search: '搜索',
+  refresh: '刷新',
   location: '位置',
 
   reannounce: '重新通告',

@@ -19,6 +19,7 @@ export default {
   reset: 'Reset',
   login: 'Login',
   search: 'Search',
+  refresh: 'Refresh',
   location: 'Location',
 
   reannounce: 'Reannounce',

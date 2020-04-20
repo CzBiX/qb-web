@@ -34,6 +34,15 @@
           >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
+          <v-divider vertical />
+          <v-btn
+            icon
+            :disabled="!selectNode"
+            @click="refreshRssItem"
+            :title="$t('refresh')"
+          >
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
           <v-spacer />
           <v-divider vertical />
           <v-switch
@@ -290,6 +299,16 @@ export default class RssDialog extends HasTask {
     return null
   }
 
+  get selectedPath() {
+    if (!this.selectNode) {
+      return null
+    }
+
+    return toPath(this.selectNode!).map(p => {
+      return p.replace('\\\'', '\'').replace('\\\\', '\\');
+    }).join('\\');
+  }
+
   isItemLoading(row: any) {
     const item = row.item.item
     return item && item.isLoading
@@ -355,7 +374,7 @@ export default class RssDialog extends HasTask {
     })
 
     await api.addRssFeed(input);
-    this.runTask();
+    await this.runTask();
 
     this.closeSnackBar();
   }
@@ -376,21 +395,22 @@ export default class RssDialog extends HasTask {
       text: tr('label.deleting'),
     })
 
-    const path = toPath(this.selectNode!).map(p => {
-      return p.replace('\\\'', '\'').replace('\\\\', '\\');
-    }).join('\\');
-
     try {
-      await api.removeRssFeed(path);
+      await api.removeRssFeed(this.selectedPath!);
     } catch (e) {
       this.showSnackBar({
         text: e.response ? e.response.data : e.message,
       })
       return
     }
-    this.runTask();
+    await this.runTask();
 
     this.closeSnackBar();
+  }
+
+  async refreshRssItem() {
+    await api.refreshRssFeed(this.selectedPath!);
+    await this.runTask();
   }
 
   async changePreference(key: string, value: any) {
