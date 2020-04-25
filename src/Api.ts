@@ -230,6 +230,16 @@ class Api {
     return this.axios.post('/rss/refreshItem', data).then(Api.handleResponse);
   }
 
+  public moveRssFeed(path: string, newPath: string) {
+    const params: any = {
+      itemPath: path,
+      destPath: newPath,
+    }
+
+    const data = new URLSearchParams(params)
+    return this.axios.post('/rss/moveItem', data).then(Api.handleResponse);
+  }
+
   public getRssRules(): Promise<{[key: string]: RssRule}> {
     return this.axios.get('/rss/rules').then(Api.handleResponse);
   }

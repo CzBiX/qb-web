@@ -34,6 +34,14 @@
           >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
+          <v-btn
+            icon
+            :disabled="!selectNode"
+            @click="renameRssItem"
+            :title="$t('rename')"
+          >
+            <v-icon>mdi-file-move</v-icon>
+          </v-btn>
           <v-divider vertical />
           <v-btn
             icon
@@ -374,6 +382,36 @@ export default class RssDialog extends HasTask {
     })
 
     await api.addRssFeed(input);
+    await this.runTask();
+
+    this.closeSnackBar();
+  }
+
+  async renameRssItem() {
+    const input = await this.asyncShowDialog({
+      content: {
+        text: tr('name'),
+        type: DialogType.Input,
+        value: this.selectedPath!,
+      },
+    })
+
+    if (!input) {
+      return
+    }
+
+    this.showSnackBar({
+      text: tr('label.moving'),
+    })
+
+    try {
+      await api.moveRssFeed(this.selectedPath!, input);
+    } catch (e) {
+      this.showSnackBar({
+        text: e.response ? e.response.data : e.message,
+      })
+      return
+    }
     await this.runTask();
 
     this.closeSnackBar();

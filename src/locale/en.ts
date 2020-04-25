@@ -21,6 +21,7 @@ export default {
   search: 'Search',
   refresh: 'Refresh',
   location: 'Location',
+  rename: 'Rename',
 
   reannounce: 'Reannounce',
   recheck: 'Recheck',
