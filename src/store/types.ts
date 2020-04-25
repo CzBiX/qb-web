@@ -33,18 +33,19 @@ export enum DialogType {
 }
 
 export interface DialogConfig {
-  content: {
-    title?: string;
-    text: string;
-    callback?: CallableFunction;
-    type?: DialogType;
-    buttons?: any;
-
-    rules?: CallableFunction[];
-    placeholder?: string;
-    value?: string;
+  dialog?: {
+    width?: string;
   };
-  width?: string;
+
+  title?: string;
+  text: string;
+  callback?: CallableFunction;
+  type?: DialogType;
+  buttons?: any;
+
+  rules?: CallableFunction[];
+  placeholder?: string;
+  value?: string;
 }
 
 export interface DialogState {

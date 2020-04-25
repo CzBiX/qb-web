@@ -367,10 +367,8 @@ export default class RssDialog extends HasTask {
 
   async addRssItem() {
     const input = await this.asyncShowDialog({
-      content: {
-        text: tr('dialog.rss.feed_url'),
-        type: DialogType.Input,
-      },
+      text: tr('dialog.rss.feed_url'),
+      type: DialogType.Input,
     })
 
     if (!input) {
@@ -389,11 +387,9 @@ export default class RssDialog extends HasTask {
 
   async renameRssItem() {
     const input = await this.asyncShowDialog({
-      content: {
-        text: tr('name'),
-        type: DialogType.Input,
-        value: this.selectedPath!,
-      },
+      text: tr('name'),
+      type: DialogType.Input,
+      value: this.selectedPath!,
     })
 
     if (!input) {
@@ -419,10 +415,8 @@ export default class RssDialog extends HasTask {
 
   async deleteRssItem() {
     const confirm = await this.asyncShowDialog({
-      content: {
-        text: tr('dialog.rss.delete_feeds'),
-        type: DialogType.OkCancel,
-      },
+      text: tr('dialog.rss.delete_feeds'),
+      type: DialogType.OkCancel,
     })
 
     if (!confirm) {

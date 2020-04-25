@@ -1,22 +1,22 @@
 <template>
   <v-dialog
-    v-bind="config"
+    v-bind="config.dialog"
     v-model="value"
   >
     <v-card v-if="!!config">
-      <v-card-title v-text="content.title" />
+      <v-card-title v-text="config.title" />
       <v-card-text class="content">
         <v-text-field
           v-if="isInput"
           v-model="input"
-          :label="content.text"
-          :rules="content.rules"
-          :placeholder="content.placeholder"
-          :hide-details="!content.rules"
+          :label="config.text"
+          :rules="config.rules"
+          :placeholder="config.placeholder"
+          :hide-details="!config.rules"
           autofocus
         />
         <template v-else>
-          {{ content.text }}
+          {{ config.text }}
         </template>
       </v-card-text>
       <v-card-actions>
@@ -61,7 +61,9 @@ const BUTTONS = {
 };
 
 const DefaultConfig = {
-  width: '25%',
+  dialog: {
+    width: '25%',
+  }
 };
 
 export default {
@@ -74,17 +76,16 @@ export default {
       }
       return Object.assign({}, DefaultConfig, userConfig.value) as DialogConfig;
     });
-    const content = computed(() => (config.value ? config.value.content : null));
     const value = ref<boolean>();
     const input = ref<string>();
 
     const isInput = computed(() => {
-      const type = content.value!.type
+      const type = config.value!.type
       return type === DialogType.Input
     })
 
     async function clickBtn(btnValue: any) {
-      const cb = content.value!.callback;
+      const cb = config.value!.callback;
 
       if (cb) {
         if (isInput.value) {
@@ -102,7 +103,7 @@ export default {
       if (!v) {
         input.value = undefined
       } else {
-        input.value = v.content.value
+        input.value = v.value
       }
     });
     watch(value, (v) => {
@@ -114,7 +115,7 @@ export default {
     }, { lazy: true });
 
     const btns = computed(() => {
-      const c = content.value;
+      const c = config.value;
       const dialogType = (c && c.type) ? c.type : DialogType.Alert;
 
       if (dialogType === DialogType.Custom) {
@@ -126,7 +127,6 @@ export default {
 
     return {
       config,
-      content,
       value,
       input,
       isInput,

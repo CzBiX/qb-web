@@ -1,4 +1,4 @@
-import { merge, isString, cloneDeep } from 'lodash'
+import { merge, cloneDeep } from 'lodash'
 import { Module } from 'vuex';
 import { DialogState } from './types';
 
@@ -10,15 +10,7 @@ export const dialogStore: Module<DialogState, any> = {
   },
   mutations: {
     showDialog(state, payload) {
-      if (isString(payload)) {
-        state.config = {
-          content: {
-            text: payload,
-          },
-        };
-      } else {
-        state.config = cloneDeep(payload);
-      }
+      state.config = cloneDeep(payload);
     },
     closeDialog(state) {
       state.config = null;

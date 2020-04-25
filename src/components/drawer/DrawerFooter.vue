@@ -63,7 +63,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Component from 'vue-class-component';
-import { mapMutations } from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 import { Watch } from 'vue-property-decorator';
 
 import { tr, translations, defaultLocale, LocaleKey } from '@/locale';
@@ -80,9 +80,11 @@ type AllLocaleKey = NonNullable<LocaleKey> | typeof AUTO_KEY;
   },
   methods: {
     ...mapMutations([
-      'showDialog',
       'showSnackBar',
       'updateConfig',
+    ]),
+    ...mapActions([
+      'asyncShowDialog',
     ]),
   },
 })
@@ -92,7 +94,7 @@ export default class DrawerFooter extends Vue {
   oldLocale = this.currentLocale
   showInfo = false
 
-  showDialog!: (_: DialogConfig) => void
+  asyncShowDialog!: (_: DialogConfig) => Promise<string | undefined>
   showSnackBar!: (_: SnackBarConfig) => void
   updateConfig!: (_: ConfigPayload) => void
 
@@ -126,15 +128,10 @@ export default class DrawerFooter extends Vue {
       return;
     }
 
-    const confirm = await new Promise((resolve) => {
-      const localeKey = locale === AUTO_KEY ? defaultLocale : locale
-      this.showDialog({
-        content: {
-          text: tr('dialog.switch_locale.msg', { lang: translations[localeKey].lang }),
-          type: DialogType.OkCancel,
-          callback: resolve,
-        },
-      });
+    const localeKey = locale === AUTO_KEY ? defaultLocale : locale
+    const confirm = await this.asyncShowDialog({
+      text: tr('dialog.switch_locale.msg', { lang: translations[localeKey].lang }),
+      type: DialogType.OkCancel,
     });
 
     if (!confirm) {

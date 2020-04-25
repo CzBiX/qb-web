@@ -283,10 +283,8 @@ export default class RssRulesDialog extends Vue {
 
   async addRssRule() {
     const name = await this.asyncShowDialog({
-      content: {
-        text: tr('dialog.rss_rule.new_rule_name'),
-        type: DialogType.Input,
-      }
+      text: tr('dialog.rss_rule.new_rule_name'),
+      type: DialogType.Input,
     })
 
     if (!name) {
@@ -305,10 +303,8 @@ export default class RssRulesDialog extends Vue {
 
   async deleteRssRule() {
     const input = await this.asyncShowDialog({
-      content: {
-        text: tr('dialog.rss_rule.delete_rule'),
-        type: DialogType.OkCancel,
-      }
+      text: tr('dialog.rss_rule.delete_rule'),
+      type: DialogType.OkCancel,
     })
 
     if (!input) {

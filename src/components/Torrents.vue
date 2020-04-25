@@ -358,7 +358,6 @@ function getStateInfo(state: string) {
   methods: {
     ...mapMutations([
       'updateConfig',
-      'showDialog',
       'showSnackBar',
     ]),
     ...mapActions([
@@ -403,7 +402,6 @@ export default class Torrents extends Vue {
   filter!: TorrentFilter
 
   updateConfig!: (_: ConfigPayload) => void
-  showDialog!: (_: DialogConfig) => void
   showSnackBar!: (_: SnackBarConfig) => void
   asyncShowDialog!: (_: DialogConfig) => Promise<string | undefined>
 
@@ -475,11 +473,9 @@ export default class Torrents extends Vue {
       this.selectedRows = this.allTorrents;
     }
     const v = await this.asyncShowDialog({
-      content: {
-        title: 'Reannounce Torrents',
-        text: 'Are you sure want to reannounce torrents?',
-        type: DialogType.OkCancel,
-      },
+      title: 'Reannounce Torrents',
+      text: 'Are you sure want to reannounce torrents?',
+      type: DialogType.OkCancel,
     });
 
     if (!v) {
@@ -492,15 +488,10 @@ export default class Torrents extends Vue {
   }
 
   async recheckTorrents() {
-    const v = await new Promise((resolve) => {
-      this.showDialog({
-        content: {
-          title: 'Recheck Torrents',
-          text: 'Are you sure want to recheck torrents?',
-          type: DialogType.OkCancel,
-          callback: resolve,
-        },
-      });
+    const v = await this.asyncShowDialog({
+      title: 'Recheck Torrents',
+      text: 'Are you sure want to recheck torrents?',
+      type: DialogType.OkCancel,
     });
 
     if (!v) {
@@ -516,12 +507,10 @@ export default class Torrents extends Vue {
 
     const oldPath = savePaths.length > 1 ? '' : savePaths[0].save_path
     const v = await this.asyncShowDialog({
-      content: {
-        title: tr('title.set_location'),
-        text: '',
-        type: DialogType.Input,
-        value: oldPath,
-      },
+      title: tr('title.set_location'),
+      text: '',
+      type: DialogType.Input,
+      value: oldPath,
     });
 
     if (!v) {
