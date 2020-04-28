@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-bind="config.dialog"
+    v-bind="config ? config.dialog : null"
     v-model="value"
   >
     <v-card v-if="!!config">

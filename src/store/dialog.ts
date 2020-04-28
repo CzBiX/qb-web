@@ -20,9 +20,7 @@ export const dialogStore: Module<DialogState, any> = {
     asyncShowDialog({ commit }, payload) {
       return new Promise((resolve) => {
         const options = merge({}, payload, {
-          content: {
-            callback: resolve,
-          },
+          callback: resolve,
         })
 
         commit('showDialog', options);
