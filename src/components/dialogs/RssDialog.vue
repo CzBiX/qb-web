@@ -379,7 +379,14 @@ export default class RssDialog extends HasTask {
       text: tr('label.adding'),
     })
 
-    await api.addRssFeed(input);
+    try {
+      await api.addRssFeed(input);
+    } catch (e) {
+      this.showSnackBar({
+        text: e.response ? e.response.data : e.message,
+      })
+      return
+    }
     await this.runTask();
 
     this.closeSnackBar();
