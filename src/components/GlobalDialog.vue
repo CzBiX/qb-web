@@ -5,7 +5,10 @@
   >
     <v-card v-if="!!config">
       <v-card-title v-text="config.title" />
-      <v-card-text class="content">
+      <v-card-text
+        class="content"
+        :class="{'is-input': isInput}"
+      >
         <v-text-field
           v-if="isInput"
           v-model="input"
@@ -138,7 +141,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content {
-  white-space: pre-wrap;
+.content:not(.is-input) {
+  white-space: pre-line;
 }
 </style>
