@@ -317,8 +317,8 @@ export default class RssDialog extends HasTask {
     }).join('\\');
   }
 
-  sortArticles(articles: RssTorrent) {
-    return sortBy(articles, 'date').reverse();
+  sortArticles(articles: RssTorrent[]) {
+    return sortBy(articles, (it) => new Date(it.date || 0)).reverse();
   }
 
   isItemLoading(row: any) {
