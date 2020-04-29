@@ -10,4 +10,16 @@ module.exports = {
       },
     },
   },
+
+  chainWebpack(config) {
+    config.plugin('define').tap(args => {
+      let arg = args[0]
+      arg = {
+        ...arg,
+        'process.env.COMMIT_ID': JSON.stringify(process.env.COMMIT_ID)
+      }
+
+      return [arg]
+    })
+  }
 };

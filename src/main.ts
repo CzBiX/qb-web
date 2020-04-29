@@ -9,6 +9,8 @@ import './filters';
 import './directives';
 import './locale';
 
+import './buildInfo';
+
 import App from './App.vue';
 
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
