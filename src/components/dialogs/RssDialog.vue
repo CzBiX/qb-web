@@ -139,7 +139,7 @@
                       color="primary"
                     >
                       <v-list-item
-                        v-for="article in selectItem.articles"
+                        v-for="article in sortArticles(selectItem.articles)"
                         :key="article.id"
                         :value="article"
                       >
@@ -201,7 +201,7 @@
 </template>
 
 <script lang="ts">
-import { get, toPath } from 'lodash'
+import { get, toPath, sortBy } from 'lodash'
 import { mapActions, mapMutations, mapState } from 'vuex'
 import Component from 'vue-class-component'
 import { Prop, Watch, Emit } from 'vue-property-decorator'
@@ -315,6 +315,10 @@ export default class RssDialog extends HasTask {
     return toPath(this.selectNode!).map(p => {
       return p.replace('\\\'', '\'').replace('\\\\', '\\');
     }).join('\\');
+  }
+
+  sortArticles(articles: RssTorrent) {
+    return sortBy(articles, 'date').reverse();
   }
 
   isItemLoading(row: any) {
