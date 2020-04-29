@@ -214,6 +214,8 @@ import { DialogType, DialogConfig, SnackBarConfig } from '@/store/types'
 import { parseDate, formatTimestamp, formatAsDuration } from '../../filters'
 import RssRulesDialog from './RssRulesDialog.vue'
 
+let darkMode: boolean;
+
 @Component({
   components: {
     RssRulesDialog,
@@ -246,12 +248,18 @@ import RssRulesDialog from './RssRulesDialog.vue'
   directives: {
     body: {
       inserted(el, binding) {
-        const iframe = el as HTMLIFrameElement
+        const doc = (el as HTMLIFrameElement).contentDocument!
 
-        const css = `<style>body{font-size:12px}body img{max-width: 100%}</style>`
+        const darkCss = darkMode ? 'body{color: #fff}' : null;
 
-        iframe.contentDocument!.head.insertAdjacentHTML('beforeend', css)
-        iframe.contentDocument!.body.innerHTML = binding.value
+        const css = `<style>
+          body{font-size:12px}
+          body img{max-width: 100%}
+          ${darkCss}
+        </style>`
+
+        doc.head.insertAdjacentHTML('beforeend', css)
+        doc.body.innerHTML = binding.value
       },
       update(el, binding) {
         if (binding.oldValue === binding.value) {
@@ -477,6 +485,7 @@ export default class RssDialog extends HasTask {
   }
 
   created() {
+    darkMode = this.$vuetify.theme.dark
     this.setTaskAndRun(this.fetchRssItems, 5000)
   }
 
