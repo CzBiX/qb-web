@@ -497,7 +497,7 @@ export default class RssDialog extends HasTask {
 </script>
 
 <style lang="scss" scoped>
-@import '~@/assets/styles.scss';
+@import '~@/styles/styles.scss';
 
 @include dialog-title;
 

@@ -348,7 +348,7 @@ export default class RssRulesDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '~@/assets/styles.scss';
+@import '~@/styles/styles.scss';
 
 @include dialog-title;
 
