@@ -173,7 +173,7 @@
                 :color="row.item.state | stateColor(true)"
                 class="text-center ma-0"
               >
-                <span :class="row.item.progress | progressColorClass">
+                <span :class="getProgressColorClass(row.item.progress)">
                   {{ row.item.progress | progress }}
                 </span>
               </v-progress-linear>
@@ -331,10 +331,6 @@ function getStateInfo(state: string) {
     }),
   },
   filters: {
-    progressColorClass(progress: number) {
-      const color = progress >= 0.5 ? 'white' : 'black';
-      return `${color}--text`;
-    },
     formatNetworkSpeed(speed: number) {
       if (speed === 0) {
         return null;
@@ -446,6 +442,12 @@ export default class Torrents extends Vue {
   get hasSelectedAll() {
     return this.hasSelected && this.selectedRows.length
       === Math.min(this.torrents.length, this.pageOptions.rowsPerPage);
+  }
+
+  getProgressColorClass(progress: number) {
+    const color = (progress >= 0.5 || (this as any).$vuetify.theme.dark)
+      ? 'white' : 'black';
+    return `${color}--text`;
   }
 
   created() {
