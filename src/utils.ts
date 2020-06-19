@@ -1,10 +1,10 @@
 import { StateType } from './consts';
 import { Torrent } from './types';
 
-const dlState = ['downloading', 'metaDL', 'stalledDL', 'checkingDL', 'pausedDL', 'queuedDL', 'forceDL', 'allocating'];
-const upState = ['uploading', 'stalledUP', 'checkingUP', 'queuedUP', 'forceUP'];
-const completeState = ['uploading', 'stalledUP', 'checkingUP', 'pausedUP', 'queuedUP', 'forceUP'];
-const activeState = ['metaDL', 'downloading', 'forceDL', 'uploading', 'forcedUP', 'moving'];
+const dlState = ['downloading', 'metaDL', 'stalledDL', 'checkingDL', 'pausedDL', 'queuedDL', 'forcedDL', 'allocating'];
+const upState = ['uploading', 'stalledUP', 'checkingUP', 'queuedUP', 'forcedUP'];
+const completeState = ['uploading', 'stalledUP', 'checkingUP', 'pausedUP', 'queuedUP', 'forcedUP'];
+const activeState = ['metaDL', 'downloading', 'forcedDL', 'uploading', 'forcedUP', 'moving'];
 const errorState = ['error', 'missingFiles'];
 
 export function torrentIsState(type: StateType, state: string) {
