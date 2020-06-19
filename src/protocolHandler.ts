@@ -8,7 +8,7 @@ function registerProtocolHandler() {
   }
 
   try {
-    navigator.registerProtocolHandler('magnet', location.origin + '#url=%s', document.title);
+    navigator.registerProtocolHandler('magnet', location.origin + '#download=%s', document.title);
   } catch (e) {
     log('Register protocol handler failed.', e);
   }
@@ -20,12 +20,12 @@ function checkDownloadUrl() {
   }
 
   const params = new URLSearchParams(location.hash.substring(1));
-  const url = params.get('url')
+  const url = params.get('download')
   if (!url) {
     return null;
   }
 
-  params.delete('url');
+  params.delete('download');
   location.hash = '#' + params.toString()
   return url
 }
