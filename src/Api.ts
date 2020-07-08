@@ -38,6 +38,10 @@ class Api {
     return this.axios.get('/app/preferences');
   }
 
+  public shutdownApplication() {
+    return this.axios.get('/app/shutdown');
+  }
+
   public getMainData(rid?: number) {
     const params = {
       rid,

@@ -23,7 +23,7 @@ export default {
   refresh: '刷新',
   location: '位置',
   rename: '重命名',
-
+  triggerApplicationShutdown: '退出qBittorrent',
   reannounce: '重新通告',
   recheck: '重新检查',
 
@@ -89,6 +89,10 @@ export default {
   },
 
   dialog: {
+    trigger_exit_qb: {
+      title: '退出 qBittorrent',
+      text: '您确定要退出qBittorrent吗？'
+    },
     add_torrents: {
       placeholder: '将种子拖到这里上传，\n或者点击右边的附件图标来选择。',
       hint: '每行一个链接',
