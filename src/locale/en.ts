@@ -15,6 +15,7 @@ export default {
   todo: 'To Do',
   resume: 'Resume',
   pause: 'Pause',
+  force_start: 'Force Start',
   info: 'Info',
   reset: 'Reset',
   login: 'Login',

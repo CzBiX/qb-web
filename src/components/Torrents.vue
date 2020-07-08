@@ -33,6 +33,16 @@
         >
           <v-icon>mdi-pause</v-icon>
         </v-btn>
+
+        <v-btn
+          icon
+          @click="forceStartTorrents"
+          :title="$t('force_start')"
+          :disabled="!hasSelected"
+        >
+          <v-icon>mdi-play-speed</v-icon>
+        </v-btn>
+
         <v-divider
           vertical
           inset
@@ -464,6 +474,10 @@ export default class Torrents extends Vue {
 
   async resumeTorrents() {
     await api.resumeTorrents(this.selectedHashes);
+  }
+
+  async forceStartTorrents() {
+    await api.setForceStartTorrents(this.selectedHashes);
   }
 
   async pauseTorrents() {

@@ -121,6 +121,10 @@ class Api {
     return this.actionTorrents('resume', hashes);
   }
 
+  public setForceStartTorrents(hashes: string[]) {
+    return this.actionTorrents('setForceStart', hashes, {value:'true'});
+  }
+
   public reannounceTorrents(hashes: string[]) {
     return this.actionTorrents('reannounce', hashes);
   }
