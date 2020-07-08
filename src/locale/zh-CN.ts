@@ -15,6 +15,7 @@ export default {
   todo: '待办',
   resume: '恢复',
   pause: '暂停',
+  force_start: '强制继续',
   info: '信息',
   reset: '重置',
   login: '登录',
