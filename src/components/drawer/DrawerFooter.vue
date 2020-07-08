@@ -56,6 +56,13 @@
       >
         <v-icon v-text="darkModeIcon" />
       </v-btn>
+      <v-btn
+        icon
+        @click="triggerApplicationShutdown"
+        :title="$t('triggerApplicationShutdown')"
+      >
+        <v-icon> mdi-power-plug-off</v-icon>
+      </v-btn>
     </div>
   </div>
 </template>
@@ -65,6 +72,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component';
 import { mapMutations, mapActions } from 'vuex';
 import { Watch } from 'vue-property-decorator';
+import api from '../../Api';
 
 import { tr, translations, defaultLocale, LocaleKey } from '@/locale';
 import { DialogType, DialogConfig, SnackBarConfig, ConfigPayload } from '@/store/types';
@@ -160,6 +168,20 @@ export default class DrawerFooter extends Vue {
       value: theme.dark,
     });
   }
+
+  async triggerApplicationShutdown() {
+    const v = await this.asyncShowDialog({
+      title:  tr('dialog.trigger_exit_qb.title'),
+      text:  tr('dialog.trigger_exit_qb.text'),
+      type: DialogType.OkCancel,
+    });
+
+    if (!v) {
+      return;
+    }
+    await api.shutdownApplication();
+  }
+
 
   @Watch('currentLocale')
   onCurrentLocaleChanged(v: AllLocaleKey) {
