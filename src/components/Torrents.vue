@@ -488,15 +488,6 @@ export default class Torrents extends Vue {
     if (!this.hasSelected) {
       this.selectedRows = this.allTorrents;
     }
-    const v = await this.asyncShowDialog({
-      title: 'Reannounce Torrents',
-      text: 'Are you sure want to reannounce torrents?',
-      type: DialogType.OkCancel,
-    });
-
-    if (!v) {
-      return;
-    }
 
     await api.reannounceTorrents(this.selectedHashes);
 
