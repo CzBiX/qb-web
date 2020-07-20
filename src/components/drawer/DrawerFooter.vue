@@ -59,8 +59,7 @@
       <v-btn
         icon
         @click="triggerApplicationShutdown"
-        :title="$t('triggerApplicationShutdown')"
-      >
+        :title="$t('trigger_application_shutdown')">
         <v-icon> mdi-power-plug-off</v-icon>
       </v-btn>
     </div>

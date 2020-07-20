@@ -23,7 +23,7 @@ export default {
   refresh: '刷新',
   location: '位置',
   rename: '重命名',
-  triggerApplicationShutdown: '退出qBittorrent',
+  trigger_application_shutdown: '退出qBittorrent',
   reannounce: '重新通告',
   recheck: '重新检查',
 
