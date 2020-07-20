@@ -23,7 +23,7 @@ export default {
   refresh: 'Refresh',
   location: 'Location',
   rename: 'Rename',
-  triggerApplicationShutdown: 'Exit qBittorrent',
+  trigger_application_shutdown: 'Exit qBittorrent',
   reannounce: 'Reannounce',
   recheck: 'Recheck',
 
