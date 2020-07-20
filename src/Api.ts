@@ -39,7 +39,7 @@ class Api {
   }
 
   public shutdownApplication() {
-    return this.axios.get('/app/shutdown');
+    return this.axios.post('/app/shutdown');
   }
 
   public getMainData(rid?: number) {
