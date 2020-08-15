@@ -173,10 +173,11 @@ export default class Drawer extends Vue {
 
     this.endItems = this.endItems.concat([
       { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
+      { icon: 'mdi-card-search-outline', title: 'Search', click: () => this.updateOptions('showSearch', true) },
       { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
     ])
   }
-  
+
   get phoneLayout() {
     return this.$vuetify.breakpoint.smAndDown;
   }
