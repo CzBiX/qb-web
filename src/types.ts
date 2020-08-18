@@ -54,6 +54,18 @@ export interface Category {
   savePath?: string;
 }
 
+export interface ApiCategory {
+  [key: string]: {
+    name: string;
+    savePath?: string;
+  };
+}
+
+export interface SimpleCategory {
+  name: string;
+  savePath?: string;
+}
+
 export interface ServerState {
   alltime_dl: number;
   alltime_ul: number;
@@ -82,9 +94,9 @@ export interface ServerState {
 }
 
 export interface MainData {
-    categories: Record<string, Category>;
-    server_state: ServerState;
-    torrents: Record<string, BaseTorrent>;
+  categories: Record<string, Category>;
+  server_state: ServerState;
+  torrents: Record<string, BaseTorrent>;
 }
 
 export interface RssTorrent {
@@ -244,7 +256,7 @@ export interface Preferences {
   rss_refresh_interval: number;
   save_path: string;
   save_path_changed_tmm_enabled: boolean;
-  scan_dirs: {[key: string]: string | number};
+  scan_dirs: { [key: string]: string | number };
   schedule_from_hour: number;
   schedule_from_min: number;
   schedule_to_hour: number;
@@ -272,4 +284,13 @@ export interface Preferences {
   web_ui_port: number;
   web_ui_upnp: boolean;
   web_ui_username: string;
+}
+
+export interface SearchPlugin {
+  enabled: boolean;
+  fullName: string;
+  name: string;
+  supportedCategories: { id: string; name: string }[];
+  url: string;
+  version: string;
 }

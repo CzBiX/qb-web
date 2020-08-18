@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { RssNode, RssRule } from '@/types';
+import { RssNode, RssRule, SearchPlugin, ApiCategory } from '@/types';
 
 class Api {
+
   private axios: AxiosInstance;
 
   constructor() {
@@ -269,6 +270,21 @@ class Api {
 
     const data = new URLSearchParams(params)
     return this.axios.post('/rss/removeRule', data).then(Api.handleResponse);
+  }
+
+  // Search page
+
+  public getSearchPlugins(): Promise<SearchPlugin[]> {
+    return this.axios.get('/search/plugins').then(Api.handleResponse);
+  }
+
+  /**
+   * @see getSearchCategories
+   * When there are no categories available/set
+   * @returns a Promise<{}> instead of Promise<[]>.
+   */
+  public getSearchCategories(): Promise<ApiCategory> {
+    return this.axios.get('/torrents/categories').then(Api.handleResponse);
   }
 
   private actionTorrents(action: string, hashes: string[], extra?: any) {
