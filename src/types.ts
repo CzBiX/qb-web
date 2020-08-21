@@ -62,7 +62,7 @@ export interface ApiCategory {
 }
 
 export interface SimpleCategory {
-  name: string;
+  name: string | null;
   savePath?: string;
 }
 
@@ -293,4 +293,20 @@ export interface SearchPlugin {
   supportedCategories: { id: string; name: string }[];
   url: string;
   version: string;
+}
+
+export interface SearchTaskResponseResult {
+  descrLink: string;
+  fileName: string;
+  fileSize: number;
+  fileUrl: string;
+  nbLeechers: number;
+  nbSeeders: number;
+  siteUrl: string;
+}
+
+export interface SearchTaskResponse {
+  results: SearchTaskResponseResult[];
+  status: 'Running' | 'Stopped';
+  total: number;
 }

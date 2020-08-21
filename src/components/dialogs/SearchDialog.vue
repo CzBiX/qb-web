@@ -21,43 +21,64 @@
       <v-card-text>
         <v-form
           ref="form"
-          v-model="valid"
+          v-model="searchForm.valid"
           lazy-validation
         >
-          <v-text-field
-            v-model="pattern"
-            prepend-inner-icon="mdi-magnify"
-            label="Search"
-          />
+          <v-container>
+            <v-row
+              :align="'start'"
+            >
+              <v-col>
+                <v-select
+                  v-model="searchForm.plugin"
+                  :items="availablePlugins"
+                  item-text="name"
+                  :clearable="true"
+                  label="Plugins"
+                />
+              </v-col>
 
-          <v-select
-            v-model="plugin"
-            :items="availablePlugins"
-            item-text="name"
-            :clearable="true"
-            label="Plugins"
-          />
+              <v-col class="col-12 col-sm-6 col-md-8">
+                <v-text-field
+                  v-model="searchForm.pattern"
+                  prepend-inner-icon="mdi-magnify"
+                  label="Search"
+                />
+              </v-col>
 
-          <v-select
-            v-model="category"
-            :items="availableCategories"
-            :clearable="true"
-            item-text="name"
-            label="Categories"
-          />
+              <v-col>
+                <v-select
+                  v-model="searchForm.category"
+                  :items="availableCategories"
+                  :clearable="true"
+                  item-text="name"
+                  label="Categories"
+                />
+              </v-col>
+
+              <v-col>
+                <v-btn
+                  @click="loading ? stopSearch() : triggerSearch()"
+                >
+                  {{ loading ? 'Stop' : 'Search' }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-form>
 
         <v-data-table
           :headers="grid.headers"
           :items="grid.searchItems"
           :items-per-page="10"
+          :loading="loading"
           class="elevation-1"
         >
           <template v-slot:[`item.actions`]="{ item }">
             <v-icon
               small
               class="mr-2"
-              @click="downloadTorrent(item)"
+              @click="triggerDownloadTorrent(item)"
             >
               mdi-download
             </v-icon>
@@ -74,7 +95,19 @@ import api from "@/Api";
 import Component from "vue-class-component";
 import HasTask from "../../mixins/hasTask";
 import { Prop, Emit } from "vue-property-decorator";
-import { SearchPlugin, Category, SimpleCategory } from "@/types";
+import {
+  SearchPlugin,
+  SimpleCategory,
+  SearchTaskResponseResult,
+} from "@/types";
+import { AxiosResponse } from "axios";
+import { formatSize } from '../../filters';
+
+interface GridConfig {
+  searchItems: SearchTaskResponseResult[];
+  downloadItem: SearchTaskResponseResult | null;
+  headers: { [key: string]: any }[];
+}
 
 @Component({
   filters: {
@@ -102,35 +135,39 @@ export default class SearchDialog extends HasTask {
   @Prop(Boolean)
   readonly value!: boolean;
 
-  public valid = false;
-  public category: Category | null = null;
-  public pattern: string | null = null;
-  public plugin: SearchPlugin | null = null;
-  public availablePlugins: SearchPlugin[] | null = null;
-  public availableCategories: SimpleCategory[] | null = null;
+  availablePlugins: SearchPlugin[] | null = null;
+  availableCategories: SimpleCategory[] | null = null;
 
-  public grid = {
-    searchItems: [
-      {
-        name: "Frozen Yogurt",
-        size: 159,
-        seeders: 6,
-        leechers: 24,
-        searchEngine: "Jackett",
-      },
-    ],
+  searchForm: {
+    valid: boolean;
+    category: SimpleCategory | null;
+    pattern: string | null;
+    plugin: SearchPlugin | null;
+  } = {
+    valid: false,
+    category: null,
+    pattern: null,
+    plugin: null,
+  }
+
+  grid: GridConfig = {
+    searchItems: [],
     downloadItem: null,
     headers: [
-      { text: "Name", value: "name" },
-      { text: "Size", value: "size" },
-      { text: "Seeders", value: "seeders" },
-      { text: "Leechers", value: "leechers" },
-      { text: "Search Engine", value: "searchEngine" },
+      { text: "Name", value: "fileName" },
+      { text: "Size", value: "fileSize", filter: (value: any, search: string, item: number) => formatSize(item) },
+      { text: "Seeders", value: "nbSeeders" },
+      { text: "Leechers", value: "nbLeechers" },
+      { text: "Search Engine", value: "siteUrl" },
       { text: "Actions", value: "actions", sortable: false },
     ],
   };
 
+  loading = false;
+
   logs: any[] = [];
+
+  private _searchId = 0;
 
   async mounted() {
     this.availablePlugins = await this.getAvailablePlugins();
@@ -144,8 +181,8 @@ export default class SearchDialog extends HasTask {
     return this.$vuetify.breakpoint.xsOnly;
   }
 
-  async downloadTorrent(item: any) {
-    throw new Error('Implementation is missing!');
+  async triggerDownloadTorrent(item: any) {
+    return api.addTorrents(item);
   }
 
   async getAvailablePlugins(): Promise<SearchPlugin[]> {
@@ -159,6 +196,54 @@ export default class SearchDialog extends HasTask {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return Object.entries(categories).map(([key, value]) => value);
+  }
+
+  async triggerSearch() {
+    try {
+
+      this.grid.searchItems = []; // Clear the table
+      this.loading = true;
+
+      const response = await this._startSearch();
+      this._searchId = response.id;
+
+      this.setTaskAndRun(async () => {
+       const results = await this.getResults(response.id);
+
+       this.grid.searchItems = this.grid.searchItems.concat(results);
+      });
+    } catch {
+      console.warn('Something when wrong with start search');
+    }
+  }
+
+  async stopSearch() {
+    this.cancelTask();
+    this._stopSearch(this._searchId);
+    this.loading = false;
+  }
+
+  private async _startSearch(): Promise<{ id: number }> {
+    const result = await api.startSearch(
+     this.searchForm.pattern,
+     this.searchForm.plugin && this.searchForm.plugin.name,
+     this.searchForm.category && this.searchForm.category.name
+    );
+
+    return result;
+  }
+
+  private async _stopSearch(id: number): Promise<AxiosResponse> {
+    return await api.stopSearch(id);
+  }
+
+  async getResults(
+    id: number,
+    limit = 25,
+    offset = 0
+  ): Promise<SearchTaskResponseResult[]> {
+    const response = await api.getSearchResults(id, limit, offset);
+    return response.results;
   }
 
   @Emit("input")
