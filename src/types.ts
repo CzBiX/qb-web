@@ -295,7 +295,7 @@ export interface SearchPlugin {
   version: string;
 }
 
-export interface SearchTaskResponseResult {
+export interface SearchTaskTorrent {
   descrLink: string;
   fileName: string;
   fileSize: number;
@@ -306,7 +306,7 @@ export interface SearchTaskResponseResult {
 }
 
 export interface SearchTaskResponse {
-  results: SearchTaskResponseResult[];
+  results: SearchTaskTorrent[];
   status: 'Running' | 'Stopped';
   total: number;
 }

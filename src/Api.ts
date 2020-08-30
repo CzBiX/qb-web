@@ -302,7 +302,8 @@ class Api {
     return this.axios.post('/search/stop', body);
   }
 
-  public getSearchResults(id: number, limit: number, offset: number): Promise<SearchTaskResponse> {
+  public getSearchResults(id: number): Promise<SearchTaskResponse> {
+
     return this.axios.get(`/search/results?id=${id}`).then(Api.handleResponse);
   }
 

@@ -59,6 +59,9 @@ const store = new Vuex.Store<RootState>({
     /* eslint-enable no-param-reassign */
   },
   getters: {
+    savePath(state) {
+      return state.preferences['save_path'];
+    },
     isDataReady(state) {
       return !!state.mainData;
     },

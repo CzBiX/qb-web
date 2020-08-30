@@ -1,93 +1,97 @@
 <template>
-  <v-dialog
-    :value="value"
-    @input="$emit('input', $event)"
-    scrollable
-    fullscreen
-    persistent
-  >
-    <v-card>
-      <v-card-title class="headline">
-        <v-icon class="mr-2">mdi-card-search-outline</v-icon>
-        <span>Search</span>
-        <v-spacer />
-        <v-btn
-          icon
-          @click="closeDialog"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
-      <v-card-text>
-        <v-form
-          ref="form"
-          v-model="searchForm.valid"
-          lazy-validation
-        >
-          <v-container>
-            <v-row
-              :align="'start'"
-            >
-              <v-col>
-                <v-select
-                  v-model="searchForm.plugin"
-                  :items="availablePlugins"
-                  item-text="name"
-                  :clearable="true"
-                  label="Plugins"
-                />
-              </v-col>
+  <div>
+    <v-dialog
+      :value="value"
+      @input="$emit('input', $event)"
+      scrollable
+      fullscreen
+      persistent
+    >
+      <v-card>
+        <v-card-title class="headline">
+          <v-icon class="mr-2">mdi-card-search-outline</v-icon>
+          <span>Search</span>
+          <v-spacer />
+          <v-btn
+            icon
+            @click="closeDialog"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          <v-form
+            ref="form"
+            v-model="searchForm.valid"
+            lazy-validation
+          >
+            <v-container>
+              <v-row :align="'start'">
+                <v-col>
+                  <v-select
+                    v-model="searchForm.plugin"
+                    :items="availablePlugins"
+                    item-text="name"
+                    :clearable="true"
+                    label="Plugins"
+                  />
+                </v-col>
 
-              <v-col class="col-12 col-sm-6 col-md-8">
-                <v-text-field
-                  v-model="searchForm.pattern"
-                  prepend-inner-icon="mdi-magnify"
-                  label="Search"
-                />
-              </v-col>
+                <v-col class="col-12 col-sm-6 col-md-8">
+                  <v-text-field
+                    v-model="searchForm.pattern"
+                    prepend-inner-icon="mdi-magnify"
+                    label="Search"
+                  />
+                </v-col>
 
-              <v-col>
-                <v-select
-                  v-model="searchForm.category"
-                  :items="availableCategories"
-                  :clearable="true"
-                  item-text="name"
-                  label="Categories"
-                />
-              </v-col>
+                <v-col>
+                  <v-select
+                    v-model="searchForm.category"
+                    :items="allCategories"
+                    :clearable="true"
+                    item-text="name"
+                    label="Categories"
+                  />
+                </v-col>
 
-              <v-col>
-                <v-btn
-                  @click="loading ? stopSearch() : triggerSearch()"
-                >
-                  {{ loading ? 'Stop' : 'Search' }}
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-form>
+                <v-col :align-self="'center'">
+                  <v-btn
+                    @click="loading ? stopSearch() : triggerSearch()"
+                  >
+                    {{ loading ? 'Stop' : 'Search' }}
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
 
-        <v-data-table
-          :headers="grid.headers"
-          :items="grid.searchItems"
-          :items-per-page="10"
-          :loading="loading"
-          class="elevation-1"
-        >
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-icon
-              small
-              class="mr-2"
-              @click="triggerDownloadTorrent(item)"
-            >
-              mdi-download
-            </v-icon>
-          </template>
-        </v-data-table>
-      </v-card-text>
-      <v-card-actions />
-    </v-card>
-  </v-dialog>
+          <v-data-table
+            :headers="grid.headers"
+            :items="grid.searchItems"
+            :items-per-page="10"
+            :loading="loading"
+            class="elevation-1"
+          >
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="triggerDownloadTorrent(item)"
+              >
+                mdi-download
+              </v-icon>
+            </template>
+          </v-data-table>
+        </v-card-text>
+        <v-card-actions />
+      </v-card>
+    </v-dialog>
+    <DownloadTorrent
+      :open="downloadDialogState"
+      :torrent="grid.downloadItem"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -98,37 +102,27 @@ import { Prop, Emit } from "vue-property-decorator";
 import {
   SearchPlugin,
   SimpleCategory,
-  SearchTaskResponseResult,
+  SearchTaskTorrent,
 } from "@/types";
 import { AxiosResponse } from "axios";
 import { formatSize } from '../../filters';
+import { mapGetters } from 'vuex';
+import DownloadTorrent from './DownloadTorrent.vue';
 
 interface GridConfig {
-  searchItems: SearchTaskResponseResult[];
-  downloadItem: SearchTaskResponseResult | null;
+  searchItems: SearchTaskTorrent[];
+  downloadItem: SearchTaskTorrent | null;
   headers: { [key: string]: any }[];
 }
 
 @Component({
-  filters: {
-    formatType(type: number) {
-      const map: any = {
-        1: "N",
-        2: "I",
-        4: "W",
-        8: "C",
-      };
-      return map[type];
-    },
-    typeColor(type: number) {
-      const map: any = {
-        1: null,
-        2: "info--text",
-        4: "warn--text",
-        8: "error--text",
-      };
-      return map[type];
-    },
+  components: {
+    DownloadTorrent
+  },
+  computed: {
+    ...mapGetters({
+     allCategories: 'allCategories',
+    }),
   },
 })
 export default class SearchDialog extends HasTask {
@@ -136,7 +130,10 @@ export default class SearchDialog extends HasTask {
   readonly value!: boolean;
 
   availablePlugins: SearchPlugin[] | null = null;
-  availableCategories: SimpleCategory[] | null = null;
+  allCategories!: any;
+  savePath!: string;
+
+  downloadDialogState = false;
 
   searchForm: {
     valid: boolean;
@@ -152,7 +149,15 @@ export default class SearchDialog extends HasTask {
 
   grid: GridConfig = {
     searchItems: [],
-    downloadItem: null,
+    downloadItem: {
+      descrLink: '',
+      fileName: '',
+      fileSize: 0,
+      fileUrl: '',
+      nbLeechers: 0,
+      nbSeeders: 0,
+      siteUrl: ''
+    },
     headers: [
       { text: "Name", value: "fileName" },
       { text: "Size", value: "fileSize", filter: (value: any, search: string, item: number) => formatSize(item) },
@@ -171,7 +176,6 @@ export default class SearchDialog extends HasTask {
 
   async mounted() {
     this.availablePlugins = await this.getAvailablePlugins();
-    this.availableCategories = await this.getAvailableCategories();
   }
 
   get dialogWidth() {
@@ -181,21 +185,15 @@ export default class SearchDialog extends HasTask {
     return this.$vuetify.breakpoint.xsOnly;
   }
 
-  async triggerDownloadTorrent(item: any) {
-    return api.addTorrents(item);
+  async triggerDownloadTorrent(item: SearchTaskTorrent) {
+    this.grid.downloadItem = item;
+    this.downloadDialogState = true;
   }
 
   async getAvailablePlugins(): Promise<SearchPlugin[]> {
     const availablePlugins = await api.getSearchPlugins();
 
     return availablePlugins.filter((plugin) => plugin.enabled === true);
-  }
-
-  async getAvailableCategories(): Promise<SimpleCategory[] | null> {
-    const categories = await api.getSearchCategories();
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return Object.entries(categories).map(([key, value]) => value);
   }
 
   async triggerSearch() {
@@ -213,7 +211,7 @@ export default class SearchDialog extends HasTask {
        this.grid.searchItems = this.grid.searchItems.concat(results);
       });
     } catch {
-      console.warn('Something when wrong with start search');
+      //
     }
   }
 
@@ -238,11 +236,9 @@ export default class SearchDialog extends HasTask {
   }
 
   async getResults(
-    id: number,
-    limit = 25,
-    offset = 0
-  ): Promise<SearchTaskResponseResult[]> {
-    const response = await api.getSearchResults(id, limit, offset);
+    id: number
+  ): Promise<SearchTaskTorrent[]> {
+    const response = await api.getSearchResults(id);
     return response.results;
   }
 

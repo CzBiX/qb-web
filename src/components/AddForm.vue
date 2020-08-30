@@ -251,7 +251,7 @@ export default class AddForm extends Vue {
     file: any;
     fileZone: HTMLElement;
   }
-  
+
   get params() {
     return Object.assign({}, defaultParams, this.userParams);
   }
