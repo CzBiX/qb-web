@@ -7,14 +7,14 @@
       fixed
       right
       small
-      @click="dialog = !dialog"
+      @click="openAddForm"
       class="btn-add"
       :class="{'with-footer': $vuetify.breakpoint.smAndUp}"
     >
       <v-icon>mdi-link-plus</v-icon>
     </v-btn>
     <v-dialog
-      v-model="dialog"
+      v-model="state.isOpen"
       eager
       persistent
       scrollable
@@ -23,7 +23,7 @@
       <v-card>
         <v-card-title class="headline">
           <v-icon class="mr-2">mdi-link-plus</v-icon>
-          <span>{{ $t('title.add_torrents') }}</span>
+          <span>{{ state.downloadItem && state.downloadItem.title || $t('title.add_torrents') }}</span>
         </v-card-title>
         <v-card-text class="pb-0">
           <v-form
@@ -54,6 +54,7 @@
                     required
                     :autofocus="!phoneLayout"
                     :value="params.urls"
+                    :readonly="state.downloadItem !== null"
                     @input="setParams('urls', $event)"
                     @click:append-outer="selectFiles"
                   />
@@ -178,7 +179,7 @@
           <v-spacer />
           <v-btn
             text
-            @click="dialog = false"
+            @click="closeAddForm"
           >
             {{ $t('cancel') }}
           </v-btn>
@@ -200,12 +201,13 @@
 <script lang="ts">
 import { isNil } from 'lodash';
 import Vue from 'vue';
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 
 import api from '../Api';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Preferences, Category } from '../types';
+import { AddFormState } from '@/store/types';
 
 /* eslint-disable @typescript-eslint/camelcase */
 const defaultParams = {
@@ -226,14 +228,20 @@ const defaultParams = {
     ...mapState({
       pasteUrl: 'pasteUrl',
       prefs: 'preferences',
+      state: 'addForm'
     }),
-    ...mapGetters([
-      'allCategories',
-    ]),
+    ...mapGetters({
+      allCategories: 'allCategories',
+    }),
   },
+   methods: {
+    ...mapMutations([
+      'closeAddForm',
+      'openAddForm',
+    ]),
+  }
 })
 export default class AddForm extends Vue {
-  dialog = false
   valid = false
   files: FileList | [] = []
   defaultParams = defaultParams
@@ -242,6 +250,7 @@ export default class AddForm extends Vue {
   submitting = false
   showMore = false
 
+  state!: AddFormState;
   pasteUrl!: string | null
   prefs!: Preferences
   allCategories!: Category[]
@@ -251,6 +260,9 @@ export default class AddForm extends Vue {
     file: any;
     fileZone: HTMLElement;
   }
+
+  openAddForm!: () => void;
+  closeAddForm!: () => void;
 
   get params() {
     return Object.assign({}, defaultParams, this.userParams);
@@ -283,6 +295,12 @@ export default class AddForm extends Vue {
 
   mounted() {
     this.$refs.fileZone.addEventListener('drop', this.onDrop, true);
+  }
+
+  updated() {
+    if (this.state.downloadItem) {
+      this.setParams('urls', this.state.downloadItem.url);
+    }
   }
 
   beforeDestroy() {
@@ -328,7 +346,7 @@ export default class AddForm extends Vue {
       return;
     }
 
-    this.dialog = false;
+    this.closeAddForm();
 
     Vue.delete(this.userParams, 'urls');
     this.files = [];
@@ -358,9 +376,9 @@ export default class AddForm extends Vue {
       return;
     }
 
-    if (!this.dialog) {
+    if (!this.state.isOpen) {
       Vue.set(this.userParams, 'urls', v);
-      this.dialog = true;
+      this.openAddForm();
     }
   }
 

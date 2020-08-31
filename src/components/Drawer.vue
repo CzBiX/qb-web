@@ -168,7 +168,11 @@ export default class Drawer extends Vue {
 
   created() {
     if (this.phoneLayout) {
-      return
+      this.endItems = this.endItems.concat([
+        { icon: 'mdi-card-search-outline', title: 'Search', click: () => this.updateOptions('showSearch', true) },
+      ]);
+
+      return;
     }
 
     this.endItems = this.endItems.concat([

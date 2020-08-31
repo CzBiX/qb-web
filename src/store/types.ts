@@ -8,6 +8,14 @@ export interface RootState {
   pasteUrl: string | null;
 }
 
+export interface AddFormState {
+  isOpen: boolean;
+  downloadItem: {
+    title: string;
+    url: string;
+  } | null;
+}
+
 export interface TorrentFilter {
   state: string;
   category: string;

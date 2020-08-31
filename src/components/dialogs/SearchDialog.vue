@@ -77,7 +77,7 @@
               <v-icon
                 small
                 class="mr-2"
-                @click="triggerDownloadTorrent(item)"
+                @click="downloadTorrent(item)"
               >
                 mdi-download
               </v-icon>
@@ -87,10 +87,6 @@
         <v-card-actions />
       </v-card>
     </v-dialog>
-    <DownloadTorrent
-      :open="downloadDialogState"
-      :torrent="grid.downloadItem"
-    />
   </div>
 </template>
 
@@ -101,13 +97,11 @@ import HasTask from "../../mixins/hasTask";
 import { Prop, Emit } from "vue-property-decorator";
 import {
   SearchPlugin,
-  SimpleCategory,
   SearchTaskTorrent,
 } from "@/types";
 import { AxiosResponse } from "axios";
 import { formatSize } from '../../filters';
-import { mapGetters } from 'vuex';
-import DownloadTorrent from './DownloadTorrent.vue';
+import { mapGetters, mapMutations } from 'vuex';
 
 interface GridConfig {
   searchItems: SearchTaskTorrent[];
@@ -116,14 +110,19 @@ interface GridConfig {
 }
 
 @Component({
-  components: {
-    DownloadTorrent
-  },
   computed: {
     ...mapGetters({
      allCategories: 'allCategories',
+     preferences: 'preferences',
     }),
   },
+  methods: {
+    ...mapMutations([
+      'openAddForm',
+      'setPasteUrl',
+      'addFormDownloadItem'
+    ])
+  }
 })
 export default class SearchDialog extends HasTask {
   @Prop(Boolean)
@@ -131,15 +130,12 @@ export default class SearchDialog extends HasTask {
 
   availablePlugins: SearchPlugin[] | null = null;
   allCategories!: any;
-  savePath!: string;
-
-  downloadDialogState = false;
 
   searchForm: {
     valid: boolean;
-    category: SimpleCategory | null;
+    category: string | null;
     pattern: string | null;
-    plugin: SearchPlugin | null;
+    plugin: string | null;
   } = {
     valid: false,
     category: null,
@@ -170,7 +166,11 @@ export default class SearchDialog extends HasTask {
 
   loading = false;
 
-  logs: any[] = [];
+  addForm!: any;
+
+  setPasteUrl!: (_: any) => void
+  openAddForm!: () => void;
+  addFormDownloadItem!: (_: any) => void;
 
   private _searchId = 0;
 
@@ -185,9 +185,14 @@ export default class SearchDialog extends HasTask {
     return this.$vuetify.breakpoint.xsOnly;
   }
 
-  async triggerDownloadTorrent(item: SearchTaskTorrent) {
-    this.grid.downloadItem = item;
-    this.downloadDialogState = true;
+  async downloadTorrent(item: SearchTaskTorrent) {
+    this.addFormDownloadItem({
+      downloadItem: {
+        title: item.fileName,
+        url: item.fileUrl
+      }
+    });
+    this.openAddForm();
   }
 
   async getAvailablePlugins(): Promise<SearchPlugin[]> {
@@ -198,7 +203,6 @@ export default class SearchDialog extends HasTask {
 
   async triggerSearch() {
     try {
-
       this.grid.searchItems = []; // Clear the table
       this.loading = true;
 
@@ -224,8 +228,8 @@ export default class SearchDialog extends HasTask {
   private async _startSearch(): Promise<{ id: number }> {
     const result = await api.startSearch(
      this.searchForm.pattern,
-     this.searchForm.plugin && this.searchForm.plugin.name,
-     this.searchForm.category && this.searchForm.category.name
+     this.searchForm.plugin,
+     this.searchForm.category
     );
 
     return result;
@@ -253,14 +257,4 @@ export default class SearchDialog extends HasTask {
 @import "~@/assets/styles.scss";
 
 @include dialog-title;
-
-.logs {
-  .log-item {
-    line-height: 1.4em;
-
-    .tag {
-      font-family: monospace;
-    }
-  }
-}
 </style>

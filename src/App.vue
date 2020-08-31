@@ -69,7 +69,6 @@ import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/dialogs/LogsDialog.vue';
 import RssDialog from './components/dialogs/RssDialog.vue';
 import SearchDialog from './components/dialogs/SearchDialog.vue';
-import DownloadTorrent from './components/dialogs/DownloadTorrent.vue';
 import DrawerFooter from './components/drawer/DrawerFooter.vue';
 
 import api from './Api';
@@ -92,7 +91,6 @@ let appWrapEl: HTMLElement;
     GlobalSnackBar,
     RssDialog,
     SearchDialog,
-    DownloadTorrent,
     DrawerFooter,
   },
   computed: {
