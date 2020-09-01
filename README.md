@@ -2,7 +2,7 @@
 ## Info
 [![Requirements](https://img.shields.io/badge/Tested-qBittorrent%20≥%20v4.2.3-brightgreen)](#)
 [![Release](https://img.shields.io/github/v/release/CzBiX/qb-web?include_prereleases)](https://github.com/CzBiX/qb-web/releases/latest)
-[![Build Status](https://travis-ci.com/CzBiX/qb-web.svg?branch=master)](https://travis-ci.com/CzBiX/qb-web)
+[![CI](https://github.com/CzBiX/qb-web/workflows/CI/badge.svg)](https://github.com/CzBiX/qb-web/actions)
 
 ## Features
 Keywords: SPA, RSS, Responsive Design, Modern Design, i18n
