@@ -6,6 +6,7 @@ import { computed, Ref } from '@vue/composition-api';
 import { configStore } from './config';
 import { dialogStore } from './dialog';
 import { snackBarStore } from './snackBar';
+import { addFormStore } from './addForm';
 import { AllStateTypes } from '../consts';
 import { torrentIsState } from '../utils';
 import { RootState } from './types';
@@ -17,6 +18,7 @@ const store = new Vuex.Store<RootState>({
     config: configStore,
     dialog: dialogStore,
     snackBar: snackBarStore,
+    addForm: addFormStore
   },
   state: {
     rid: 0,
@@ -59,6 +61,9 @@ const store = new Vuex.Store<RootState>({
     /* eslint-enable no-param-reassign */
   },
   getters: {
+    savePath(state) {
+      return state.preferences['save_path'];
+    },
     isDataReady(state) {
       return !!state.mainData;
     },

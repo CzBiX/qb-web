@@ -33,6 +33,10 @@
       v-model="drawerOptions.showRss"
       @download-torrent="setPasteUrl({url: $event})"
     />
+    <SearchDialog
+      v-if="drawerOptions.showSearch"
+      v-model="drawerOptions.showSearch"
+    />
 
     <v-footer
       app
@@ -64,6 +68,7 @@ import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/dialogs/LogsDialog.vue';
 import RssDialog from './components/dialogs/RssDialog.vue';
+import SearchDialog from './components/dialogs/SearchDialog.vue';
 import DrawerFooter from './components/drawer/DrawerFooter.vue';
 
 import api from './Api';
@@ -85,6 +90,7 @@ let appWrapEl: HTMLElement;
     GlobalDialog,
     GlobalSnackBar,
     RssDialog,
+    SearchDialog,
     DrawerFooter,
   },
   computed: {

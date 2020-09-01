@@ -9,6 +9,8 @@ export default {
   cancel: 'Cancel',
   ok: 'OK',
 
+  start: 'Start',
+  stop: 'Stop',
   submit: 'Submit',
   edit: 'Edit',
   delete: 'Delete',
@@ -55,6 +57,9 @@ export default {
   more: 'More',
   feed: 'Feed',
   date: 'Date',
+  plugin: 'Plugin |||| Plugins',
+  action: 'Action |||| Actions',
+  search_engine: 'Search engine',
 
   title: {
     _: 'Title',

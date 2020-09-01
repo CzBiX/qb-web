@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { RssNode, RssRule } from '@/types';
+import { RssNode, RssRule, SearchPlugin, ApiCategory, SearchTaskResponse } from '@/types';
 
 class Api {
+
   private axios: AxiosInstance;
 
   constructor() {
@@ -126,7 +127,7 @@ class Api {
   }
 
   public setForceStartTorrents(hashes: string[]) {
-    return this.actionTorrents('setForceStart', hashes, {value:'true'});
+    return this.actionTorrents('setForceStart', hashes, { value: 'true' });
   }
 
   public reannounceTorrents(hashes: string[]) {
@@ -248,7 +249,7 @@ class Api {
     return this.axios.post('/rss/moveItem', data).then(Api.handleResponse);
   }
 
-  public getRssRules(): Promise<{[key: string]: RssRule}> {
+  public getRssRules(): Promise<{ [key: string]: RssRule }> {
     return this.axios.get('/rss/rules').then(Api.handleResponse);
   }
 
@@ -269,6 +270,41 @@ class Api {
 
     const data = new URLSearchParams(params)
     return this.axios.post('/rss/removeRule', data).then(Api.handleResponse);
+  }
+
+  // Search page
+
+  public getSearchPlugins(): Promise<SearchPlugin[]> {
+    return this.axios.get('/search/plugins').then(Api.handleResponse);
+  }
+
+  /**
+   * @see getSearchCategories
+   * When there are no categories available/set
+   * @returns a Promise<{}> instead of Promise<[]>.
+   */
+  public getSearchCategories(): Promise<ApiCategory> {
+    return this.axios.get('/torrents/categories').then(Api.handleResponse);
+  }
+
+  public startSearch(pattern: string | null, pluginName: string | null, categoryName: string | null): Promise<{ id: number }> {
+    const body = new URLSearchParams(
+      {
+        pattern: pattern || '',
+        category: categoryName || 'all',
+        plugins: pluginName || 'all'
+      });
+    return this.axios.post('/search/start', body).then(Api.handleResponse);
+  }
+
+  public stopSearch(id: number): AxiosResponse<any> | PromiseLike<AxiosResponse<any>> {
+    const body = new URLSearchParams({ id: id.toString() });
+    return this.axios.post('/search/stop', body);
+  }
+
+  public getSearchResults(id: number): Promise<SearchTaskResponse> {
+
+    return this.axios.get(`/search/results?id=${id}`).then(Api.handleResponse);
   }
 
   private actionTorrents(action: string, hashes: string[], extra?: any) {
