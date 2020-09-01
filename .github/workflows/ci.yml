@@ -6,14 +6,21 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  TZ: Asia/Shanghai
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
     - name: Use Node.js
       uses: actions/setup-node@v1
-    - run: yarn install
+    - run: yarn install --frozen-lockfile
     - run: yarn run lint
     - run: yarn run test:unit
       
@@ -23,13 +30,18 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Use Node.js
         uses: actions/setup-node@v1
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       - name: Set Env
         run: |
-          export TZ=Asia/Shanghai COMMIT_ID=${${{ github.sha }}::6}
-          export GIT_TAG=nightly-$COMMIT_ID RELEASE_TITLE=$(date +'%Y%m%d-%H%M%S')
+          export COMMIT_ID=${${{ github.sha }}::6}
+          export GIT_TAG=nightly-$COMMIT_ID
+          export RELEASE_TITLE=$(date +'%Y%m%d-%H%M%S')
           export RELEASE_FILE=qb-web-$RELEASE_TITLE.zip
       - name: Pack Release
         run: |
