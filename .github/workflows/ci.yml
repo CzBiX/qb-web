@@ -37,12 +37,10 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v1
       - run: yarn install --frozen-lockfile
-      - name: Set Env
-        run: |
-          echo ::set-env name=COMMIT_ID::$(echo ${{ github.sha }} | cut -c -6)
-          echo ::set-env name=GIT_TAG::nightly-$COMMIT_ID
-          echo ::set-env name=RELEASE_TITLE::$(date +'%Y%m%d-%H%M%S')
-          echo ::set-env name=RELEASE_FILE::qb-web-$RELEASE_TITLE.zip
+      - run: echo ::set-env name=COMMIT_ID::$(echo ${{ github.sha }} | cut -c -6)
+      - run: echo ::set-env name=GIT_TAG::nightly-$COMMIT_ID
+      - run: echo ::set-env name=RELEASE_TITLE::$(date +'%Y%m%d-%H%M%S')
+      - run: echo ::set-env name=RELEASE_FILE::qb-web-$RELEASE_TITLE.zip
       - name: Pack Release
         run: |
           yarn run build
@@ -56,11 +54,15 @@ jobs:
           git push origin $GIT_TAG
       - id: create_release
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.GIT_TAG }}
           release_name: ${{ env.RELEASE_TITLE }}
           prerelease: true
       - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.RELEASE_FILE }}
