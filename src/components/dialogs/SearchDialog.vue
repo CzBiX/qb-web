@@ -33,7 +33,7 @@
                     :items="availablePlugins"
                     item-text="name"
                     :clearable="true"
-                    label="Plugins"
+                    :label="$t('plugin', 1)"
                   />
                 </v-col>
 
@@ -41,7 +41,7 @@
                   <v-text-field
                     v-model="searchForm.pattern"
                     prepend-inner-icon="mdi-magnify"
-                    label="Search"
+                    :label="$t('search')"
                   />
                 </v-col>
 
@@ -51,7 +51,7 @@
                     :items="allCategories"
                     :clearable="true"
                     item-text="name"
-                    label="Categories"
+                    :label="$t('category', 1)"
                   />
                 </v-col>
 
@@ -59,7 +59,7 @@
                   <v-btn
                     @click="loading ? stopSearch() : triggerSearch()"
                   >
-                    {{ loading ? 'Stop' : 'Search' }}
+                    {{ loading ? $t('stop') : $t('search') }}
                   </v-btn>
                 </v-col>
               </v-row>
@@ -73,6 +73,9 @@
             :loading="loading"
             class="elevation-1"
           >
+            <template v-slot:[`item.fileSize`]="{ item }">
+              {{ item.fileSize | formatSize }}
+            </template>
             <template v-slot:[`item.actions`]="{ item }">
               <v-icon
                 small
@@ -95,13 +98,11 @@ import api from "@/Api";
 import Component from "vue-class-component";
 import HasTask from "../../mixins/hasTask";
 import { Prop, Emit } from "vue-property-decorator";
-import {
-  SearchPlugin,
-  SearchTaskTorrent,
-} from "@/types";
+import { SearchPlugin, SearchTaskTorrent } from "@/types";
 import { AxiosResponse } from "axios";
-import { formatSize } from '../../filters';
-import { mapGetters, mapMutations } from 'vuex';
+import { formatSize } from "../../filters";
+import { mapGetters, mapMutations } from "vuex";
+import { tr } from "@/locale";
 
 interface GridConfig {
   searchItems: SearchTaskTorrent[];
@@ -112,24 +113,26 @@ interface GridConfig {
 @Component({
   computed: {
     ...mapGetters({
-     allCategories: 'allCategories',
-     preferences: 'preferences',
+      allCategories: "allCategories",
+      preferences: "preferences",
     }),
   },
   methods: {
-    ...mapMutations([
-      'openAddForm',
-      'setPasteUrl',
-      'addFormDownloadItem'
-    ])
-  }
+    ...mapMutations(["openAddForm", "setPasteUrl", "addFormDownloadItem"]),
+    formatSize,
+    translate: tr,
+  },
 })
 export default class SearchDialog extends HasTask {
+  private _searchId = 0;
+
   @Prop(Boolean)
   readonly value!: boolean;
 
   availablePlugins: SearchPlugin[] | null = null;
   allCategories!: any;
+  formatSize!: (_: any) => string;
+  translate!: (_: any, __?: any) => string;
 
   searchForm: {
     valid: boolean;
@@ -141,56 +144,45 @@ export default class SearchDialog extends HasTask {
     category: null,
     pattern: null,
     plugin: null,
-  }
+  };
 
   grid: GridConfig = {
     searchItems: [],
     downloadItem: {
-      descrLink: '',
-      fileName: '',
+      descrLink: "",
+      fileName: "",
       fileSize: 0,
-      fileUrl: '',
+      fileUrl: "",
       nbLeechers: 0,
       nbSeeders: 0,
-      siteUrl: ''
+      siteUrl: "",
     },
     headers: [
-      { text: "Name", value: "fileName" },
-      { text: "Size", value: "fileSize", filter: (value: any, search: string, item: number) => formatSize(item) },
-      { text: "Seeders", value: "nbSeeders" },
-      { text: "Leechers", value: "nbLeechers" },
-      { text: "Search Engine", value: "siteUrl" },
-      { text: "Actions", value: "actions", sortable: false },
+      { text: this.translate("name"), value: "fileName" },
+      { text: this.translate("size"), value: "fileSize" },
+      { text: this.translate("seeds"), value: "nbSeeders" },
+      { text: this.translate("peers"), value: "nbLeechers" },
+      { text: this.translate("search_engine"), value: "siteUrl" },
+      { text: this.translate("action", 2), value: "actions", sortable: false },
     ],
   };
 
   loading = false;
 
-  addForm!: any;
-
-  setPasteUrl!: (_: any) => void
+  setPasteUrl!: (_: any) => void;
   openAddForm!: () => void;
   addFormDownloadItem!: (_: any) => void;
 
-  private _searchId = 0;
-
   async mounted() {
     this.availablePlugins = await this.getAvailablePlugins();
-  }
-
-  get dialogWidth() {
-    return this.$vuetify.breakpoint.smAndDown ? "100%" : "70%";
-  }
-  get phoneLayout() {
-    return this.$vuetify.breakpoint.xsOnly;
   }
 
   async downloadTorrent(item: SearchTaskTorrent) {
     this.addFormDownloadItem({
       downloadItem: {
         title: item.fileName,
-        url: item.fileUrl
-      }
+        url: item.fileUrl,
+      },
     });
     this.openAddForm();
   }
@@ -210,9 +202,9 @@ export default class SearchDialog extends HasTask {
       this._searchId = response.id;
 
       this.setTaskAndRun(async () => {
-       const results = await this.getResults(response.id);
+        const results = await this.getResults(response.id);
 
-       this.grid.searchItems = this.grid.searchItems.concat(results);
+        this.grid.searchItems = this.grid.searchItems.concat(results);
       });
     } catch {
       //
@@ -227,9 +219,9 @@ export default class SearchDialog extends HasTask {
 
   private async _startSearch(): Promise<{ id: number }> {
     const result = await api.startSearch(
-     this.searchForm.pattern,
-     this.searchForm.plugin,
-     this.searchForm.category
+      this.searchForm.pattern,
+      this.searchForm.plugin,
+      this.searchForm.category
     );
 
     return result;
@@ -239,9 +231,7 @@ export default class SearchDialog extends HasTask {
     return await api.stopSearch(id);
   }
 
-  async getResults(
-    id: number
-  ): Promise<SearchTaskTorrent[]> {
+  async getResults(id: number): Promise<SearchTaskTorrent[]> {
     const response = await api.getSearchResults(id);
     return response.results;
   }

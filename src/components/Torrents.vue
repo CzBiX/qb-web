@@ -495,7 +495,7 @@ export default class Torrents extends Vue {
   }
 
   async recheckTorrents() {
-    const v = await this.asyncShowDialog({
+    const v = await this.asyncShowDialog({ // TODO: update with i18n usage
       title: 'Recheck Torrents',
       text: 'Are you sure want to recheck torrents?',
       type: DialogType.OkCancel,
@@ -649,7 +649,7 @@ export default class Torrents extends Vue {
         max-width: 32em;
       }
     }
-    
+
     &::v-deep .v-data-footer {
       margin-right: 4em;
 

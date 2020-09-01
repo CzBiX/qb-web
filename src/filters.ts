@@ -12,7 +12,7 @@ export function toPrecision(value: number, precision: number) {
   return value.toFixed(precision - 1);
 }
 
-export function formatSize(value: number) {
+export function formatSize(value: number): string {
   const units = 'KMGTP';
   let index = -1;
 
