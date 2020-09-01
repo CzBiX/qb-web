@@ -63,21 +63,23 @@ const BUTTONS = {
   ],
 };
 
-const DefaultConfig = {
-  dialog: {
-    width: '25%',
-  }
-};
+const DefaultDialogWidth = '25%'
 
 export default {
-  setup() {
+  setup(_: any, ctx: any) {
     const mutations = useMutations(['closeDialog']);
     const { config: userConfig } = useState(['config'], 'dialog');
     const config = computed(() => {
       if (!userConfig.value) {
         return null;
       }
-      return Object.assign({}, DefaultConfig, userConfig.value) as DialogConfig;
+      const o = Object.assign({dialog: {}}, userConfig.value) as DialogConfig;
+
+      if (!('width' in o.dialog)) {
+        o.dialog.width = ctx.root.$vuetify.breakpoint.smAndDown ? null : DefaultDialogWidth
+      }
+
+      return o
     });
     const value = ref<boolean>();
     const input = ref<string>();

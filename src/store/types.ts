@@ -41,9 +41,7 @@ export enum DialogType {
 }
 
 export interface DialogConfig {
-  dialog?: {
-    width?: string;
-  };
+  dialog?: any;
 
   title?: string;
   text: string;
