@@ -14,29 +14,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
     - uses: actions/cache@v2
       with:
         path: node_modules
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-    - name: Use Node.js
-      uses: actions/setup-node@v1
     - run: yarn install --frozen-lockfile
+      if: steps.cache.outputs.cache-hit != 'true'
+
     - run: yarn run lint
     - run: yarn run test:unit
       
   build:
     needs: [test]
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
       - uses: actions/cache@v2
+        id: cache
         with:
           path: node_modules
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-      - name: Use Node.js
-        uses: actions/setup-node@v1
       - run: yarn install --frozen-lockfile
+        if: steps.cache.outputs.cache-hit != 'true'
+
       - run: echo ::set-env name=COMMIT_ID::$(echo ${{ github.sha }} | cut -c -6)
       - run: echo ::set-env name=GIT_TAG::nightly-$COMMIT_ID
       - run: echo ::set-env name=RELEASE_TITLE::$(date +'%Y%m%d-%H%M%S')
@@ -67,3 +72,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.RELEASE_FILE }}
           asset_name: ${{ env.RELEASE_FILE }}
+          asset_content_type: application/zip
