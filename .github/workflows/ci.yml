@@ -39,7 +39,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - name: Set Env
         run: |
-          export COMMIT_ID=${${{ github.sha }}::6}
+          export COMMIT_ID=$(echo ${{ github.sha }} | cut -c -6)
           export GIT_TAG=nightly-$COMMIT_ID
           export RELEASE_TITLE=$(date +'%Y%m%d-%H%M%S')
           export RELEASE_FILE=qb-web-$RELEASE_TITLE.zip
