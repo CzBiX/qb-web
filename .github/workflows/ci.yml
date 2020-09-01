@@ -66,4 +66,4 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.RELEASE_FILE }}
-      
+          asset_name: ${{ env.RELEASE_FILE }}
