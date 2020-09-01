@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+    - run: yarn run lint
+    - run: yarn run test:unit
+      
+  build:
+    needs: [test]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - name: Set Env
+        run: |
+          export TZ=Asia/Shanghai COMMIT_ID=${${{ github.sha }}::6}
+          export GIT_TAG=nightly-$COMMIT_ID RELEASE_TITLE=$(date +'%Y%m%d-%H%M%S')
+          export RELEASE_FILE=qb-web-$RELEASE_TITLE.zip
+      - name: Pack Release
+        run: |
+          # see https://github.com/qbittorrent/qBittorrent/pull/10485, fixed in qb v4.2.0
+          cp dist/public/{index,login}.html
+          cp INSTALL.md dist
+          zip -r $RELEASE_FILE dist
+      - name: Add tag
+        run: |
+          git tag $GIT_TAG
+          git push origin $GIT_TAG
+      - id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.GIT_TAG }}
+          release_name: ${{ env.RELEASE_TITLE }}
+          prerelease: true
+      - uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.RELEASE_FILE }}
+      
