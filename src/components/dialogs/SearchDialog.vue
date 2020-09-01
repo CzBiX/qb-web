@@ -201,11 +201,7 @@ export default class SearchDialog extends HasTask {
       const response = await this._startSearch();
       this._searchId = response.id;
 
-      this.setTaskAndRun(async () => {
-        const results = await this.getResults(response.id);
-
-        this.grid.searchItems = this.grid.searchItems.concat(results);
-      });
+      this.setTaskAndRun(this.task(response.id));
     } catch {
       //
     }
@@ -215,6 +211,16 @@ export default class SearchDialog extends HasTask {
     this.cancelTask();
     this._stopSearch(this._searchId);
     this.loading = false;
+  }
+
+  async getResults(id: number): Promise<SearchTaskTorrent[]> {
+    const response = await api.getSearchResults(id);
+    return response.results;
+  }
+
+  @Emit("input")
+  closeDialog() {
+    return false;
   }
 
   private async _startSearch(): Promise<{ id: number }> {
@@ -231,14 +237,20 @@ export default class SearchDialog extends HasTask {
     return await api.stopSearch(id);
   }
 
-  async getResults(id: number): Promise<SearchTaskTorrent[]> {
-    const response = await api.getSearchResults(id);
-    return response.results;
-  }
+  /**
+   * Does request until the plugins return data
+   */
+  private task(responseId: number): CallableFunction {
+    return async () => {
+      const results = await this.getResults(responseId);
 
-  @Emit("input")
-  closeDialog() {
-    return false;
+      this.grid.searchItems = this.grid.searchItems.concat(results);
+
+      if (results && results.length) {
+        this.stopSearch();
+        return true;
+      }
+    };
   }
 }
 </script>

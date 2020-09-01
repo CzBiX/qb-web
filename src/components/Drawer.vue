@@ -167,9 +167,11 @@ export default class Drawer extends Vue {
   torrentGroupByState!: {[state: string]: Torrent[]}
 
   created() {
-    if (this.phoneLayout) {
+    const searchMenuItem = { icon: 'mdi-card-search-outline', title: 'Search', click: () => this.updateOptions('showSearch', true) };
+
+   if (this.phoneLayout) {
       this.endItems = this.endItems.concat([
-        { icon: 'mdi-card-search-outline', title: 'Search', click: () => this.updateOptions('showSearch', true) },
+        searchMenuItem
       ]);
 
       return;
@@ -177,7 +179,7 @@ export default class Drawer extends Vue {
 
     this.endItems = this.endItems.concat([
       { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
-      { icon: 'mdi-card-search-outline', title: 'Search', click: () => this.updateOptions('showSearch', true) },
+      searchMenuItem,
       { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
     ])
   }

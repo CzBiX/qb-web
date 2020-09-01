@@ -297,9 +297,10 @@ export default class AddForm extends Vue {
     this.$refs.fileZone.addEventListener('drop', this.onDrop, true);
   }
 
-  updated() {
-    if (this.state.downloadItem) {
-      this.setParams('urls', this.state.downloadItem.url);
+  @Watch('state', {deep: true})
+  onStateUpdate(state: AddFormState) {
+    if (state.downloadItem) {
+      this.setParams('urls', state.downloadItem.url);
     }
   }
 
