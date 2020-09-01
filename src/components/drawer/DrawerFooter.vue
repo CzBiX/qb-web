@@ -50,12 +50,31 @@
         </v-list>
       </v-menu>
 
-      <v-btn
-        icon
-        @click="toggleDarkMode"
-      >
-        <v-icon v-text="darkModeIcon" />
-      </v-btn>
+      <v-menu>
+        <template #activator="{ on }">
+          <v-btn
+            icon
+            v-on="on"
+          >
+            <v-icon v-text="darkModeIcon" />
+          </v-btn>
+        </template>
+
+        <v-list>
+          <v-list-item-group
+            v-model="currentDarkMode"
+            color="primary"
+          >
+            <v-list-item
+              v-for="item in darkModes"
+              :key="item[0]"
+              :value="item[0]"
+            >
+              <v-list-item-title>{{ item[1] }}</v-list-item-title>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-menu>
       <v-btn
         icon
         @click="triggerApplicationShutdown"
@@ -81,6 +100,7 @@ import AppFooter from '@/components/Footer.vue';
 const AUTO_KEY = 'auto';
 
 type AllLocaleKey = NonNullable<LocaleKey> | typeof AUTO_KEY;
+type DarkModeKey = true | false | null;
 
 @Component({
   components: {
@@ -98,16 +118,29 @@ type AllLocaleKey = NonNullable<LocaleKey> | typeof AUTO_KEY;
 })
 export default class DrawerFooter extends Vue {
   locales = this.buildLocales()
-  currentLocale = this.$store.getters.config.locale || AUTO_KEY;
+  currentLocale = this.$store.getters.config.locale || AUTO_KEY
+  currentDarkMode = this.$store.getters.config.darkMode || AUTO_KEY
   oldLocale = this.currentLocale
   showInfo = false
+
+  darkModes = [
+    [false, tr('light')],
+    [true, tr('dark')],
+    [AUTO_KEY, tr('auto')],
+  ]
 
   asyncShowDialog!: (_: DialogConfig) => Promise<string | undefined>
   showSnackBar!: (_: SnackBarConfig) => void
   updateConfig!: (_: ConfigPayload) => void
 
   get darkModeIcon() {
-    return this.$vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-7';
+    if (this.currentDarkMode == true) {
+      return 'mdi-brightness-7'
+    } else if (this.currentDarkMode == false) {
+      return 'mdi-brightness-4'
+    } else {
+      return 'mdi-brightness-auto'
+    }
   }
 
   get phoneLayout() {
@@ -131,7 +164,8 @@ export default class DrawerFooter extends Vue {
     ]
   }
 
-  async switchLocale(locale: AllLocaleKey) {
+  @Watch('currentLocale')
+  async onCurrentLocaleChanged(locale: AllLocaleKey) {
     if (locale === this.oldLocale) {
       return;
     }
@@ -159,13 +193,11 @@ export default class DrawerFooter extends Vue {
     location.reload();
   }
 
-  toggleDarkMode() {
-    const { theme } = this.$vuetify;
-    theme.dark = !theme.dark;
-
+  @Watch('currentDarkMode')
+  onDarkModeChanged(mode: DarkModeKey | typeof AUTO_KEY) {
     this.updateConfig({
       key: 'darkMode',
-      value: theme.dark,
+      value: mode == AUTO_KEY ? null : mode,
     });
   }
 
@@ -180,12 +212,6 @@ export default class DrawerFooter extends Vue {
       return;
     }
     await api.shutdownApplication();
-  }
-
-
-  @Watch('currentLocale')
-  onCurrentLocaleChanged(v: AllLocaleKey) {
-    this.switchLocale(v)
   }
 }
 </script>

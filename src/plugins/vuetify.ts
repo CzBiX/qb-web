@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib';
 import i18n from '@/locale';
-import { loadConfig } from '@/store/config';
 
 Vue.use(Vuetify);
 
@@ -10,7 +9,6 @@ locale = locale === 'zh-CN' ? 'zh-Hans' : locale.split('-', 1)[0];
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: translation } = require('vuetify/src/locale/' + locale);
-const darkMode = !!loadConfig()['darkMode'];
 
 export default new Vuetify({
   lang: {
@@ -19,8 +17,5 @@ export default new Vuetify({
   },
   icons: {
     iconfont: 'mdi',
-  },
-  theme: {
-    dark: darkMode,
   },
 });

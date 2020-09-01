@@ -117,6 +117,7 @@ export default class App extends Vue {
     showRss: false,
   }
   task = 0
+  mql?: MediaQueryList
 
   mainData!: MainData
   rid!: number
@@ -205,6 +206,26 @@ export default class App extends Vue {
     if (!v) {
       this.getInitData();
     }
+  }
+
+  @Watch('config.darkMode', {immediate: true})
+  onDarkMode(mode: any) {
+    const { theme } = this.$vuetify;
+
+    if (mode != null) {
+      if (this.mql) {
+        this.mql.removeListener(null)
+        this.mql = undefined
+      }
+      theme.dark = mode
+      return
+    }
+
+    this.mql = window.matchMedia('(prefers-color-scheme: dark)');
+    this.mql.addListener((e: MediaQueryListEvent) => {
+      theme.dark = e.matches
+    })
+    theme.dark = this.mql.matches
   }
 }
 </script>

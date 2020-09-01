@@ -44,6 +44,8 @@ export default {
 
   settings: '设置',
   logs: '日志',
+  light: '亮色',
+  dark: '暗色',
 
   all: '全部',
   category: '分类',
