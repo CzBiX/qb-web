@@ -9,6 +9,8 @@ export default {
   cancel: '取消',
   ok: '确定',
 
+  start: '开始',
+  stop: '停止',
   submit: '提交',
   edit: '编辑',
   delete: '删除',
@@ -58,6 +60,9 @@ export default {
   feed: '订阅',
   date: '日期',
   query: '查询',
+  plugin: '插件',
+  action: '操作',
+  search_engine: '搜索引擎',
 
   title: {
     _: '标题',

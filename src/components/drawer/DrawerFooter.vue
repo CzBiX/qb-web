@@ -135,9 +135,9 @@ export default class DrawerFooter extends Vue {
 
   get darkModeIcon() {
     if (this.currentDarkMode == true) {
-      return 'mdi-brightness-7'
-    } else if (this.currentDarkMode == false) {
       return 'mdi-brightness-4'
+    } else if (this.currentDarkMode == false) {
+      return 'mdi-brightness-7'
     } else {
       return 'mdi-brightness-auto'
     }
