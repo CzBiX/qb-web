@@ -29,11 +29,12 @@
               <v-row :align="'start'">
                 <v-col>
                   <v-select
-                    v-model="searchForm.plugin"
+                    v-model="searchForm.plugins"
                     :items="availablePlugins"
+                    multiple
                     item-text="name"
                     :clearable="true"
-                    :label="$t('plugin', 1)"
+                    :label="$t('plugin', 2)"
                   />
                 </v-col>
 
@@ -138,12 +139,12 @@ export default class SearchDialog extends HasTask {
     valid: boolean;
     category: string | null;
     pattern: string | null;
-    plugin: string | null;
+    plugins: string[] | null;
   } = {
     valid: false,
     category: null,
     pattern: null,
-    plugin: null,
+    plugins: null,
   };
 
   grid: GridConfig = {
@@ -226,7 +227,7 @@ export default class SearchDialog extends HasTask {
   private async _startSearch(): Promise<{ id: number }> {
     const result = await api.startSearch(
       this.searchForm.pattern,
-      this.searchForm.plugin,
+      this.searchForm.plugins && this.searchForm.plugins.join('|'),
       this.searchForm.category
     );
 
