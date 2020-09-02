@@ -491,13 +491,13 @@ export default class Torrents extends Vue {
 
     await api.reannounceTorrents(this.selectedHashes);
 
-    this.showSnackBar({text: 'Reannounced'});
+    this.showSnackBar({text: tr('label.reannounced')});
   }
 
   async recheckTorrents() {
-    const v = await this.asyncShowDialog({ // TODO: update with i18n usage
-      title: 'Recheck Torrents',
-      text: 'Are you sure want to recheck torrents?',
+    const v = await this.asyncShowDialog({
+      title: tr('title.recheck_torrents'),
+      text: tr('dialog.recheck_torrents.msg'),
       type: DialogType.OkCancel,
     });
 
@@ -506,7 +506,7 @@ export default class Torrents extends Vue {
     }
     await api.recheckTorrents(this.selectedHashes);
 
-    this.showSnackBar({text: 'Rechecking'});
+    this.showSnackBar({text: tr('label.rechecking')});
   }
 
   async setTorrentLocation() {

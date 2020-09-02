@@ -9,7 +9,7 @@
     <v-card>
       <v-card-title class="headline">
         <v-icon class="mr-2">mdi-delta</v-icon>
-        <span>Logs</span>
+        <span v-text="$t('logs')" />
       </v-card-title>
       <v-card-text>
         <v-progress-linear
@@ -35,9 +35,8 @@
         <v-btn
           text
           @click="closeDialog"
-        >
-          Close
-        </v-btn>
+          v-text="$t('close')"
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>

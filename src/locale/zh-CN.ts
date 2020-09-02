@@ -71,6 +71,7 @@ export default {
     set_category: '设置分类',
     edit_tracker: '编辑 Tracker',
     set_location: '修改文件位置',
+    recheck_torrents: '重新检查种子',
   },
 
   label: {
@@ -90,6 +91,12 @@ export default {
     deleting: '删除中…',
     moving: '移动中…',
     moved: '已移动',
+    next: '下一步',
+    back: '返回',
+    confirm: '确定',
+    reannounced: '已重新通告',
+    rechecking: '重新检查中…',
+    dht_nodes: '%{smart_count} 节点',
   },
 
   msg: {
@@ -116,6 +123,9 @@ export default {
     },
     switch_locale: {
       msg: '确定要切换语言为 %{lang} 吗？\n这将会刷新页面。',
+    },
+    recheck_torrents: {
+      msg: '确定要重新检查选中的种子吗？',
     },
     rss: {
       add_feed: '添加订阅',

@@ -71,6 +71,7 @@ export default {
     set_category: 'Set Category',
     edit_tracker: 'Edit Tracker',
     set_location: 'Set Location',
+    recheck_torrents: 'Recheck Torrents',
   },
 
   label: {
@@ -90,6 +91,12 @@ export default {
     deleting: 'Deleting…',
     moving: 'Moving…',
     moved: 'Moved',
+    next: 'Next',
+    back: 'Back',
+    confirm: 'Confirm',
+    reannounced: 'Reannounced',
+    rechecking: 'Rechecking…',
+    dht_nodes: '%{smart_count} node |||| %{smart_count} nodes',
   },
 
   msg: {
@@ -116,6 +123,9 @@ export default {
     },
     switch_locale: {
       msg: 'Are you sure to switch language to %{lang}?\nThis action will reload page.',
+    },
+    recheck_torrents: {
+      msg: 'Are you sure want to recheck torrents?',
     },
     rss: {
       add_feed: 'Add Feed',

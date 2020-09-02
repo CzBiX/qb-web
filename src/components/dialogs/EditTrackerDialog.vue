@@ -84,7 +84,7 @@
           text
           @click="back"
           v-if="step < 3"
-          v-text="step == 1 ? 'Cancel' : 'Back'"
+          v-text="step == 1 ? $t('cancel') : $t('back')"
         >
           Back
         </v-btn>
@@ -93,7 +93,7 @@
           color="warning"
           :disabled="!canNext"
           :loading="submitting"
-          v-text="[null, 'Next', 'Confirm', 'Close'][step]"
+          v-text="[null, $t('next'), $t('confirm'), $t('close')][step]"
         />
       </v-card-actions>
     </v-card>

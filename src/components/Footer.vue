@@ -66,7 +66,7 @@
         class="icon-label"
       >
         <v-icon>mdi-access-point-network</v-icon>
-        {{ info.dht_nodes }} nodes
+        {{ $t('label.dht_nodes', info.dht_nodes) }}
       </div>
       <v-divider
         vertical

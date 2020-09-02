@@ -10,7 +10,7 @@
         <v-icon class="mr-2">
           mdi-alert-circle
         </v-icon>
-        <span>Info</span>
+        <span v-text="$t('info')" />
       </v-card-title>
       <v-card-text>
         <v-tabs v-model="tabSync">
@@ -90,9 +90,8 @@
         <v-btn
           text
           @click="closeDialog"
-        >
-          Close
-        </v-btn>
+          v-text="$t('close')"
+        />
       </v-card-actions>
     </v-card>
   </v-dialog>
