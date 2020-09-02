@@ -290,7 +290,7 @@ export interface SearchPlugin {
   enabled: boolean;
   fullName: string;
   name: string;
-  supportedCategories: { id: string; name: string }[];
+  supportedCategories: string[];
   url: string;
   version: string;
 }

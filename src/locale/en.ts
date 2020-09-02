@@ -59,6 +59,7 @@ export default {
   more: 'More',
   feed: 'Feed',
   date: 'Date',
+  query: 'Query',
   plugin: 'Plugin |||| Plugins',
   action: 'Action |||| Actions',
   search_engine: 'Search engine',

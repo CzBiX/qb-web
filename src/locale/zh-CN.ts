@@ -57,6 +57,7 @@ export default {
   more: '更多',
   feed: '订阅',
   date: '日期',
+  query: '查询',
 
   title: {
     _: '标题',

@@ -297,9 +297,9 @@ class Api {
     return this.axios.post('/search/start', body).then(Api.handleResponse);
   }
 
-  public stopSearch(id: number): AxiosResponse<any> | PromiseLike<AxiosResponse<any>> {
+  public stopSearch(id: number) {
     const body = new URLSearchParams({ id: id.toString() });
-    return this.axios.post('/search/stop', body);
+    return this.axios.post('/search/stop', body).then(Api.handleResponse)
   }
 
   public getSearchResults(id: number): Promise<SearchTaskResponse> {

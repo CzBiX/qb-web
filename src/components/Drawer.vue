@@ -167,7 +167,11 @@ export default class Drawer extends Vue {
   torrentGroupByState!: {[state: string]: Torrent[]}
 
   created() {
-    const searchMenuItem = { icon: 'mdi-card-search-outline', title: 'Search', click: () => this.updateOptions('showSearch', true) };
+    const searchMenuItem = {
+      icon: 'mdi-card-search-outline',
+      title: tr('search'),
+      click: () => this.updateOptions('showSearch', true)
+    };
 
    if (this.phoneLayout) {
       this.endItems = this.endItems.concat([

@@ -10,7 +10,7 @@
       <v-card>
         <v-card-title class="headline">
           <v-icon class="mr-2">mdi-card-search-outline</v-icon>
-          <span>Search</span>
+          <span v-text="$t('search')" />
           <v-spacer />
           <v-btn
             icon
@@ -23,18 +23,43 @@
           <v-form
             ref="form"
             v-model="searchForm.valid"
-            lazy-validation
           >
-            <v-container>
+            <v-container fluid>
               <v-row :align="'start'">
                 <v-col>
-                  <v-select
+                  <v-autocomplete
                     v-model="searchForm.plugins"
                     :items="availablePlugins"
                     multiple
-                    item-text="name"
-                    :clearable="true"
+                    item-text="fullName"
+                    item-value="name"
+                    return-object
+                    :rules="[v => (!!v.length || $t('msg.item_is_required', { item: $t('plugin', 1) }))]"
                     :label="$t('plugin', 2)"
+                  >
+                    <template v-slot:prepend-item>
+                      <v-list-item
+                        @click="toggleSelectAll"
+                      >
+                        <v-list-item-action>
+                          <v-icon :color="searchForm.plugins.length > 0 ? 'primary' : ''">{{ allPluginIcon }}</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                          <v-list-item-title v-text="$t('all')" />
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-divider />
+                    </template>
+                  </v-autocomplete>
+                </v-col>
+
+                <v-col>
+                  <v-autocomplete
+                    v-model="searchForm.category"
+                    :items="availableCategories"
+                    item-text="name"
+                    item-value="key"
+                    :label="$t('category', 1)"
                   />
                 </v-col>
 
@@ -43,21 +68,14 @@
                     v-model="searchForm.pattern"
                     prepend-inner-icon="mdi-magnify"
                     :label="$t('search')"
-                  />
-                </v-col>
-
-                <v-col>
-                  <v-select
-                    v-model="searchForm.category"
-                    :items="allCategories"
-                    :clearable="true"
-                    item-text="name"
-                    :label="$t('category', 1)"
+                    :rules="[v => (!!v || $t('msg.item_is_required', { item: $t('query') }))]"
+                    clearable
                   />
                 </v-col>
 
                 <v-col :align-self="'center'">
                   <v-btn
+                    :disabled="!searchForm.valid || loading"
                     @click="loading ? stopSearch() : triggerSearch()"
                   >
                     {{ loading ? $t('stop') : $t('search') }}
@@ -74,13 +92,18 @@
             :loading="loading"
             class="elevation-1"
           >
+            <template #[`item.fileName`]="{ item }">
+              <a
+                :href="item.descrLink" 
+                target="_blank"
+                v-text="item.fileName"
+              />
+            </template>
             <template v-slot:[`item.fileSize`]="{ item }">
               {{ item.fileSize | formatSize }}
             </template>
             <template v-slot:[`item.actions`]="{ item }">
               <v-icon
-                small
-                class="mr-2"
                 @click="downloadTorrent(item)"
               >
                 mdi-download
@@ -95,13 +118,11 @@
 </template>
 
 <script lang="ts">
+import { intersection } from 'lodash';
 import api from "@/Api";
-import Component from "vue-class-component";
 import HasTask from "../../mixins/hasTask";
-import { Prop, Emit } from "vue-property-decorator";
+import { Component, Prop, Emit, Watch } from "vue-property-decorator";
 import { SearchPlugin, SearchTaskTorrent } from "@/types";
-import { AxiosResponse } from "axios";
-import { formatSize } from "../../filters";
 import { mapGetters, mapMutations } from "vuex";
 import { tr } from "@/locale";
 
@@ -109,6 +130,17 @@ interface GridConfig {
   searchItems: SearchTaskTorrent[];
   downloadItem: SearchTaskTorrent | null;
   headers: { [key: string]: any }[];
+}
+
+interface Category {
+  key: string;
+  name: string;
+}
+
+const ALL_KEY = 'all'
+const ALL_CATEGORY: Category = {
+  key: ALL_KEY,
+  name: tr('all'),
 }
 
 @Component({
@@ -120,8 +152,6 @@ interface GridConfig {
   },
   methods: {
     ...mapMutations(["openAddForm", "setPasteUrl", "addFormDownloadItem"]),
-    formatSize,
-    translate: tr,
   },
 })
 export default class SearchDialog extends HasTask {
@@ -130,21 +160,18 @@ export default class SearchDialog extends HasTask {
   @Prop(Boolean)
   readonly value!: boolean;
 
-  availablePlugins: SearchPlugin[] | null = null;
-  allCategories!: any;
-  formatSize!: (_: any) => string;
-  translate!: (_: any, __?: any) => string;
+  availablePlugins: SearchPlugin[] = [];
 
   searchForm: {
     valid: boolean;
-    category: string | null;
-    pattern: string | null;
-    plugins: string[] | null;
+    category: string;
+    pattern: string;
+    plugins: SearchPlugin[];
   } = {
     valid: false,
-    category: null,
-    pattern: null,
-    plugins: null,
+    category: ALL_KEY,
+    pattern: '',
+    plugins: [],
   };
 
   grid: GridConfig = {
@@ -159,12 +186,12 @@ export default class SearchDialog extends HasTask {
       siteUrl: "",
     },
     headers: [
-      { text: this.translate("name"), value: "fileName" },
-      { text: this.translate("size"), value: "fileSize" },
-      { text: this.translate("seeds"), value: "nbSeeders" },
-      { text: this.translate("peers"), value: "nbLeechers" },
-      { text: this.translate("search_engine"), value: "siteUrl" },
-      { text: this.translate("action", 2), value: "actions", sortable: false },
+      { text: tr("name"), value: "fileName" },
+      { text: tr("size"), value: "fileSize" },
+      { text: tr("seeds"), value: "nbSeeders" },
+      { text: tr("peers"), value: "nbLeechers" },
+      { text: tr("search_engine"), value: "siteUrl" },
+      { text: tr("action", 2), value: "actions", sortable: false },
     ],
   };
 
@@ -174,8 +201,40 @@ export default class SearchDialog extends HasTask {
   openAddForm!: () => void;
   addFormDownloadItem!: (_: any) => void;
 
+  get hasSelectAllPlugins () {
+    return this.searchForm.plugins.length == this.availablePlugins.length
+  }
+
+  get availableCategories() {
+    if (this.hasSelectAllPlugins) {
+      return [ ALL_CATEGORY ] 
+    }
+
+    const result: Category[] = [
+      ALL_CATEGORY,
+      {divider: true} as any,
+    ] 
+
+    const categories = intersection(...this.searchForm.plugins.map(p => p.supportedCategories))
+      .map(c => ({key: c, name: c}))
+    result.push(...categories)
+
+    return result
+  }
+
+  get allPluginIcon () {
+    if (this.hasSelectAllPlugins) return 'mdi-checkbox-marked'
+    if (this.searchForm.plugins.length) return 'mdi-minus-box'
+    return 'mdi-checkbox-blank-outline'
+  }
+
+  toggleSelectAll() {
+    this.searchForm.plugins = this.hasSelectAllPlugins ? [] : this.availablePlugins.slice()
+  }
+
   async mounted() {
     this.availablePlugins = await this.getAvailablePlugins();
+    this.toggleSelectAll()
   }
 
   async downloadTorrent(item: SearchTaskTorrent) {
@@ -189,16 +248,22 @@ export default class SearchDialog extends HasTask {
   }
 
   async getAvailablePlugins(): Promise<SearchPlugin[]> {
-    const availablePlugins = await api.getSearchPlugins();
-
-    return availablePlugins.filter((plugin) => plugin.enabled === true);
+    const availablePlugins = await api.getSearchPlugins()
+    
+    return availablePlugins
+      .filter((plugin) => plugin.enabled === true)
+      .sort((p1, p2) => p1.fullName.localeCompare(p2.fullName));
   }
 
   async triggerSearch() {
-    try {
-      this.grid.searchItems = []; // Clear the table
-      this.loading = true;
+    if (!this.searchForm.valid) {
+      return
+    }
 
+    this.grid.searchItems = []; // Clear the table
+    this.loading = true;
+
+    try {
       const response = await this._startSearch();
       this._searchId = response.id;
 
@@ -210,13 +275,8 @@ export default class SearchDialog extends HasTask {
 
   async stopSearch() {
     this.cancelTask();
-    this._stopSearch(this._searchId);
+    await this._stopSearch(this._searchId);
     this.loading = false;
-  }
-
-  async getResults(id: number): Promise<SearchTaskTorrent[]> {
-    const response = await api.getSearchResults(id);
-    return response.results;
   }
 
   @Emit("input")
@@ -225,17 +285,20 @@ export default class SearchDialog extends HasTask {
   }
 
   private async _startSearch(): Promise<{ id: number }> {
+    const plugins = this.hasSelectAllPlugins ? ALL_KEY : this.searchForm.plugins.map(p => p.name).join('|')
+
     const result = await api.startSearch(
       this.searchForm.pattern,
-      this.searchForm.plugins && this.searchForm.plugins.join('|'),
+      plugins,
       this.searchForm.category
     );
 
     return result;
   }
 
-  private async _stopSearch(id: number): Promise<AxiosResponse> {
-    return await api.stopSearch(id);
+  private async _stopSearch(id: number) {
+    await api.stopSearch(id);
+    this._searchId = 0;
   }
 
   /**
@@ -243,15 +306,23 @@ export default class SearchDialog extends HasTask {
    */
   private task(responseId: number): CallableFunction {
     return async () => {
-      const results = await this.getResults(responseId);
+      const response = await api.getSearchResults(responseId);
+      const isStopped = response.status == 'Stopped'
 
-      this.grid.searchItems = this.grid.searchItems.concat(results);
-
-      if (results && results.length) {
-        this.stopSearch();
-        return true;
+      if (isStopped) {
+        this.grid.searchItems = this.grid.searchItems.concat(response.results);
+        this.loading = false;
       }
+
+      return isStopped
     };
+  }
+
+  @Watch('searchForm.plugins')
+  onPluginChanged() {
+    if (!this.availableCategories.find(c => c.key == this.searchForm.category)) {
+      this.searchForm.category = ALL_KEY
+    }
   }
 }
 </script>
