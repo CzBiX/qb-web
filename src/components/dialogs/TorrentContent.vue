@@ -38,6 +38,7 @@ enum EFilePriority {
 
 /* eslint-disable camelcase */
 interface File {
+  id: number;
   name: string;
   size: number;
   progress: number;
@@ -90,7 +91,11 @@ export default class TorrentContent extends BaseTorrentInfo {
   }
 
   async getFiles() {
-    this.files = await api.getTorrentFiles(this.hash);
+    const files = (await api.getTorrentFiles(this.hash) as File[])
+      .sort((a, b) => a.name.localeCompare(b.name))
+    files.forEach((v, i) => v.id = i)
+
+    this.files = files
     this.folderIndex = 0
   }
 
@@ -122,10 +127,6 @@ export default class TorrentContent extends BaseTorrentInfo {
     return name.substring(start, index);
   }
 
-  getFileIndex(item: File): number {
-    return this.files.findIndex(value => value.name === item.name);
-  }
-
   buildTree(files: Array<File>, start: number): TreeItem[] {
     if (!files.length) {
       return [];
@@ -139,7 +140,7 @@ export default class TorrentContent extends BaseTorrentInfo {
       if(folder === UNWANTED_FILE) {
         for (const item of values) {
           result.push({
-            id: this.getFileIndex(item),
+            id: item.id,
             name: item.name.substring(start + folder.length + 1),
             item,
             size: item.size,
@@ -164,7 +165,7 @@ export default class TorrentContent extends BaseTorrentInfo {
 
       for (const item of values) {
         result.push({
-          id: this.getFileIndex(item),
+          id: item.id,
           name: item.name.substring(start),
           item,
           size: item.size,
