@@ -1,10 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 env:
   TZ: Asia/Shanghai
@@ -24,13 +20,13 @@ jobs:
     - run: yarn install --frozen-lockfile
       if: steps.cache.outputs.cache-hit != 'true'
 
-    - run: yarn run lint
+    - run: yarn run lint --no-fix --max-warnings 0
     - run: yarn run test:unit
       
   build:
     needs: [test]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'release'
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
