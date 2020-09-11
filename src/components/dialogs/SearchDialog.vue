@@ -25,35 +25,67 @@
             v-model="searchForm.valid"
           >
             <v-container fluid>
-              <v-row :align="'start'">
-                <v-col>
-                  <v-autocomplete
-                    v-model="searchForm.plugins"
-                    :items="availablePlugins"
-                    multiple
-                    item-text="fullName"
-                    item-value="name"
-                    return-object
-                    :rules="[v => (!!v.length || $t('msg.item_is_required', { item: $t('plugin', 1) }))]"
-                    :label="$t('plugin', 2)"
-                  >
-                    <template v-slot:prepend-item>
-                      <v-list-item
-                        @click="toggleSelectAll"
-                      >
-                        <v-list-item-action>
-                          <v-icon :color="searchForm.plugins.length > 0 ? 'primary' : ''">{{ allPluginIcon }}</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                          <v-list-item-title v-text="$t('all')" />
-                        </v-list-item-content>
-                      </v-list-item>
-                      <v-divider />
-                    </template>
-                  </v-autocomplete>
-                </v-col>
+              <v-row>
+                <v-col class="col-12 col-sm-6 col-md-9">
+                  <v-text-field
+                    v-model="searchForm.pattern"
+                    prepend-inner-icon="mdi-magnify"
+                    @keypress.enter="$refs.searchButton.click"
+                    :label="$t('search')"
+                    :rules="[v => !!v || $t('msg.item_is_required', { item: $t('query') })]"
+                    clearable
+                  />
 
-                <v-col>
+                  <v-btn
+                    ref="searchButton"
+                    :disabled="!searchForm.valid"
+                    :color="loading ? 'warning' : 'primary'"
+                    @click="loading ? stopSearch() : triggerSearch()"
+                  >
+                    {{ loading ? $t("stop") : $t("search") }}
+                  </v-btn>
+                </v-col>
+                <v-col class="col__plugins">
+                  <v-btn
+                    type="button"
+                    class="btn"
+                    @click="choosePluginSheetOpen = true"
+                  >
+                    {{ $t("plugin", 2) }}
+                  </v-btn>
+                  <v-bottom-sheet
+                    scrollable
+                    inset
+                    v-model="choosePluginSheetOpen"
+                  >
+                    <v-sheet class="text-center">
+                      <v-card>
+                        <v-card-title>
+                          {{ $t("plugin", 1) }} {{ $t("usage") }}
+                          <v-spacer />
+                          <v-btn
+                            small
+                            @click="toggleSelectAll"
+                            :color="searchForm.plugins.length > 0 ? 'primary' : ''"
+                          >
+                            {{ $t("all") }}
+                          </v-btn>
+                        </v-card-title>
+                        <v-divider />
+                        <v-card-text>
+                          <v-checkbox
+                            v-for="(plugin, key) in availablePlugins"
+                            :key="key"
+                            v-model="searchForm.plugins"
+                            :label="plugin.fullName"
+                            :value="plugin"
+                          />
+                        </v-card-text>
+                      </v-card>
+                    </v-sheet>
+                  </v-bottom-sheet>
+                </v-col>
+                <v-col align-self="center">
                   <v-autocomplete
                     v-model="searchForm.category"
                     :items="availableCategories"
@@ -61,25 +93,6 @@
                     item-value="key"
                     :label="$t('category', 1)"
                   />
-                </v-col>
-
-                <v-col class="col-12 col-sm-6 col-md-8">
-                  <v-text-field
-                    v-model="searchForm.pattern"
-                    prepend-inner-icon="mdi-magnify"
-                    :label="$t('search')"
-                    :rules="[v => (!!v || $t('msg.item_is_required', { item: $t('query') }))]"
-                    clearable
-                  />
-                </v-col>
-
-                <v-col :align-self="'center'">
-                  <v-btn
-                    :disabled="!searchForm.valid || loading"
-                    @click="loading ? stopSearch() : triggerSearch()"
-                  >
-                    {{ loading ? $t('stop') : $t('search') }}
-                  </v-btn>
                 </v-col>
               </v-row>
             </v-container>
@@ -94,7 +107,7 @@
           >
             <template #[`item.fileName`]="{ item }">
               <a
-                :href="item.descrLink" 
+                :href="item.descrLink"
                 target="_blank"
                 v-text="item.fileName"
               />
@@ -103,11 +116,7 @@
               {{ item.fileSize | formatSize }}
             </template>
             <template v-slot:[`item.actions`]="{ item }">
-              <v-icon
-                @click="downloadTorrent(item)"
-              >
-                mdi-download
-              </v-icon>
+              <v-icon @click="downloadTorrent(item)">mdi-download</v-icon>
             </template>
           </v-data-table>
         </v-card-text>
@@ -118,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import { intersection } from 'lodash';
+import { intersection } from "lodash";
 import api from "@/Api";
 import HasTask from "../../mixins/hasTask";
 import { Component, Prop, Emit, Watch } from "vue-property-decorator";
@@ -137,22 +146,22 @@ interface Category {
   name: string;
 }
 
-const ALL_KEY = 'all'
+const ALL_KEY = "all";
 const ALL_CATEGORY: Category = {
   key: ALL_KEY,
-  name: tr('all'),
-}
+  name: tr("all")
+};
 
 @Component({
   computed: {
     ...mapGetters({
       allCategories: "allCategories",
-      preferences: "preferences",
-    }),
+      preferences: "preferences"
+    })
   },
   methods: {
-    ...mapMutations(["openAddForm", "setPasteUrl", "addFormDownloadItem"]),
-  },
+    ...mapMutations(["openAddForm", "setPasteUrl", "addFormDownloadItem"])
+  }
 })
 export default class SearchDialog extends HasTask {
   private _searchId = 0;
@@ -170,8 +179,8 @@ export default class SearchDialog extends HasTask {
   } = {
     valid: false,
     category: ALL_KEY,
-    pattern: '',
-    plugins: [],
+    pattern: "",
+    plugins: []
   };
 
   grid: GridConfig = {
@@ -183,7 +192,7 @@ export default class SearchDialog extends HasTask {
       fileUrl: "",
       nbLeechers: 0,
       nbSeeders: 0,
-      siteUrl: "",
+      siteUrl: ""
     },
     headers: [
       { text: tr("name"), value: "fileName" },
@@ -191,73 +200,72 @@ export default class SearchDialog extends HasTask {
       { text: tr("seeds"), value: "nbSeeders" },
       { text: tr("peers"), value: "nbLeechers" },
       { text: tr("search_engine"), value: "siteUrl" },
-      { text: tr("action", 2), value: "actions", sortable: false },
-    ],
+      { text: tr("action", 2), value: "actions", sortable: false }
+    ]
   };
 
   loading = false;
+  choosePluginSheetOpen = false;
 
   setPasteUrl!: (_: any) => void;
   openAddForm!: () => void;
   addFormDownloadItem!: (_: any) => void;
 
-  get hasSelectAllPlugins () {
-    return this.searchForm.plugins.length == this.availablePlugins.length
+  get hasSelectAllPlugins() {
+    return this.searchForm.plugins.length === this.availablePlugins.length;
   }
 
   get availableCategories() {
     if (this.hasSelectAllPlugins) {
-      return [ ALL_CATEGORY ] 
+      return [ALL_CATEGORY];
     }
 
-    const result: Category[] = [
-      ALL_CATEGORY,
-      {divider: true} as any,
-    ] 
+    const result: Category[] = [ALL_CATEGORY, { divider: true } as any];
 
-    const categories = intersection(...this.searchForm.plugins.map(p => p.supportedCategories))
-      .map(c => ({key: c, name: c}))
-    result.push(...categories)
+    const categories = intersection(
+      ...this.searchForm.plugins.map(p => p.supportedCategories)
+    ).map(c => ({ key: c, name: c }));
+    result.push(...categories);
 
-    return result
+    return result;
   }
 
-  get allPluginIcon () {
-    if (this.hasSelectAllPlugins) return 'mdi-checkbox-marked'
-    if (this.searchForm.plugins.length) return 'mdi-minus-box'
-    return 'mdi-checkbox-blank-outline'
+  get allPluginIcon() {
+    if (this.hasSelectAllPlugins) return "mdi-checkbox-marked";
+    if (this.searchForm.plugins.length) return "mdi-minus-box";
+    return "mdi-checkbox-blank-outline";
   }
 
   toggleSelectAll() {
-    this.searchForm.plugins = this.hasSelectAllPlugins ? [] : this.availablePlugins.slice()
+    this.searchForm.plugins = this.hasSelectAllPlugins ? [] : this.availablePlugins.slice();
   }
 
   async mounted() {
     this.availablePlugins = await this.getAvailablePlugins();
-    this.toggleSelectAll()
+    this.toggleSelectAll();
   }
 
   async downloadTorrent(item: SearchTaskTorrent) {
     this.addFormDownloadItem({
       downloadItem: {
         title: item.fileName,
-        url: item.fileUrl,
-      },
+        url: item.fileUrl
+      }
     });
     this.openAddForm();
   }
 
   async getAvailablePlugins(): Promise<SearchPlugin[]> {
-    const availablePlugins = await api.getSearchPlugins()
-    
+    const availablePlugins = await api.getSearchPlugins();
+
     return availablePlugins
-      .filter((plugin) => plugin.enabled === true)
+      .filter(plugin => plugin.enabled === true)
       .sort((p1, p2) => p1.fullName.localeCompare(p2.fullName));
   }
 
   async triggerSearch() {
     if (!this.searchForm.valid) {
-      return
+      return;
     }
 
     this.grid.searchItems = []; // Clear the table
@@ -285,7 +293,9 @@ export default class SearchDialog extends HasTask {
   }
 
   private async _startSearch(): Promise<{ id: number }> {
-    const plugins = this.hasSelectAllPlugins ? ALL_KEY : this.searchForm.plugins.map(p => p.name).join('|')
+    const plugins = this.hasSelectAllPlugins
+      ? ALL_KEY
+      : this.searchForm.plugins.map(p => p.name).join("|");
 
     const result = await api.startSearch(
       this.searchForm.pattern,
@@ -307,21 +317,21 @@ export default class SearchDialog extends HasTask {
   private task(responseId: number): CallableFunction {
     return async () => {
       const response = await api.getSearchResults(responseId);
-      const isStopped = response.status == 'Stopped'
+      const isStopped = response.status === "Stopped";
 
       if (isStopped) {
         this.grid.searchItems = this.grid.searchItems.concat(response.results);
         this.loading = false;
       }
 
-      return isStopped
+      return isStopped;
     };
   }
 
-  @Watch('searchForm.plugins')
+  @Watch("searchForm.plugins")
   onPluginChanged() {
-    if (!this.availableCategories.find(c => c.key == this.searchForm.category)) {
-      this.searchForm.category = ALL_KEY
+    if (!this.availableCategories.find(c => c.key === this.searchForm.category)) {
+      this.searchForm.category = ALL_KEY;
     }
   }
 }
@@ -331,4 +341,30 @@ export default class SearchDialog extends HasTask {
 @import "~@/assets/styles.scss";
 
 @include dialog-title;
+
+.v-form {
+  .col__plugins {
+    button {
+      width: 100%;
+    }
+  }
+
+  .col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > * {
+      margin: 0 0.5rem;
+    }
+  }
+}
+
+.v-bottom-sheet {
+  .v-card__text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+}
 </style>

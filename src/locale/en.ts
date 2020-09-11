@@ -63,6 +63,7 @@ export default {
   plugin: 'Plugin |||| Plugins',
   action: 'Action |||| Actions',
   search_engine: 'Search engine',
+  usage: 'usage',
 
   title: {
     _: 'Title',
