@@ -26,7 +26,7 @@ jobs:
   build:
     needs: [test]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'release'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/release'
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
