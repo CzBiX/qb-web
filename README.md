@@ -2,6 +2,7 @@
 ## Info
 [![Tested](https://img.shields.io/badge/Tested-qBittorrent%20≥%20v4.2.5-brightgreen)](#)
 [![Release](https://img.shields.io/github/v/release/CzBiX/qb-web?include_prereleases)](https://github.com/CzBiX/qb-web/releases/latest)
+[![Gitter](https://badges.gitter.im/qb-web/community.svg)](https://gitter.im/qb-web/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![CI](https://github.com/CzBiX/qb-web/workflows/CI/badge.svg)](https://github.com/CzBiX/qb-web/actions)
 
 ## Features
