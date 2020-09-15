@@ -14,7 +14,6 @@
             :rules="[v => !!v || $t('msg.item_is_required', { item: $t('query') })]"
             clearable
           />
-
           <v-btn
             ref="searchButton"
             :disabled="!searchForm.valid"
@@ -28,14 +27,44 @@
           <v-btn
             type="button"
             class="btn"
-            @click="choosePluginSheetOpen = true"
+            @click="plugginSelectorOpen = true"
           >
             {{ $t("plugin", 2) }}
           </v-btn>
+          <v-dialog
+            v-if="!this.$vuetify.breakpoint.mobile"
+            v-model="plugginSelectorOpen"
+            max-width="20rem"
+          >
+            <v-card>
+              <v-card-title>
+                {{ $t("plugin", 1) }} {{ $t("usage") }}
+                <v-spacer />
+                <v-btn
+                  small
+                  @click="toggleSelectAll"
+                  :color="searchForm.plugins.length > 0 ? 'primary' : ''"
+                >
+                  {{ $t("all") }}
+                </v-btn>
+              </v-card-title>
+              <v-divider />
+              <v-card-text>
+                <v-checkbox
+                  v-for="(plugin, key) in availablePlugins"
+                  :key="key"
+                  v-model="searchForm.plugins"
+                  :label="plugin.fullName"
+                  :value="plugin"
+                />
+              </v-card-text>
+            </v-card>
+          </v-dialog>
           <v-bottom-sheet
             scrollable
             inset
-            v-model="choosePluginSheetOpen"
+            v-model="plugginSelectorOpen"
+            v-if="this.$vuetify.breakpoint.mobile"
           >
             <v-sheet class="text-center">
               <v-card>
@@ -110,7 +139,7 @@ export default class SearchDialogForm extends Vue {
   @Prop(Boolean)
   readonly loading: boolean = false;
 
-  choosePluginSheetOpen = false;
+  plugginSelectorOpen = false;
 
   availablePlugins: SearchPlugin[] = [];
 
@@ -196,7 +225,6 @@ export default class SearchDialogForm extends Vue {
 
 <style lang="scss" scoped>
 @import "~@/assets/styles.scss";
-
 .v-form {
   .col__plugins {
     button {
