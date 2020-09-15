@@ -68,7 +68,7 @@ import Torrents from './components/Torrents.vue';
 import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/dialogs/LogsDialog.vue';
 import RssDialog from './components/dialogs/RssDialog.vue';
-import SearchDialog from './components/dialogs/SearchDialog.vue';
+import SearchDialog from './components/dialogs/searchDialog/SearchDialog.vue';
 import DrawerFooter from './components/drawer/DrawerFooter.vue';
 
 import api from './Api';

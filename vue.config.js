@@ -6,7 +6,7 @@ module.exports = {
     port: 8000,
     proxy: {
       '/api': {
-        target: 'http://qb.test:8080',
+        target: 'https://server.bbogdanov.dev/torrent/',
       },
     },
   },
