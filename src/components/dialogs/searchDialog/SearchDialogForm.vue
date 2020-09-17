@@ -25,6 +25,8 @@
         </v-col>
         <v-col class="col__plugins">
           <v-btn
+            :loading="searchPlugins === undefined"
+            :disabled="searchPlugins === null"
             type="button"
             class="btn"
             @click="plugginSelectorOpen = true"
@@ -113,7 +115,8 @@ import { Component, Emit, Prop, Watch } from "vue-property-decorator";
 import { SearchPlugin } from "@/types";
 import { tr } from "@/locale";
 import { intersection } from "lodash";
-import api from "@/Api";
+import { mapGetters } from "vuex";
+import { SearchEnginePage } from '@/store/types';
 
 const ALL_KEY = "all";
 
@@ -134,8 +137,17 @@ export interface SearchForm {
   plugins: SearchPlugin[];
 }
 
-@Component({})
+@Component({
+  computed: {
+    ...mapGetters({
+      searchPlugins: "allSearchPlugins"
+    })
+  },
+})
 export default class SearchDialogForm extends Vue {
+  searchEngineState!: SearchEnginePage;
+  searchPlugins!: SearchPlugin[];
+
   @Prop(Boolean)
   readonly loading: boolean = false;
 
@@ -151,7 +163,7 @@ export default class SearchDialogForm extends Vue {
   };
 
   get hasSelectAllPlugins() {
-    return this.searchForm.plugins.length === this.availablePlugins.length;
+    return this.searchForm.plugins.length === this.availablePlugins?.length;
   }
 
   get availableCategories() {
@@ -169,36 +181,27 @@ export default class SearchDialogForm extends Vue {
     return result;
   }
 
-  get allPluginIcon() {
-    if (this.hasSelectAllPlugins) return "mdi-checkbox-marked";
-    if (this.searchForm.plugins.length) return "mdi-minus-box";
-    return "mdi-checkbox-blank-outline";
-  }
-
   toggleSelectAll() {
     this.searchForm.plugins = this.hasSelectAllPlugins ? [] : this.availablePlugins.slice();
   }
 
-  async mounted() {
-    this.availablePlugins = await this.getAvailablePlugins();
-    this.toggleSelectAll();
+  @Watch("searchPlugins")
+  searchPluginsUpdated(plugins: SearchPlugin[] | undefined | null) {
+    if (!plugins) {
+      this.availablePlugins = [];
+    } else {
+      this.availablePlugins = this.searchPlugins.filter(x => x.enabled);
+      this.toggleSelectAll();
+    }
   }
 
-  async getAvailablePlugins(): Promise<SearchPlugin[]> {
-    const availablePlugins = await api.getSearchPlugins();
-
-    return availablePlugins
-      .filter(plugin => plugin.enabled === true)
-      .sort((p1, p2) => p1.fullName.localeCompare(p2.fullName));
-  }
-
-  @Emit('triggerSearch')
+  @Emit("triggerSearch")
   triggerSearch(): SearchForm | void {
     if (!this.searchForm.valid) {
       return;
     }
 
-   const plugins = this.hasSelectAllPlugins
+    const plugins = this.hasSelectAllPlugins
       ? ALL_KEY
       : this.searchForm.plugins.map(p => p.name).join("|");
 
@@ -209,7 +212,7 @@ export default class SearchDialogForm extends Vue {
     return searchForm;
   }
 
-  @Emit('stopSearch')
+  @Emit("stopSearch")
   stopSearch() {
     //
   }

@@ -1,4 +1,4 @@
-import { MainData } from '@/types';
+import { MainData, SearchPlugin } from '@/types';
 import { Config } from './config';
 
 export interface RootState {
@@ -6,6 +6,11 @@ export interface RootState {
   mainData?: MainData;
   preferences: any;
   pasteUrl: string | null;
+}
+
+export interface SearchEnginePage {
+  searchPlugins: SearchPlugin[] | null | undefined;
+  isPluginManagerOpen: boolean;
 }
 
 export interface AddFormState {

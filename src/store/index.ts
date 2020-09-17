@@ -9,6 +9,7 @@ import { snackBarStore } from './snackBar';
 import { addFormStore } from './addForm';
 import { AllStateTypes } from '../consts';
 import { torrentIsState } from '../utils';
+import searchEngineStore from './searchEngine';
 import { RootState } from './types';
 
 Vue.use(Vuex);
@@ -18,7 +19,8 @@ const store = new Vuex.Store<RootState>({
     config: configStore,
     dialog: dialogStore,
     snackBar: snackBarStore,
-    addForm: addFormStore
+    addForm: addFormStore,
+    searchEngine: searchEngineStore
   },
   state: {
     rid: 0,
@@ -117,7 +119,7 @@ const store = new Vuex.Store<RootState>({
 
       return result;
     },
-  },
+  }
 });
 
 export default store;

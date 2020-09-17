@@ -48,9 +48,14 @@
             </template>
           </v-data-table>
         </v-card-text>
-        <v-card-actions />
+        <v-card-actions>
+          <v-btn @click="openPluginManager">
+            <v-icon>mdi-cog</v-icon>  Plugins manager
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
+    <PluginManager />
   </div>
 </template>
 
@@ -59,9 +64,10 @@ import api from "@/Api";
 import HasTask from "@/mixins/hasTask";
 import { Component, Prop, Emit } from "vue-property-decorator";
 import { SearchTaskTorrent } from "@/types";
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 import { tr } from "@/locale";
 import SearchDialogForm from "./SearchDialogForm.vue";
+import PluginManager from "./PluginsManager.vue";
 
 interface GridConfig {
   searchItems: SearchTaskTorrent[];
@@ -71,7 +77,8 @@ interface GridConfig {
 
 @Component({
   components: {
-    SearchDialogForm
+    SearchDialogForm,
+    PluginManager
   },
   computed: {
     ...mapGetters({
@@ -80,7 +87,10 @@ interface GridConfig {
     })
   },
   methods: {
-    ...mapMutations(["openAddForm", "setPasteUrl", "addFormDownloadItem"])
+    ...mapMutations(["openAddForm", "setPasteUrl", "addFormDownloadItem", "openPluginManager"]),
+    ...mapActions({
+      loadSearchPlugins: 'fetchSearchPlugins'
+    })
   }
 })
 export default class SearchDialog extends HasTask {
@@ -115,6 +125,12 @@ export default class SearchDialog extends HasTask {
   setPasteUrl!: (_: any) => void;
   openAddForm!: () => void;
   addFormDownloadItem!: (_: any) => void;
+  loadSearchPlugins!: () => void;
+  openPluginManager!: () => void;
+
+  mounted() {
+    this.loadSearchPlugins(); // load the plugins so they are available in the entire module
+  }
 
   async downloadTorrent(item: SearchTaskTorrent) {
     this.addFormDownloadItem({

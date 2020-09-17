@@ -307,6 +307,15 @@ class Api {
     return this.axios.get(`/search/results?id=${id}`).then(Api.handleResponse);
   }
 
+  public enablePlugin(plugin: SearchPlugin, enable: boolean) {
+    const body = new URLSearchParams({
+      names: plugin.name,
+      enable: JSON.stringify(enable)
+    });
+
+    return this.axios.post('/search/enablePlugin', body).then(Api.handleResponse);
+  }
+
   private actionTorrents(action: string, hashes: string[], extra?: any) {
     const params: any = {
       hashes: hashes.join('|'),
