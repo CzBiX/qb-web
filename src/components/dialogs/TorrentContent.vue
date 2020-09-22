@@ -79,21 +79,15 @@ export default class TorrentContent extends BaseTorrentInfo {
   }
 
   get selected(): number[] {
-    const list: number[] = [];
-
-    this.files.forEach((item, index) => {
-      if(item.priority !== EFilePriority.notDownload) {
-        list.push(index);
-      }
-    })
-
-    return list;
+    return this.files.filter((item) => {
+      return item.priority !== EFilePriority.notDownload;
+    }).map(item => item.id);
   }
 
   async getFiles() {
-    const files = (await api.getTorrentFiles(this.hash) as File[])
-      .sort((a, b) => a.name.localeCompare(b.name))
+    const files = await api.getTorrentFiles(this.hash) as File[]
     files.forEach((v, i) => v.id = i)
+    files.sort((a, b) => a.name.localeCompare(b.name))
 
     this.files = files
     this.folderIndex = 0
