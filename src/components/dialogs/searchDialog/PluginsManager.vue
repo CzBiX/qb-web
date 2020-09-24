@@ -10,9 +10,7 @@
         <v-switch
           v-for="(plugin, key) in searchEngineState.searchPlugins"
           :key="key"
-          :false-value="false"
           :input-value="plugin.enabled"
-          :value="plugin.enabled"
           :label="plugin.fullName"
           @change="togglePluginAvailability(plugin)"
         />
