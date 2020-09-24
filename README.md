@@ -10,8 +10,7 @@ Keywords: SPA, RSS, Search, Responsive Design, Modern Design, i18n
 
 Languages: English, 中文
 
-TODO:
- - [ ] Settings UI
+[TODO](https://github.com/CzBiX/qb-web/projects/2)
 
 ## Download
 
