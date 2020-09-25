@@ -50,7 +50,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn @click="openPluginManager">
-            <v-icon>mdi-cog</v-icon>  Plugins manager
+            <v-icon>mdi-cog</v-icon> {{ $t("plugin_manager") }}
           </v-btn>
         </v-card-actions>
       </v-card>

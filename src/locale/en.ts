@@ -64,6 +64,7 @@ export default {
   action: 'Action |||| Actions',
   search_engine: 'Search engine',
   usage: 'usage',
+  plugin_manager: 'Plugin manager',
 
   title: {
     _: 'Title',
