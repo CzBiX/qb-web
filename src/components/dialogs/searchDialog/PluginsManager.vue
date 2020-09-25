@@ -5,7 +5,7 @@
     scrollable
   >
     <v-card>
-      <v-card-title> <v-icon>mdi-toy-brick</v-icon> {{ $t("plugin", 1) }} {{ $t("manager") }} </v-card-title>
+      <v-card-title> <v-icon>mdi-toy-brick</v-icon> {{ $t("plugin_manager") }} </v-card-title>
       <v-card-text>
         <v-switch
           v-for="(plugin, key) in searchEngineState.searchPlugins"
