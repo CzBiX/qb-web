@@ -12,9 +12,8 @@ Languages: English, 中文
 
 [TODO](https://github.com/CzBiX/qb-web/projects/2)
 
-## Download
-
-[Releases](https://github.com/CzBiX/qb-web/releases/latest)
+## How to use
+see: [Wiki](https://github.com/CzBiX/qb-web/wiki/How-to-use)
 
 ## Install
 

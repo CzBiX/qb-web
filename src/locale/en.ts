@@ -99,6 +99,7 @@ export default {
     reannounced: 'Reannounced',
     rechecking: 'Rechecking…',
     dht_nodes: '%{smart_count} node |||| %{smart_count} nodes',
+    base_url: 'Base URL',
   },
 
   msg: {

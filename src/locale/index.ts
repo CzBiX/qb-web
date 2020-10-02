@@ -30,7 +30,7 @@ function matchLocale() {
 export const defaultLocale = matchLocale()
 
 function updateLocale() {
-  let locale: LocaleKey | undefined = loadConfig()['locale'];
+  let locale = loadConfig()['locale'] as LocaleKey;
 
   if (!locale) {
     locale = defaultLocale;

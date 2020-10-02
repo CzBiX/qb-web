@@ -27,6 +27,7 @@ const store = new Vuex.Store<RootState>({
     mainData: undefined,
     preferences: null,
     pasteUrl: null,
+    needAuth: false,
   },
   mutations: {
     /* eslint-disable no-param-reassign */
@@ -59,6 +60,9 @@ const store = new Vuex.Store<RootState>({
     setPasteUrl(state, payload) {
       const { url } = payload;
       state.pasteUrl = url;
+    },
+    updateNeedAuth(state, payload) {
+      state.needAuth = payload;
     },
     /* eslint-enable no-param-reassign */
   },

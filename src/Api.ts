@@ -2,16 +2,34 @@
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { RssNode, RssRule, SearchPlugin, ApiCategory, SearchTaskResponse } from '@/types';
 
-class Api {
+const apiEndpoint = 'api/v2';
 
+class Api {
   private axios: AxiosInstance;
 
   constructor() {
     this.axios = Axios.create({
-      baseURL: 'api/v2',
+      baseURL: apiEndpoint,
+      withCredentials: true,
     });
 
     this.axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+  }
+
+  private normalizeBaseUrl(baseUrl?: string) {
+    if (!baseUrl) {
+      return apiEndpoint;
+    }
+
+    if (!baseUrl.endsWith('/')) {
+      baseUrl += '/';
+    }
+
+    return baseUrl + apiEndpoint;
+  }
+
+  public changeBaseUrl(baseUrl: string) {
+    this.axios.defaults.baseURL = this.normalizeBaseUrl(baseUrl);
   }
 
   public getAppVersion() {
@@ -22,12 +40,13 @@ class Api {
     return this.axios.get('/app/webapiVersion');
   }
 
-  public login(params: any) {
+  public login(params: any, baseUrl?: string) {
     const data = new URLSearchParams(params);
     return this.axios.post('/auth/login', data, {
       validateStatus(status) {
         return status === 200 || status === 403;
       },
+      baseURL: this.normalizeBaseUrl(baseUrl),
     }).then(Api.handleResponse);
   }
 
@@ -330,4 +349,5 @@ class Api {
   }
 }
 
-export default new Api();
+const api = new Api();
+export default api;

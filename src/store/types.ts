@@ -6,6 +6,7 @@ export interface RootState {
   mainData?: MainData;
   preferences: any;
   pasteUrl: string | null;
+  needAuth: boolean;
 }
 
 export interface SearchEnginePage {

@@ -75,6 +75,8 @@ import api from './Api';
 import Component from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { MainData } from './types';
+import { Config } from './store/config';
+import Api from './Api';
 
 let appWrapEl: HTMLElement;
 
@@ -98,6 +100,7 @@ let appWrapEl: HTMLElement;
       'mainData',
       'rid',
       'preferences',
+      'needAuth',
     ]),
     ...mapGetters(['config']),
   },
@@ -106,11 +109,11 @@ let appWrapEl: HTMLElement;
       'updateMainData',
       'updatePreferences',
       'setPasteUrl',
+      'updateNeedAuth',
     ]),
   }
 })
 export default class App extends Vue {
-  needAuth = false
   drawer = true
   drawerOptions = {
     showLogs: false,
@@ -122,11 +125,13 @@ export default class App extends Vue {
   mainData!: MainData
   rid!: number
   preferences!: any
-  config!: any
+  config!: Config
+  needAuth!: boolean
 
   updateMainData!: (_: any) => void
   updatePreferences!: (_: any) => void
   setPasteUrl!: (_: any) => void
+  updateNeedAuth!: (_: boolean) => void
 
   get phoneLayout() {
     return this.$vuetify.breakpoint.xsOnly;
@@ -159,13 +164,22 @@ export default class App extends Vue {
   }
 
   async getInitData() {
+    const href = location.href;
+    if (!this.config.baseUrl) {
+      if (href.includes("czbix.github.io") || href.includes("localhost")) {
+        this.updateNeedAuth(true);
+        return;
+      } else {
+        Api.changeBaseUrl(href);
+      }
+    } else {
+      Api.changeBaseUrl(this.config.baseUrl);
+    }
+    
     try {
       await this.getMainData();
     } catch (e) {
-      if (e.response.status === 403) {
-        this.needAuth = true;
-      }
-
+      this.updateNeedAuth(true);
       return;
     }
 

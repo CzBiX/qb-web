@@ -13,6 +13,7 @@ const emtpyState: RootState = {
   mainData: undefined,
   preferences: null,
   pasteUrl: null,
+  needAuth: false,
 };
 
 const mockState = mock(emtpyState);

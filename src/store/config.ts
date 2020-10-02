@@ -5,7 +5,22 @@ import { ConfigState, ConfigPayload } from './types';
 
 const configKey = 'qb-config';
 
+export interface Config {
+  baseUrl: string | null;
+  updateInterval: number;
+  pageOptions: any;
+  filter: {
+    state: string | null;
+    category: string | null;
+    site: string | null;
+    query: string | null;
+  };
+  locale: string | null;
+  darkMode: string | null;
+}
+
 const defaultConfig = {
+  baseUrl: null,
   updateInterval: 2000,
   pageOptions: {
     itemsPerPage: 50,
@@ -19,8 +34,6 @@ const defaultConfig = {
   locale: null,
   darkMode: null,
 };
-
-export type Config = typeof defaultConfig
 
 function saveConfig(obj: any) {
   localStorage.setItem(configKey, JSON.stringify(obj));

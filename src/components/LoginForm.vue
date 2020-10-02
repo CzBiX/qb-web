@@ -22,10 +22,16 @@
             v-bind="{ [`grid-list-${$vuetify.breakpoint.name}`]: true }"
           >
             <v-text-field
+              v-model="baseUrl"
+              prepend-icon="mdi-network"
+              :label="$t('label.base_url')"
+              autofocus
+              required
+            />
+            <v-text-field
               v-model="params.username"
               prepend-icon="mdi-account"
               :label="$t('username')"
-              :rules="[v => !!v || $t('msg.item_is_required', { item: $t('username') })]"
               autofocus
               required
             />
@@ -36,7 +42,6 @@
               @click:append="showPassword = !showPassword"
               :label="$t('password')"
               :type="showPassword ? 'text' : 'password'"
-              :rules="[v => !!v || $t('msg.item_is_required', { item: $t('password') })]"
               required
             />
           </div>
@@ -63,56 +68,64 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, reactive, toRefs } from '@vue/composition-api';
 
-import { tr } from '@/locale';
-import api from '../Api';
+import api from '@/Api';
+import { useStore } from '@/store';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: Boolean,
   },
-  data() {
-    return {
-      tr,
+  setup(props, { emit }) {
+    const data = reactive({
       valid: false,
       submitting: false,
       showPassword: false,
       loginError: null,
+      baseUrl: location.href,
       params: {
         username: null,
         password: null,
       },
-    };
-  },
+      form: null,
+    });
+    const store = useStore();
 
-  methods: {
-    async submit() {
-      if (this.submitting) {
+    const submit = async () => {
+      if (data.submitting) {
         return;
       }
 
-      if (!(this.$refs.form as any).validate()) {
+      if (!(data.form as any).validate()) {
         return;
       }
 
-      this.submitting = true;
-      let data;
+      data.submitting = true;
       try {
-        data = await api.login(this.params);
+        const resp = await api.login(data.params, data.baseUrl);
 
-        if (data === 'Ok.') {
-          this.$emit('input', false);
+        if (resp === 'Ok.') {
+          store.commit('updateConfig', {
+            key: 'baseUrl',
+            value: data.baseUrl,
+          });
+          emit('input', false);
           return;
         }
 
-        this.loginError = data;
+        data.loginError = resp;
       } catch (e) {
-        this.loginError = e.message;
+        data.loginError = e.message;
       }
 
-      this.submitting = false;
-    },
+      data.submitting = false;
+    }
+
+    return {
+      ...toRefs(data),
+      submit,
+    }
   },
 });
 </script>
