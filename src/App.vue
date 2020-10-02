@@ -15,9 +15,9 @@
     </v-navigation-drawer>
     <main-toolbar v-model="drawer" />
 
-    <v-content>
+    <v-main>
       <torrents />
-    </v-content>
+    </v-main>
 
     <add-form v-if="preferences" />
     <login-form
