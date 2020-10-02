@@ -15,10 +15,6 @@ Languages: English, 中文
 ## How to use
 see: [Wiki](https://github.com/CzBiX/qb-web/wiki/How-to-use)
 
-## Install
-
-see: [INSTALL.md](./INSTALL.md)
-
 ## Wiki
 
 [Use Nginx to running multi WebUI at the same time](https://github.com/CzBiX/qb-web/wiki/Use-Nginx-to-running-multi-WebUI-at-the-same-time)
