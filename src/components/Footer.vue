@@ -19,6 +19,10 @@
           <span>
             API version: {{ app.apiVersion }}
           </span>
+          <br>
+          <span>
+            qb-web version: {{ buildInfo }}
+          </span>
         </v-tooltip>
       </div>
       <v-divider
@@ -182,6 +186,7 @@ import { sumBy } from 'lodash';
 import Vue from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import api from '../Api';
+import buildInfo from '@/buildInfo';
 import Component from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 import { Torrent, ServerState } from '../types';
@@ -224,6 +229,8 @@ export default class Footer extends Vue {
 
   app: any = null
   speedLimited = false
+
+  buildInfo = buildInfo
 
   info!: ServerState
   isDataReady!: boolean
