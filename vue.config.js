@@ -2,6 +2,24 @@ module.exports = {
   outputDir: 'dist/public',
   publicPath: './',
 
+  pwa: {
+    // name: "qb-web",
+    themeColor: "#4d8ad5",
+    msTileColor: "#4d8ad5",
+    appleMobileWebAppCapable: 'yes',
+
+    iconPaths: {
+      favicon32: 'img/icons/favicon-32x32.png',
+      favicon16: 'img/icons/favicon-16x16.png',
+      appleTouchIcon: 'img/icons/apple-touch-icon.png',
+      maskIcon: null,
+      msTileImage: null,
+    },
+    workboxOptions: {
+      importWorkboxFrom: 'local',
+    }
+  },
+
   devServer: {
     port: 8000,
     proxy: {
