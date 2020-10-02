@@ -42,6 +42,7 @@ jobs:
       - run: echo ::set-env name=RELEASE_DATE::$(date +'%Y%m%d')
       - run: echo ::set-env name=GIT_TAG::nightly-$RELEASE_DATE
       - run: echo ::set-env name=RELEASE_FILE::qb-web-$GIT_TAG.zip
+
       - name: Pack Release
         run: |
           yarn run build
@@ -49,6 +50,19 @@ jobs:
           cp dist/public/{index,login}.html
           cp INSTALL.md dist
           zip -r $RELEASE_FILE dist
+
+      - name: Publish
+        run: |
+          cd dist/public
+          git init
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git remote add origin https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+          git checkout -b gh-pages
+          git add --all
+          git commit -m "Publish"
+          git push origin gh-pages -f
+
       - name: Add tag
         run: |
           git tag $GIT_TAG
