@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    :value="true"
     persistent
     width="25em"
   >
@@ -74,23 +74,20 @@ import api from '@/Api';
 import { useStore } from '@/store';
 
 export default defineComponent({
-  props: {
-    value: Boolean,
-  },
-  setup(props, { emit }) {
+  setup(_, { emit }) {
+    const store = useStore();
     const data = reactive({
       valid: false,
       submitting: false,
       showPassword: false,
       loginError: null,
-      baseUrl: location.href,
+      baseUrl: store.getters.config.baseUrl || location.href,
       params: {
-        username: null,
-        password: null,
+        username: '',
+        password: '',
       },
       form: null,
     });
-    const store = useStore();
 
     const submit = async () => {
       if (data.submitting) {
@@ -106,10 +103,14 @@ export default defineComponent({
         const resp = await api.login(data.params, data.baseUrl);
 
         if (resp === 'Ok.') {
+          api.changeBaseUrl(data.baseUrl);
+
           store.commit('updateConfig', {
             key: 'baseUrl',
             value: data.baseUrl,
           });
+          store.commit('updateNeedAuth', false);
+
           emit('input', false);
           return;
         }

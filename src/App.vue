@@ -22,7 +22,6 @@
     <add-form v-if="preferences" />
     <login-form
       v-if="needAuth"
-      v-model="needAuth"
     />
     <logs-dialog
       v-if="drawerOptions.showLogs"
