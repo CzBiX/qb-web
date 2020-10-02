@@ -16,7 +16,7 @@ module.exports = {
       let arg = args[0]
       arg = {
         ...arg,
-        'process.env.COMMIT_ID': JSON.stringify(process.env.COMMIT_ID)
+        'process.env.GIT_TAG': JSON.stringify(process.env.GIT_TAG)
       }
 
       return [arg]

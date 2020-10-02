@@ -1,4 +1,4 @@
-let buildInfo = process.env.COMMIT_ID
+export let buildInfo = process.env.GIT_TAG
 
 if (!buildInfo) {
   buildInfo = 'dev'

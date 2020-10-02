@@ -32,13 +32,13 @@
     "@types/lodash": "^4.14.149",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-plugin-unit-jest": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@vue/cli-plugin-babel": "~4.5.6",
+    "@vue/cli-plugin-eslint": "~4.5.6",
+    "@vue/cli-plugin-router": "~4.5.6",
+    "@vue/cli-plugin-typescript": "~4.5.6",
+    "@vue/cli-plugin-unit-jest": "~4.5.6",
+    "@vue/cli-plugin-vuex": "~4.5.6",
+    "@vue/cli-service": "~4.5.6",
     "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "1.0.0-beta.29",
     "eslint": "^6.8.0",
@@ -46,15 +46,10 @@
     "lint-staged": "^10.1.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "typescript": "^3.9.3",
+    "typescript": "~3.9.3",
     "vue-cli-plugin-vuetify": "^2.0.5",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.4.3"
-  },
-  "resolutions": {
-    "babel-jest": "^25.0.0",
-    "ts-jest": "^25.0.0",
-    "jest": "^25.0.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -63,5 +58,10 @@
     "*.{js,vue,ts}": [
       "vue-cli-service lint"
     ]
+  },
+  "resolutions": {
+    "babel-jest": "^25.0.0",
+    "ts-jest": "^25.0.0",
+    "jest": "^25.0.0"
   }
 }
