@@ -1,12 +1,14 @@
 import Polyglot from 'node-polyglot';
 import en from './en';
 import zhCn from './zh-CN';
+import TR-TR from './TR-TR' ;
 
 import { loadConfig } from '@/store/config';
 
 export const translations = {
   en: en,
   'zh-CN': zhCn,
+  'TR-TR': TR-TR,
 }
 
 export type LocaleKey = keyof typeof translations | null;
