@@ -2,6 +2,7 @@ import Polyglot from 'node-polyglot';
 import en from './en';
 import ru from './ru';
 import zhCn from './zh-CN';
+import tr from './tr';
 
 import { loadConfig } from '@/store/config';
 
@@ -9,6 +10,7 @@ export const translations = {
   en: en,
   'zh-CN': zhCn,
   'ru': ru,
+  'tr': tr,
 }
 
 export type LocaleKey = keyof typeof translations | null;
