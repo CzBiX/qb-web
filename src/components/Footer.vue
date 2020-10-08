@@ -40,7 +40,7 @@
         v-if="!phoneLayout"
       />
       <div class="icon-label">
-        <v-icon>mdi-nas</v-icon>
+        <v-icon>mdi-harddisk-plus</v-icon>
         {{ info.free_space_on_disk | formatSize }}
       </div>
       <v-divider
