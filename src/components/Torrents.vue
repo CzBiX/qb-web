@@ -53,7 +53,7 @@
           :title="$t('info')"
           :disabled="!hasSelected || selectedRows.length > 5"
         >
-          <v-icon>mdi-alert-circle</v-icon>
+          <v-icon>mdi-information</v-icon>
         </v-btn>
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
