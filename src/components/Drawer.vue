@@ -156,7 +156,7 @@ export default class Drawer extends Vue {
   ]
 
   endItems: MenuItem[] = [
-    { icon: 'mdi-delta', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
+    { icon: 'mdi-file-document-outline', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
   ]
 
   isDataReady!: boolean
