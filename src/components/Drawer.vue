@@ -152,7 +152,7 @@ export default class Drawer extends Vue {
   readonly value: any
 
   basicItems: MenuItem[] = [
-    { icon: 'mdi-cog-box', title: tr('settings'), click: () => alert(tr('todo')) },
+    { icon: 'mdi-cog-outline', title: tr('settings'), click: () => alert(tr('todo')) },
   ]
 
   endItems: MenuItem[] = [
@@ -168,7 +168,7 @@ export default class Drawer extends Vue {
 
   created() {
     const searchMenuItem = {
-      icon: 'mdi-card-search-outline',
+      icon: 'mdi-text-box-search-outline',
       title: tr('search'),
       click: () => this.updateOptions('showSearch', true)
     };
@@ -182,7 +182,7 @@ export default class Drawer extends Vue {
     }
 
     this.endItems = this.endItems.concat([
-      { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
+      { icon: 'mdi-rss', title: 'RSS', click: () => this.updateOptions('showRss', true) },
       searchMenuItem,
       { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
     ])
