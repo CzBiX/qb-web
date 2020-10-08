@@ -7,7 +7,7 @@
   >
     <v-card>
       <v-card-title class="headline">
-        <v-icon class="mr-2">mdi-rss-box</v-icon>
+        <v-icon class="mr-2">mdi-rss</v-icon>
         <span>RSS</span>
         <v-spacer />
         <v-btn
@@ -24,7 +24,7 @@
             @click="addRssItem"
             :title="$t('dialog.rss.add_feed')"
           >
-            <v-icon>mdi-link-plus</v-icon>
+            <v-icon>mdi-link-variant-plus</v-icon>
           </v-btn>
           <v-btn
             icon
