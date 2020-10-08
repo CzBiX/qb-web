@@ -122,7 +122,7 @@
             @click="editTracker"
             :title="$t('title.edit_tracker')"
           >
-            <v-icon>mdi-server</v-icon>
+            <v-icon>mdi-playlist-edit</v-icon>
           </v-btn>
           <v-btn
             icon
@@ -130,7 +130,7 @@
             :title="$t('recheck')"
             :disabled="selectedRows.length == 0"
           >
-            <v-icon>mdi-backup-restore</v-icon>
+            <v-icon>mdi-restore</v-icon>
           </v-btn>
         </template>
       </div>
