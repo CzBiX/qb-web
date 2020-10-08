@@ -8,7 +8,7 @@
     <v-card>
       <v-card-title class="headline">
         <v-icon class="mr-2">
-          mdi-alert-circle
+          mdi-information
         </v-icon>
         <span v-text="$t('info')" />
       </v-card-title>
