@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-card-title class="headline">
-        <v-icon class="mr-2">mdi-server</v-icon>
+        <v-icon class="mr-2">mdi-playlist-edit</v-icon>
         <span>Edit tracker</span>
       </v-card-title>
       <v-card-text class="pa-0">
