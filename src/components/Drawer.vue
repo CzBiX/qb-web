@@ -156,7 +156,7 @@ export default class Drawer extends Vue {
   ]
 
   endItems: MenuItem[] = [
-    { icon: 'mdi-file-document-outline', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
+    { icon: 'mdi-math-log', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
   ]
 
   isDataReady!: boolean
@@ -230,7 +230,7 @@ export default class Drawer extends Vue {
       const size = formatSize(sumBy(value, 'size'));
       const site = SiteMap[key];
       const title = `${site ? site.name : (key || tr('others'))} (${value.length})`;
-      const icon = defaultTo(site ? site.icon : null, 'mdi-server');
+      const icon = defaultTo(site ? site.icon : null, 'mdi-web');
       const append = `[${size}]`;
       return {
         icon, title, key, append,
@@ -282,7 +282,7 @@ export default class Drawer extends Vue {
       select: 'site',
       children: [
         {
-          icon: 'mdi-server', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+          icon: 'mdi-web', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
         },
         ...this.buildSiteGroup(),
       ],

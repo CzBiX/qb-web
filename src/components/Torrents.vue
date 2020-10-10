@@ -63,7 +63,7 @@
               :title="$t('title.set_category')"
               :disabled="!hasSelected"
             >
-              <v-icon>mdi-folder-star</v-icon>
+              <v-icon>mdi-folder</v-icon>
             </v-btn>
           </template>
           <v-list class="category-actions">
@@ -76,7 +76,7 @@
               @click="setTorrentsCategory(item.key)"
             >
               <v-list-item-action>
-                <v-icon>mdi-folder</v-icon>
+                <v-icon>mdi-folder-star</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>

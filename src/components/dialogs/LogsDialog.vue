@@ -8,7 +8,7 @@
   >
     <v-card>
       <v-card-title class="headline">
-        <v-icon class="mr-2">mdi-file-document-outline</v-icon>
+        <v-icon class="mr-2">mdi-math-log</v-icon>
         <span v-text="$t('logs')" />
       </v-card-title>
       <v-card-text>
