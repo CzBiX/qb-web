@@ -31,7 +31,7 @@
         v-if="!phoneLayout"
       />
       <div class="icon-label">
-        <v-icon>mdi-list-status</v-icon>
+        <v-icon>mdi-format-list-text</v-icon>
         {{ allTorrents.length }} [{{ totalSize | formatSize }}]
       </div>
       <v-divider
