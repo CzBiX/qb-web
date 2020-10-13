@@ -210,8 +210,9 @@ export default class Drawer extends Vue {
   buildCategoryGroup(): MenuChildrenItem[] {
     return [{
       key: '',
-      name: tr('uncategorized'),
-    }].concat(this.allCategories).map((category) => {
+      title: tr('uncategorized'),
+      icon: 'mdi-folder'
+    }].concat(this.allCategories.map((category) => {
       let value = this.torrentGroupByCategory[category.key];
       if (isUndefined(value)) {
         value = [];
@@ -220,9 +221,9 @@ export default class Drawer extends Vue {
       const title = `${category.name} (${value.length})`;
       const append = `[${size}]`;
       return {
-        icon: 'mdi-folder', title, key: category.key, append,
+        icon: 'mdi-folder-star', title, key: category.key, append,
       };
-    });
+    }));
   }
 
   buildSiteGroup(): MenuChildrenItem[] {
