@@ -63,7 +63,7 @@
               :title="$t('title.set_category')"
               :disabled="!hasSelected"
             >
-              <v-icon>mdi-folder</v-icon>
+              <v-icon>mdi-folder-edit</v-icon>
             </v-btn>
           </template>
           <v-list class="category-actions">
