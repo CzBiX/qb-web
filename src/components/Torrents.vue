@@ -63,7 +63,7 @@
               :title="$t('title.set_category')"
               :disabled="!hasSelected"
             >
-              <v-icon>mdi-folder-edit</v-icon>
+              <v-icon>mdi-view-grid-plus</v-icon>
             </v-btn>
           </template>
           <v-list class="category-actions">
@@ -76,7 +76,7 @@
               @click="setTorrentsCategory(item.key)"
             >
               <v-list-item-action>
-                <v-icon>mdi-folder-star</v-icon>
+                <v-icon>mdi-view-grid-outline</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
@@ -87,7 +87,7 @@
             <v-divider />
             <v-list-item @click="setTorrentsCategory('')">
               <v-list-item-action>
-                <v-icon>mdi-folder-remove</v-icon>
+                <v-icon>mdi-cancel</v-icon>
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>
@@ -108,7 +108,7 @@
             :title="$t('title.set_location')"
             :disabled="selectedRows.length == 0"
           >
-            <v-icon>mdi-folder-marker</v-icon>
+            <v-icon>mdi-folder-download</v-icon>
           </v-btn>
           <v-btn
             icon
