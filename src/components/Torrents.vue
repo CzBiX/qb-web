@@ -40,7 +40,7 @@
           :title="$t('force_start')"
           :disabled="!hasSelected"
         >
-          <v-icon>mdi-play-speed</v-icon>
+          <v-icon>mdi-step-forward</v-icon>
         </v-btn>
 
         <v-divider
@@ -122,7 +122,7 @@
             @click="editTracker"
             :title="$t('title.edit_tracker')"
           >
-            <v-icon>mdi-playlist-edit</v-icon>
+            <v-icon>mdi-vector-polyline-edit</v-icon>
           </v-btn>
           <v-btn
             icon
