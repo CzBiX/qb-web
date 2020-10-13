@@ -31,7 +31,7 @@
         v-if="!phoneLayout"
       />
       <div class="icon-label">
-        <v-icon>mdi-sprout</v-icon>
+        <v-icon>mdi-list-status</v-icon>
         {{ allTorrents.length }} [{{ totalSize | formatSize }}]
       </div>
       <v-divider
@@ -196,9 +196,9 @@ import { Torrent, ServerState } from '../types';
   filters: {
     connectionIcon(status: string) {
       const statusMap: any = {
-        connected: 'ethernet-cable',
+        connected: 'check-network',
         firewalled: 'wall',
-        disconnected: 'ethernet-cable-off',
+        disconnected: 'close-network',
       };
       return statusMap[status];
     },
