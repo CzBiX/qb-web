@@ -299,7 +299,7 @@ function getStateInfo(state: string) {
     case 'checkingResumeData':
     case 'moving':
       icon = {
-        icon: 'backup-restore',
+        icon: 'restore',
         color: 'info',
       };
       break;
