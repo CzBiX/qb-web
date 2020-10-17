@@ -69,7 +69,7 @@
         v-if="!phoneLayout"
         class="icon-label"
       >
-        <v-icon>mdi-server-network</v-icon>
+        <v-icon>mdi-lan-connect</v-icon>
         {{ $t('label.dht_nodes', info.dht_nodes) }}
       </div>
       <v-divider
