@@ -120,7 +120,7 @@
                 >
                   <v-checkbox
                     :label="$t('label.start_torrent')"
-                    prepend-icon="mdi-play-pause"
+                    prepend-icon="mdi-play"
                     :input-value="!params.paused"
                     @change="setParams('paused', !$event)"
                   />
@@ -131,7 +131,7 @@
                   v-if="!phoneLayout || showMore"
                 >
                   <v-checkbox
-                    prepend-icon="mdi-progress-check"
+                    prepend-icon="mdi-data-matrix-scan"
                     :label="$t('label.skip_hash_check')"
                     :input-value="params.skip_checking"
                     @change="setParams('skip_checking', $event)"
@@ -144,7 +144,7 @@
                   >
                     <v-checkbox
                       :label="$t('label.in_sequential_order')"
-                      prepend-icon="mdi-sort-descending"
+                      prepend-icon="mdi-sort-ascending"
                       :ipnut-value="params.sequentialDownload"
                       @change="setParams('sequentialDownload', $event)"
                     />
