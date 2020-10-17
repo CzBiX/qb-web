@@ -9,7 +9,7 @@
     >
       <v-card>
         <v-card-title class="headline">
-          <v-icon class="mr-2">mdi-text-box-search-outline</v-icon>
+          <v-icon class="mr-2">mdi-text-search</v-icon>
           <span v-text="$t('search')" />
           <v-spacer />
           <v-btn

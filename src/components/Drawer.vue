@@ -168,7 +168,7 @@ export default class Drawer extends Vue {
 
   created() {
     const searchMenuItem = {
-      icon: 'mdi-text-box-search-outline',
+      icon: 'mdi-text-search',
       title: tr('search'),
       click: () => this.updateOptions('showSearch', true)
     };
@@ -211,7 +211,7 @@ export default class Drawer extends Vue {
     return [{
       key: '',
       title: tr('uncategorized'),
-      icon: 'mdi-view-grid'
+      icon: 'mdi-shape'
     }].concat(this.allCategories.map((category) => {
       let value = this.torrentGroupByCategory[category.key];
       if (isUndefined(value)) {
@@ -221,7 +221,7 @@ export default class Drawer extends Vue {
       const title = `${category.name} (${value.length})`;
       const append = `[${size}]`;
       return {
-        icon: 'mdi-view-grid-outline', title, key: category.key, append,
+        icon: 'mdi-shape-outline', title, key: category.key, append,
       };
     }));
   }
@@ -269,7 +269,7 @@ export default class Drawer extends Vue {
       select: 'category',
       children: [
         {
-          icon: 'mdi-view-grid', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+          icon: 'mdi-shape', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
         },
         ...this.buildCategoryGroup(),
       ],

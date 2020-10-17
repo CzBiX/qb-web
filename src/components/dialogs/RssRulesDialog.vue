@@ -7,7 +7,7 @@
   >
     <v-card>
       <v-card-title class="headline">
-        <v-icon class="mr-2">mdi-filter</v-icon>
+        <v-icon class="mr-2">mdi-rss</v-icon>
         <span v-text="$t('dialog.rss_rule.title')" />
         <v-spacer />
         <v-btn

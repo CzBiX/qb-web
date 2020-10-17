@@ -91,7 +91,7 @@
                 >
                   <v-combobox
                     :label="$t('category', 1)"
-                    prepend-icon="mdi-folder"
+                    prepend-icon="mdi-shape-plus"
                     clearable
                     hide-no-data
                     :items="categoryItems"
@@ -106,7 +106,7 @@
                 >
                   <v-text-field
                     :label="$t('location')"
-                    prepend-icon="mdi-folder-marker"
+                    prepend-icon="mdi-folder-download"
                     clearable
                     :disabled="params.autoTMM"
                     :placeholder="defaultPath"

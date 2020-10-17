@@ -40,7 +40,7 @@
             @click="renameRssItem"
             :title="$t('rename')"
           >
-            <v-icon>mdi-file-move</v-icon>
+            <v-icon>mdi-rename-box</v-icon>
           </v-btn>
           <v-divider vertical />
           <v-btn
