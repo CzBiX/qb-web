@@ -72,7 +72,7 @@
             @click="showRulesDialog = true"
             :title="$t('settings')"
           >
-            <v-icon>mdi-cog-box</v-icon>
+            <v-icon>mdi-cog</v-icon>
           </v-btn>
         </div>
         <v-divider />
@@ -343,7 +343,7 @@ export default class RssDialog extends HasTask {
         return 'mdi-alert'
       }
 
-      return 'mdi-rss'
+      return 'mdi-rss-box'
     }
 
     return row.open ? 'mdi-folder-open' : 'mdi-folder';
