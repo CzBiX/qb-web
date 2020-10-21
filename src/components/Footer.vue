@@ -69,7 +69,7 @@
         v-if="!phoneLayout"
         class="icon-label"
       >
-        <v-icon>mdi-lan-connect</v-icon>
+        <v-icon>mdi-lan</v-icon>
         {{ $t('label.dht_nodes', info.dht_nodes) }}
       </div>
       <v-divider
@@ -197,7 +197,7 @@ import { Torrent, ServerState } from '../types';
     connectionIcon(status: string) {
       const statusMap: any = {
         connected: 'check-network',
-        firewalled: 'wall',
+        firewalled: 'minus-network',
         disconnected: 'close-network',
       };
       return statusMap[status];

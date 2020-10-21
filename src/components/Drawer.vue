@@ -121,7 +121,7 @@ interface MenuItem {
   icon: string;
   'icon-alt'?: string;
   title: string;
-  model?: boolean;
+  model?: boolean | null;
   select?: string;
   click?: () => void;
   children?: MenuChildrenItem[];
@@ -251,7 +251,7 @@ export default class Drawer extends Vue {
       icon: 'mdi-menu-up',
       'icon-alt': 'mdi-menu-down',
       title: tr('state._'),
-      model: false,
+      model: null,
       select: 'state',
       children: [
         {
@@ -265,7 +265,7 @@ export default class Drawer extends Vue {
       icon: 'mdi-menu-up',
       'icon-alt': 'mdi-menu-down',
       title: tr('category', 0),
-      model: !this.$vuetify.breakpoint.xsOnly,
+      model: null,
       select: 'category',
       children: [
         {
@@ -279,7 +279,7 @@ export default class Drawer extends Vue {
       icon: 'mdi-menu-up',
       'icon-alt': 'mdi-menu-down',
       title: tr('sites'),
-      model: false,
+      model: null,
       select: 'site',
       children: [
         {

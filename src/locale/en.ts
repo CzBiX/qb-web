@@ -34,7 +34,7 @@ export default {
 
   name: 'Name',
   size: 'Size',
-  progress: 'progress',
+  progress: 'Progress',
   status: 'Status',
   seeds: 'Seeds',
   peers: 'Peers',
