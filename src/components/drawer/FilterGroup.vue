@@ -68,6 +68,9 @@ export default class FilterGroup extends Vue {
     } else {
       this.select(null);
     }
+    if (this.model == null) {
+      this.model = this.selected != null;
+    }
   }
 
   select(key: string | null) {

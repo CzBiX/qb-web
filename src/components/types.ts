@@ -2,7 +2,7 @@ export interface Group {
   title: string;
   icon: string;
   children: Child[];
-  model: boolean;
+  model: boolean | null;
   select: string;
 }
 
