@@ -120,7 +120,7 @@
                 >
                   <v-checkbox
                     :label="$t('label.start_torrent')"
-                    prepend-icon="mdi-play"
+                    prepend-icon="mdi-download-multiple"
                     :input-value="!params.paused"
                     @change="setParams('paused', !$event)"
                   />
@@ -131,7 +131,7 @@
                   v-if="!phoneLayout || showMore"
                 >
                   <v-checkbox
-                    prepend-icon="mdi-data-matrix-scan"
+                    prepend-icon="mdi-barcode-off"
                     :label="$t('label.skip_hash_check')"
                     :input-value="params.skip_checking"
                     @change="setParams('skip_checking', $event)"
