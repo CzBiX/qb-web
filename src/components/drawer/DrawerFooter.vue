@@ -80,7 +80,7 @@
         @click="triggerApplicationShutdown"
         :title="$t('trigger_application_shutdown')"
       >
-        <v-icon>mdi-power-plug-off</v-icon>
+        <v-icon>mdi-exit-to-app</v-icon>
       </v-btn>
     </div>
   </div>
