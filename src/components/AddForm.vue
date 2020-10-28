@@ -11,7 +11,7 @@
       class="btn-add"
       :class="{'with-footer': $vuetify.breakpoint.smAndUp}"
     >
-      <v-icon>mdi-link-plus</v-icon>
+      <v-icon>mdi-plus</v-icon>
     </v-btn>
     <v-dialog
       v-model="state.isOpen"
@@ -22,7 +22,7 @@
     >
       <v-card>
         <v-card-title class="headline">
-          <v-icon class="mr-2">mdi-link-plus</v-icon>
+          <v-icon class="mr-2">mdi-plus</v-icon>
           <span>{{ state.downloadItem && state.downloadItem.title || $t('title.add_torrents') }}</span>
         </v-card-title>
         <v-card-text class="pb-0">
