@@ -8,7 +8,16 @@
       @input="selectChanged"
     >
       <template v-slot:prepend="row">
-        <v-icon v-text="getRowIcon(row)" />
+        <v-progress-circular
+          v-if="inChanging.includes(row.item.id)"
+          size="24"
+          width="2"
+          indeterminate
+        />
+        <v-icon
+          v-else
+          v-text="getRowIcon(row)"
+        />
       </template>
       <template v-slot:append="row">
         <span>
@@ -73,6 +82,7 @@ export default class TorrentContent extends BaseTorrentInfo {
 
   files: File[] = []
   folderIndex!: number
+  inChanging: number[] = []
 
   get fileTree(): TreeItem[] {
     return this.buildTree(this.files, 0);
@@ -91,6 +101,8 @@ export default class TorrentContent extends BaseTorrentInfo {
 
     this.files = files
     this.folderIndex = 0
+
+    this.inChanging = [];
   }
 
   getRowIcon(row: any) {
@@ -101,13 +113,15 @@ export default class TorrentContent extends BaseTorrentInfo {
     return row.open ? 'mdi-folder-open' : 'mdi-folder';
   }
 
-  selectChanged(items: Array<number>) {
+  async selectChanged(items: Array<number>) {
     const previous = this.selected;
     const diff = xor(previous, items);
 
     if(diff.length == 0) return;
 
-    api.setTorrentFilePriority(this.hash, diff, items.length > previous.length ?
+    this.inChanging.push(...diff);
+
+    await api.setTorrentFilePriority(this.hash, diff, items.length > previous.length ?
       EFilePriority.normal : EFilePriority.notDownload);
   }
 
