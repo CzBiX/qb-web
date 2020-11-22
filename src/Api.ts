@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import Axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { RssNode, RssRule, SearchPlugin, ApiCategory, SearchTaskResponse } from '@/types';
+import Axios, { AxiosInstance, AxiosPromise, AxiosResponse } from 'axios';
+import { RssNode, RssRule, SearchPlugin, ApiCategory, SearchTaskResponse, Preferences } from '@/types';
 
 const apiEndpoint = 'api/v2';
 
@@ -54,7 +54,7 @@ class Api {
     return this.axios.get('/transfer/info');
   }
 
-  public getAppPreferences() {
+  public getAppPreferences(): AxiosPromise<Preferences> {
     return this.axios.get('/app/preferences');
   }
 
