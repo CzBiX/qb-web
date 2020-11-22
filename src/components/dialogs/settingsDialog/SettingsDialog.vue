@@ -1,4 +1,3 @@
-/* eslint-disable vue/max-attributes-per-line */
 <template>
   <div>
     <v-dialog
@@ -19,7 +18,14 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
-        <v-card-text> Placeholder </v-card-text>
+        <v-card-text>
+          <v-expansion-panels
+            v-model="panelsOpen"
+            multiple
+          >
+            <download-settings />
+          </v-expansion-panels>
+        </v-card-text>
         <v-card-actions />
       </v-card>
     </v-dialog>
@@ -29,20 +35,19 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Emit, Prop } from "vue-property-decorator";
-import { mapGetters } from "vuex";
+import DownloadSettings from "./DownloadSettings.vue";
 
 @Component({
-  components: {},
-  computed: {
-    ...mapGetters({
-      preferences: "preferences",
-    }),
+  components: {
+    DownloadSettings
   },
   methods: {},
 })
 export default class SearchDialog extends Vue {
   @Prop(Boolean)
   readonly value!: boolean;
+
+  panelsOpen = [ 0 ];
 
   @Emit("input")
   closeDialog() {

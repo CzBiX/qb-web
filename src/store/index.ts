@@ -11,6 +11,7 @@ import { AllStateTypes } from '../consts';
 import { torrentIsState } from '../utils';
 import searchEngineStore from './searchEngine';
 import { RootState } from './types';
+import api from '@/Api';
 
 Vue.use(Vuex);
 
@@ -67,6 +68,9 @@ const store = new Vuex.Store<RootState>({
     /* eslint-enable no-param-reassign */
   },
   getters: {
+    allPreferences(state) {
+      return state.preferences;
+    },
     savePath(state) {
       return state.preferences['save_path'];
     },
@@ -122,6 +126,23 @@ const store = new Vuex.Store<RootState>({
       }
 
       return result;
+    },
+  },
+  actions: {
+    async updatePreferencesRequest({ dispatch }, preferences) {
+      try {
+        const response = await api.setPreferences(preferences);
+
+        dispatch("updatePreferencesRequestSuccess", response.data);
+      } catch {
+        dispatch("updatePreferencesRequestFailure");
+      }
+    },
+    updatePreferencesRequestSuccess({ commit }, preferences) {
+      commit("updatePreferences", preferences);
+    },
+    updatePreferencesRequestFailure() {
+      alert('Preferences failed to update');
     },
   }
 });
