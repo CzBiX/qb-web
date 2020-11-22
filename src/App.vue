@@ -37,6 +37,10 @@
       v-model="drawerOptions.showSearch"
     />
 
+    <SettingsDialog
+      v-if="drawerOptions.showSettings"
+      v-model="drawerOptions.showSettings"
+    />
     <v-footer
       app
       class="elevation-4"
@@ -68,7 +72,9 @@ import AppFooter from './components/Footer.vue';
 import LogsDialog from './components/dialogs/LogsDialog.vue';
 import RssDialog from './components/dialogs/RssDialog.vue';
 import SearchDialog from './components/dialogs/searchDialog/SearchDialog.vue';
+import SettingsDialog from './components/dialogs/settingsDialog/SettingsDialog.vue';
 import DrawerFooter from './components/drawer/DrawerFooter.vue';
+
 
 import api from './Api';
 import Component from 'vue-class-component';
@@ -93,6 +99,7 @@ let appWrapEl: HTMLElement;
     RssDialog,
     SearchDialog,
     DrawerFooter,
+    SettingsDialog
   },
   computed: {
     ...mapState([
@@ -117,6 +124,7 @@ export default class App extends Vue {
   drawerOptions = {
     showLogs: false,
     showRss: false,
+    showSettings: false
   }
   task = 0
   mql?: MediaQueryList
@@ -174,7 +182,7 @@ export default class App extends Vue {
     } else {
       Api.changeBaseUrl(this.config.baseUrl);
     }
-    
+
     try {
       await this.getMainData();
     } catch (e) {
