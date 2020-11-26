@@ -96,7 +96,8 @@
                     hide-no-data
                     :items="categoryItems"
                     :value="params.category"
-                    @input="setParams('category', $event ? $event.value : null)"
+                    :return-object="false"
+                    @input="setParams('category', $event)"
                   />
                 </v-col>
                 <v-col
@@ -277,7 +278,11 @@ export default class AddForm extends Vue {
     if (this.params.autoTMM && this.params.category) {
       const category = this.allCategories.find(c => {
         return c.key === this.params.category;
-      })!;
+      });
+      
+      if (!category) {
+        return this.params.category;
+      }
 
       return category.savePath || category.name
     }
