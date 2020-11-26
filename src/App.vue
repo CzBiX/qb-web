@@ -99,7 +99,7 @@ let appWrapEl: HTMLElement;
     RssDialog,
     SearchDialog,
     DrawerFooter,
-    SettingsDialog
+    SettingsDialog,
   },
   computed: {
     ...mapState([
@@ -124,7 +124,7 @@ export default class App extends Vue {
   drawerOptions = {
     showLogs: false,
     showRss: false,
-    showSettings: false
+    showSettings: false,
   }
   task = 0
   mql?: MediaQueryList

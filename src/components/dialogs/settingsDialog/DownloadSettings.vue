@@ -34,8 +34,8 @@ import { mapActions, mapGetters } from "vuex";
   },
   methods: {
     ...mapActions({
-      updatePreferencesRequest: 'updatePreferencesRequest'
-    })
+      updatePreferencesRequest: 'updatePreferencesRequest',
+    }),
   },
 })
 export default class DownloadSettings extends Vue {

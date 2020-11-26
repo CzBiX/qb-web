@@ -144,7 +144,7 @@ const store = new Vuex.Store<RootState>({
     updatePreferencesRequestFailure() {
       alert('Preferences failed to update');
     },
-  }
+  },
 });
 
 export default store;

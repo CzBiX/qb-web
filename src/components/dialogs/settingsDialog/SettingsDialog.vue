@@ -39,7 +39,7 @@ import DownloadSettings from "./DownloadSettings.vue";
 
 @Component({
   components: {
-    DownloadSettings
+    DownloadSettings,
   },
   methods: {},
 })
