@@ -6,7 +6,7 @@ import api from "@/Api";
 export default {
   state: {
     searchPlugins: [],
-    isPluginManagerOpen: false
+    isPluginManagerOpen: false,
   },
   mutations: {
     setSearchPlugins(state, plugins: SearchPlugin[] | undefined | null) {
@@ -17,12 +17,12 @@ export default {
     },
     closePluginManager(state) {
       state.isPluginManagerOpen = false;
-    }
+    },
   },
   getters: {
     allSearchPlugins(state): SearchPlugin[] | undefined | null {
       return state.searchPlugins;
-    }
+    },
   },
   actions: {
     fetchSearchPlugins({ dispatch }) {
@@ -60,6 +60,6 @@ export default {
     },
     enablePluginRequestSuccess({ dispatch }) {
       dispatch('fetchSearchPlugins'); // refresh the plugins
-    }
-  }
+    },
+  },
 } as Module<SearchEnginePage, any>;

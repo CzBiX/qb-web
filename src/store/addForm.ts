@@ -5,13 +5,13 @@ export const addFormStore: Module<AddFormState, any> = {
   state() {
     return {
       isOpen: false,
-      downloadItem: null
+      downloadItem: null,
     };
   },
   getters: {
     isOpen(state) {
       return state.isOpen;
-    }
+    },
   },
   mutations: {
     openAddForm(state) {
@@ -24,6 +24,6 @@ export const addFormStore: Module<AddFormState, any> = {
     addFormDownloadItem(state, payload) {
       const { downloadItem } = payload;
       state.downloadItem = downloadItem;
-    }
+    },
   },
 };

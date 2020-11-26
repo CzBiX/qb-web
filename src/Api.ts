@@ -311,7 +311,7 @@ class Api {
       {
         pattern: pattern || '',
         category: categoryName || 'all',
-        plugins: pluginName || 'all'
+        plugins: pluginName || 'all',
       });
     return this.axios.post('/search/start', body).then(Api.handleResponse);
   }
@@ -329,7 +329,7 @@ class Api {
   public enablePlugin(plugin: SearchPlugin, enable: boolean) {
     const body = new URLSearchParams({
       names: plugin.name,
-      enable: JSON.stringify(enable)
+      enable: JSON.stringify(enable),
     });
 
     return this.axios.post('/search/enablePlugin', body).then(Api.handleResponse);

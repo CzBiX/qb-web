@@ -106,7 +106,7 @@ export default {
   dialog: {
     trigger_exit_qb: {
       title: '退出 qBittorrent',
-      text: '您确定要退出qBittorrent吗？'
+      text: '您确定要退出qBittorrent吗？',
     },
     add_torrents: {
       placeholder: '将种子拖到这里上传，\n或者点击右边的附件图标来选择。',
@@ -164,5 +164,5 @@ export default {
     active: '活动',
     inactive: '空闲',
     errored: '错误',
-  }
+  },
 }

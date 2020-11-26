@@ -170,12 +170,12 @@ export default class Drawer extends Vue {
     const searchMenuItem = {
       icon: 'mdi-card-search-outline',
       title: tr('search'),
-      click: () => this.updateOptions('showSearch', true)
+      click: () => this.updateOptions('showSearch', true),
     };
 
    if (this.phoneLayout) {
       this.endItems = this.endItems.concat([
-        searchMenuItem
+        searchMenuItem,
       ]);
 
       return;

@@ -16,12 +16,14 @@ module.exports = {
     'no-console': isProdEnv ? 'error' : 'warn',
     'no-debugger': isProdEnv ? 'error' : 'warn',
 
+    "comma-dangle": ["error", "always-multiline"],
+
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
 
     'vue/singleline-html-element-content-newline': ['warn', {
       ignores: ['pre', 'textarea', 'span', 'v-icon'],
-    }]
+    }],
   },
   parserOptions: {
     parser: '@typescript-eslint/parser',

@@ -117,7 +117,7 @@ let appWrapEl: HTMLElement;
       'setPasteUrl',
       'updateNeedAuth',
     ]),
-  }
+  },
 })
 export default class App extends Vue {
   drawer = true

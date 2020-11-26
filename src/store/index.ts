@@ -21,7 +21,7 @@ const store = new Vuex.Store<RootState>({
     dialog: dialogStore,
     snackBar: snackBarStore,
     addForm: addFormStore,
-    searchEngine: searchEngineStore
+    searchEngine: searchEngineStore,
   },
   state: {
     rid: 0,

@@ -29,14 +29,14 @@ import { mapActions, mapState } from "vuex";
 @Component({
   computed: {
     ...mapState({
-      searchEngineState: "searchEngine"
-    })
+      searchEngineState: "searchEngine",
+    }),
   },
   methods: {
     ...mapActions({
-      togglePluginAvailabilityAction: "togglePluginAvailability"
-    })
-  }
+      togglePluginAvailabilityAction: "togglePluginAvailability",
+    }),
+  },
 })
 export default class PluginsManager extends Vue {
   searchEngineState!: SearchEnginePage;

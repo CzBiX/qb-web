@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === 'production') {
     ready () {
       console.log(
         'App is being served from cache by a service worker.\n' +
-        'For more details, visit https://goo.gl/AFskqB'
+        'For more details, visit https://goo.gl/AFskqB',
       )
     },
     registered () {
@@ -27,6 +27,6 @@ if (process.env.NODE_ENV === 'production') {
     },
     error (error) {
       console.error('Error during service worker registration:', error)
-    }
+    },
   })
 }

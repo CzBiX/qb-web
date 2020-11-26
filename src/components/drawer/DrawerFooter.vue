@@ -160,7 +160,7 @@ export default class DrawerFooter extends Vue {
         text: tr('auto'),
         value: 'auto',
       },
-      ...locales
+      ...locales,
     ]
   }
 

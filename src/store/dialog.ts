@@ -26,5 +26,5 @@ export const dialogStore: Module<DialogState, any> = {
         commit('showDialog', options);
       })
     },
-  }
+  },
 };

@@ -122,7 +122,7 @@ const ALL_KEY = "all";
 
 const ALL_CATEGORY: Category = {
   key: ALL_KEY,
-  name: tr("all")
+  name: tr("all"),
 };
 
 interface Category {
@@ -140,8 +140,8 @@ export interface SearchForm {
 @Component({
   computed: {
     ...mapGetters({
-      searchPlugins: "allSearchPlugins"
-    })
+      searchPlugins: "allSearchPlugins",
+    }),
   },
 })
 export default class SearchDialogForm extends Vue {
@@ -159,7 +159,7 @@ export default class SearchDialogForm extends Vue {
     valid: false,
     category: ALL_KEY,
     pattern: "",
-    plugins: []
+    plugins: [],
   };
 
   get hasSelectAllPlugins() {
@@ -174,7 +174,7 @@ export default class SearchDialogForm extends Vue {
     const result: Category[] = [ALL_CATEGORY, { divider: true } as any];
 
     const categories = intersection(
-      ...this.searchForm.plugins.map(p => p.supportedCategories)
+      ...this.searchForm.plugins.map(p => p.supportedCategories),
     ).map(c => ({ key: c, name: c }));
     result.push(...categories);
 
@@ -206,7 +206,7 @@ export default class SearchDialogForm extends Vue {
       : this.searchForm.plugins.map(p => p.name).join("|");
 
     const searchForm = Object.assign({}, this.searchForm, {
-      plugins
+      plugins,
     });
 
     return searchForm;

@@ -78,20 +78,20 @@ interface GridConfig {
 @Component({
   components: {
     SearchDialogForm,
-    PluginManager
+    PluginManager,
   },
   computed: {
     ...mapGetters({
       allCategories: "allCategories",
-      preferences: "preferences"
-    })
+      preferences: "preferences",
+    }),
   },
   methods: {
     ...mapMutations(["openAddForm", "setPasteUrl", "addFormDownloadItem", "openPluginManager"]),
     ...mapActions({
-      loadSearchPlugins: 'fetchSearchPlugins'
-    })
-  }
+      loadSearchPlugins: 'fetchSearchPlugins',
+    }),
+  },
 })
 export default class SearchDialog extends HasTask {
   private _searchId = 0;
@@ -108,7 +108,7 @@ export default class SearchDialog extends HasTask {
       fileUrl: "",
       nbLeechers: 0,
       nbSeeders: 0,
-      siteUrl: ""
+      siteUrl: "",
     },
     headers: [
       { text: tr("name"), value: "fileName" },
@@ -116,8 +116,8 @@ export default class SearchDialog extends HasTask {
       { text: tr("seeds"), value: "nbSeeders" },
       { text: tr("peers"), value: "nbLeechers" },
       { text: tr("search_engine"), value: "siteUrl" },
-      { text: tr("action", 2), value: "actions", sortable: false }
-    ]
+      { text: tr("action", 2), value: "actions", sortable: false },
+    ],
   };
 
   loading = false;
@@ -136,8 +136,8 @@ export default class SearchDialog extends HasTask {
     this.addFormDownloadItem({
       downloadItem: {
         title: item.fileName,
-        url: item.fileUrl
-      }
+        url: item.fileUrl,
+      },
     });
     this.openAddForm();
   }
@@ -171,7 +171,7 @@ export default class SearchDialog extends HasTask {
     const result = await api.startSearch(
       searchForm.pattern,
       searchForm.plugins,
-      searchForm.category
+      searchForm.category,
     );
 
     return result;

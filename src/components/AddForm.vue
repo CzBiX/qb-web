@@ -228,7 +228,7 @@ const defaultParams = {
     ...mapState({
       pasteUrl: 'pasteUrl',
       prefs: 'preferences',
-      state: 'addForm'
+      state: 'addForm',
     }),
     ...mapGetters({
       allCategories: 'allCategories',
@@ -239,7 +239,7 @@ const defaultParams = {
       'closeAddForm',
       'openAddForm',
     ]),
-  }
+  },
 })
 export default class AddForm extends Vue {
   valid = false

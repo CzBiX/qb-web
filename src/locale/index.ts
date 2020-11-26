@@ -14,7 +14,7 @@ export const translations = {
 export type LocaleKey = keyof typeof translations | null;
 
 const polyglot = new Polyglot({
-  phrases: translations.en
+  phrases: translations.en,
 });
 
 function matchLocale() {

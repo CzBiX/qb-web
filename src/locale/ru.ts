@@ -109,7 +109,7 @@ export default {
   dialog: {
     trigger_exit_qb: {
       title: 'Выйти из qBittorrent',
-      text: 'Выйти из qBittorrent?'
+      text: 'Выйти из qBittorrent?',
     },
     add_torrents: {
       placeholder: 'Начните скачивать торренты, переместив их сюда,\nили нажмите кнопку вложения справа, чтобы выбрать.',
@@ -167,5 +167,5 @@ export default {
     active: 'Активный',
     inactive: 'Не активный',
     errored: 'Ошибочный',
-  }
+  },
 }

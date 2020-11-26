@@ -109,7 +109,7 @@ export default {
   dialog: {
     trigger_exit_qb: {
       title: 'Exit qBittorrent',
-      text: 'Are you sure you want to exit qBittorrent?'
+      text: 'Are you sure you want to exit qBittorrent?',
     },
     add_torrents: {
       placeholder: 'Upload torrents by drop them here,\nor click attachment button at right to select.',
@@ -167,5 +167,5 @@ export default {
     active: 'Active',
     inactive: 'Inactive',
     errored: 'Errored',
-  }
+  },
 }
