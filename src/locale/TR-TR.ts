@@ -99,6 +99,7 @@ export default {
     reannounced: 'Yeniden duyuruldu.',
     rechecking: 'Yeniden denetleniyor…',
     dht_nodes: '%{smart_count} düğüm |||| %{smart_count} düğüm',
+    base_url: 'Ana makine URL',
   },
 
   msg: {
