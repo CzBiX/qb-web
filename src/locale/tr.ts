@@ -109,7 +109,7 @@ export default {
   dialog: {
     trigger_exit_qb: {
       title: 'qBittorrent\'ten Çık',
-      text: 'qBittorrent uygulamasından çıkmak istediğinize emin misiniz?'
+      text: 'qBittorrent uygulamasından çıkmak istediğinize emin misiniz?',
     },
     add_torrents: {
       placeholder: 'Torrentleri yüklemek için\nlinkleri buraya girin\nveya sağdaki ataç butonuna tıklayıp seçim yapın.',
@@ -167,5 +167,5 @@ export default {
     active: 'Etkin',
     inactive: 'Etkin Değil',
     errored: 'Hata Oldu',
-  }
+  },
 }
