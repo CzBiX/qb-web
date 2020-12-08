@@ -63,7 +63,7 @@ import { Prop, Emit } from 'vue-property-decorator';
       const map: any = {
         1: null,
         2: 'info--text',
-        4: 'warn--text',
+        4: 'warning--text',
         8: 'error--text',
       };
       return map[type];
