@@ -65,6 +65,7 @@ export default {
   search_engine: 'Search engine',
   usage: 'usage',
   plugin_manager: 'Plugin manager',
+  update_plugins: 'Update plugins',
 
   title: {
     _: 'Title',
