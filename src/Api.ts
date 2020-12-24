@@ -293,6 +293,10 @@ class Api {
 
   // Search page
 
+  public updateSearchPlugins(): Promise<SearchPlugin[]> {
+    return this.axios.post('/search/updatePlugins').then(Api.handleResponse);
+  }
+
   public getSearchPlugins(): Promise<SearchPlugin[]> {
     return this.axios.get('/search/plugins').then(Api.handleResponse);
   }

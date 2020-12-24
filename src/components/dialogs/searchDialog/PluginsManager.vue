@@ -15,13 +15,21 @@
           @change="togglePluginAvailability(plugin)"
         />
       </v-card-text>
+      <v-card-actions>
+        <v-btn
+          color="warning"
+          @click="updatePlugins()"
+        >
+          {{ $t("update_plugins") }}
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
 import { SearchEnginePage } from "@/store/types";
-import { SearchPlugin } from '@/types';
+import { SearchPlugin } from "@/types";
 import Vue from "vue";
 import Component from "vue-class-component";
 import { mapActions, mapState } from "vuex";
@@ -35,15 +43,21 @@ import { mapActions, mapState } from "vuex";
   methods: {
     ...mapActions({
       togglePluginAvailabilityAction: "togglePluginAvailability",
+      updatePluginsRequest: "updatePluginsRequest",
     }),
   },
 })
 export default class PluginsManager extends Vue {
   searchEngineState!: SearchEnginePage;
   togglePluginAvailabilityAction!: (_: any) => void;
+  updatePluginsRequest!: () => void;
 
   togglePluginAvailability(plugin: SearchPlugin) {
     this.togglePluginAvailabilityAction(plugin);
+  }
+
+  updatePlugins() {
+    this.updatePluginsRequest();
   }
 }
 </script>

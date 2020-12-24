@@ -61,5 +61,20 @@ export default {
     enablePluginRequestSuccess({ dispatch }) {
       dispatch('fetchSearchPlugins'); // refresh the plugins
     },
+    async updatePluginsRequest({ dispatch }) {
+      try {
+        await api.updateSearchPlugins();
+
+        dispatch("updatePluginsRequestSuccess");
+      } catch {
+        dispatch("updatePluginsRequestFailure");
+      }
+    },
+    async updatePluginsRequestSuccess({ dispatch }) {
+      await dispatch('getSearchPluginsRequest');
+    },
+    updatePluginsRequestFailure() {
+      // Do nothing
+    },
   },
 } as Module<SearchEnginePage, any>;
