@@ -190,7 +190,7 @@ export default class SearchDialog extends HasTask {
       const response = await api.getSearchResults(responseId);
       const isStopped = response.status === "Stopped";
 
-      this.grid.searchItems = this.grid.searchItems.concat(response.results.slice(this.grid.searchItems.length,response.results.length))
+      this.grid.searchItems.splice(-1, 0, ...response.results.slice(this.grid.searchItems.length))
       if (isStopped) {
         this.loading = false;
       }
