@@ -120,7 +120,7 @@ let appWrapEl: HTMLElement;
   },
 })
 export default class App extends Vue {
-  drawer = true
+  drawer = false
   drawerOptions = {
     showLogs: false,
     showRss: false,
