@@ -120,7 +120,7 @@ let appWrapEl: HTMLElement;
   },
 })
 export default class App extends Vue {
-  drawer = false
+  drawer = !this.phoneLayout
   drawerOptions = {
     showLogs: false,
     showRss: false,
