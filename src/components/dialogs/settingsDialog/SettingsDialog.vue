@@ -75,15 +75,9 @@ export default class SettingsDialog extends Vue {
   @Prop(Boolean)
   readonly value!: boolean
   preference!: Preferences
-  preferenceUpdated!: boolean
+  preferenceUpdated = false
   tabList = ['downloads', 'speed', 'bittorrent', 'connection']
-  tab!: string
-
-  constructor() {
-    super()
-    this.preferenceUpdated = false
-    this.tab = 'speed'
-  }
+  tab = 'speed'
 
   @Watch('preferences')
   onPreferenceUpdate() {
