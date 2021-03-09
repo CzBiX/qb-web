@@ -1,32 +1,13 @@
-name: CI
+name: Release
 
-on: [push, pull_request]
-
-env:
-  TZ: Asia/Shanghai
+on:
+  push:
+    tags:
+      - nightly-*
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-    - uses: actions/cache@v2
-      id: cache
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-    - run: yarn install --frozen-lockfile
-      if: steps.cache.outputs.cache-hit != 'true'
-
-    - run: yarn run lint --no-fix --max-warnings 0
-    - run: yarn run test:unit
-      
   build:
-    needs: [test]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/release'
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -38,10 +19,9 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --frozen-lockfile
         if: steps.cache.outputs.cache-hit != 'true'
-
-      - run: echo ::set-env name=RELEASE_DATE::$(date +'%Y%m%d')
-      - run: echo ::set-env name=GIT_TAG::nightly-$RELEASE_DATE
-      - run: echo ::set-env name=RELEASE_FILE::qb-web-$GIT_TAG.zip
+      
+      - name: Set env
+        run: echo "RELEASE_FILE=qb-web-${GITHUB_REF#refs/*/}.zip" >> $GITHUB_ENV
 
       - name: Pack Release
         run: |
@@ -62,19 +42,16 @@ jobs:
           git add --all
           git commit -m "Publish"
           git push origin gh-pages -f
-
-      - name: Add tag
-        run: |
-          git tag $GIT_TAG
-          git push origin $GIT_TAG
+      
       - id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.GIT_TAG }}
-          release_name: ${{ env.GIT_TAG }}
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
           prerelease: true
+
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
