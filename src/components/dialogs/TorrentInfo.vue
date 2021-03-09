@@ -76,17 +76,15 @@
 </template>
 
 <script lang="ts">
-import { chunk, countBy } from 'lodash';
+import {chunk, countBy} from 'lodash'
 
-import api from '../../Api';
-import {
-  formatDuration, formatSize, formatTimestamp, toPrecision,
-} from '@/filters';
+import api from '../../Api'
+import {formatDuration, formatSize, formatTimestamp, toPrecision} from '@/filters'
 
-import { TorrentProperties, Torrent } from '@/types'
-import Component from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
-import BaseTorrentInfo from './baseTorrentInfo';
+import {Torrent, TorrentProperties} from '@/types'
+import Component from 'vue-class-component'
+import {Prop, Watch} from 'vue-property-decorator'
+import BaseTorrentInfo from './baseTorrentInfo'
 
 interface Item {
   label: string;
@@ -153,8 +151,7 @@ export default class TorrentInfo extends BaseTorrentInfo {
     el.height = clientHeight;
     /* eslint-enable no-param-reassign */
 
-    const ctx = el.getContext('2d')!;
-    return ctx;
+    return el.getContext('2d')!;
   }
 
   fetchInfo() {

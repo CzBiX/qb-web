@@ -284,6 +284,9 @@ export interface Preferences {
   web_ui_port: number;
   web_ui_upnp: boolean;
   web_ui_username: string;
+  web_ui_max_auth_fail_count: number;
+  web_ui_ban_duration: number;
+  web_ui_session_timeout: number;
 }
 
 export interface SearchPlugin {

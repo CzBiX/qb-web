@@ -189,7 +189,7 @@ import api from '../Api';
 import buildInfo from '@/buildInfo';
 import Component from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
-import { Torrent, ServerState } from '../types';
+import { Torrent, ServerState } from '@/types';
 
 
 @Component({
@@ -314,7 +314,7 @@ export default class Footer extends Vue {
   align-items: center;
 
   .v-icon {
-    margin-right: 4px;
+    //margin-right: 4px;
   }
 }
 

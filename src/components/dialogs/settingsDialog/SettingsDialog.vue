@@ -19,39 +19,84 @@
           </v-btn>
         </v-card-title>
         <v-card-text>
-          <v-expansion-panels
-            v-model="panelsOpen"
-            multiple
-          >
-            <download-settings />
-          </v-expansion-panels>
+          <v-tabs v-model="tab">
+            <v-tab
+              v-for="item of tabList"
+              :key="item"
+            >
+              {{ $t('preferences.' + item) }}
+            </v-tab>
+          </v-tabs>
+          <v-fade-transition>
+            <v-alert
+              dense
+              text
+              type="success"
+              v-show="preferenceUpdated"
+            >
+              {{ $t('preferences.change_applied') }}
+            </v-alert>
+          </v-fade-transition>
+          <v-tabs-items v-model="tab">
+            <v-tab-item key="downloads">
+              <download-settings />
+            </v-tab-item>
+            <v-tab-item key="speed">
+              <speed-settings />
+            </v-tab-item>
+            <v-tab-item key="webui">
+              <web-u-i-settings />
+            </v-tab-item>
+          </v-tabs-items>
         </v-card-text>
-        <v-card-actions />
       </v-card>
     </v-dialog>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { Component, Emit, Prop } from "vue-property-decorator";
-import DownloadSettings from "./DownloadSettings.vue";
+import Vue from 'vue'
+import {Component, Emit, Prop, Watch} from 'vue-property-decorator'
+import DownloadSettings from './DownloadSettings.vue'
+import SpeedSettings from './SpeedSettings.vue'
+import {mapGetters} from 'vuex'
+import {Preferences} from '@/types'
+import WebUISettings from '@/components/dialogs/settingsDialog/WebUISettings.vue'
+import {Config} from '@/store/config'
 
 @Component({
   components: {
     DownloadSettings,
+    SpeedSettings,
+    WebUISettings,
+  },
+  computed: {
+    ...mapGetters({
+      config: ['config'],
+      preferences: 'allPreferences',
+    }),
   },
   methods: {},
 })
-export default class SearchDialog extends Vue {
+export default class SettingsDialog extends Vue {
   @Prop(Boolean)
-  readonly value!: boolean;
+  readonly value!: boolean
+  preference!: Preferences
+  config!: Config
+  preferenceUpdated = false
+  tabList = ['downloads', 'speed', 'webui', 'bittorrent', 'connection']
+  tab = 'speed'
 
-  panelsOpen = [ 0 ];
+  @Watch('preferences')
+  @Watch('config')
+  onPreferenceUpdate() {
+    this.preferenceUpdated = true
+    setTimeout(() => this.preferenceUpdated = false, 3000)
+  }
 
-  @Emit("input")
+  @Emit('input')
   closeDialog() {
-    return false;
+    return false
   }
 }
 </script>

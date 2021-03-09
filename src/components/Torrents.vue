@@ -106,7 +106,7 @@
             icon
             @click="setTorrentLocation"
             :title="$t('title.set_location')"
-            :disabled="selectedRows.length == 0"
+            :disabled="selectedRows.length === 0"
           >
             <v-icon>mdi-folder-marker</v-icon>
           </v-btn>
@@ -128,7 +128,7 @@
             icon
             @click="recheckTorrents"
             :title="$t('recheck')"
-            :disabled="selectedRows.length == 0"
+            :disabled="selectedRows.length === 0"
           >
             <v-icon>mdi-backup-restore</v-icon>
           </v-btn>
@@ -188,7 +188,7 @@
                 </span>
               </v-progress-linear>
             </td>
-            <td>{{ row.item.state }}</td>
+            <td>{{ $t('torrent_state.' + row.item.state) }}</td>
             <td>{{ row.item.num_seeds }}/{{ row.item.num_complete }}</td>
             <td>{{ row.item.num_leechs }}/{{ row.item.num_incomplete }}</td>
             <td>{{ row.item.dlspeed | formatNetworkSpeed }}</td>
@@ -237,10 +237,10 @@ import ConfirmSetCategoryDialog from './dialogs/ConfirmSetCategoryDialog.vue'
 import EditTrackerDialog from './dialogs/EditTrackerDialog.vue'
 import InfoDialog from './dialogs/InfoDialog.vue'
 import api from '../Api'
-import { formatSize } from '../filters'
-import { DialogType, TorrentFilter, ConfigPayload, DialogConfig, SnackBarConfig } from '../store/types'
+import { formatSize } from '@/filters'
+import { DialogType, TorrentFilter, ConfigPayload, DialogConfig, SnackBarConfig } from '@/store/types'
 import Component from 'vue-class-component'
-import { Torrent, Category } from '../types'
+import { Torrent, Category } from '@/types'
 import { Watch } from 'vue-property-decorator'
 
 function getStateInfo(state: string) {

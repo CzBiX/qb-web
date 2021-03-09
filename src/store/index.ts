@@ -131,9 +131,10 @@ const store = new Vuex.Store<RootState>({
   actions: {
     async updatePreferencesRequest({ dispatch }, preferences) {
       try {
-        const response = await api.setPreferences(preferences);
-
-        dispatch("updatePreferencesRequestSuccess", response.data);
+        await api.setPreferences(preferences);
+        //setPreference api return a empty response. Need to update preference by another request.
+        const preferenceRes = await api.getAppPreferences();
+        dispatch("updatePreferencesRequestSuccess", preferenceRes.data);
       } catch {
         dispatch("updatePreferencesRequestFailure");
       }
