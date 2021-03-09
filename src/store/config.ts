@@ -17,6 +17,7 @@ export interface Config {
   };
   locale: string | null;
   darkMode: string | null;
+  displaySpeedInTitle: boolean | null;
 }
 
 const defaultConfig = {
@@ -33,6 +34,7 @@ const defaultConfig = {
   },
   locale: null,
   darkMode: null,
+  displaySpeedInTitle: null,
 };
 
 function saveConfig(obj: any) {

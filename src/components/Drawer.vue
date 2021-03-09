@@ -68,50 +68,50 @@ import { tr } from '@/locale';
 import { Torrent, Category } from '@/types';
 import FilterGroup from './drawer/FilterGroup.vue';
 import api from '../Api';
-import { formatSize } from '../filters';
-import { StateType } from '../consts';
+import { formatSize } from '@/filters';
+import { StateType } from '@/consts';
 import SiteMap from '@/sites'
 import Component from 'vue-class-component';
 import { Prop, Emit } from 'vue-property-decorator';
 
 const stateList = [
   {
-    title: tr('state.downloading'),
+    title: tr('category_state.downloading'),
     state: StateType.Downloading,
     icon: 'download',
   },
   {
-    title: tr('state.seeding'),
+    title: tr('category_state.seeding'),
     state: StateType.Seeding,
     icon: 'upload',
   },
   {
-    title: tr('state.completed'),
+    title: tr('category_state.completed'),
     state: StateType.Completed,
     icon: 'check',
   },
   {
-    title: tr('state.resumed'),
+    title: tr('category_state.resumed'),
     state: StateType.Resumed,
     icon: 'play',
   },
   {
-    title: tr('state.paused'),
+    title: tr('category_state.paused'),
     state: StateType.Paused,
     icon: 'pause',
   },
   {
-    title: tr('state.active'),
+    title: tr('category_state.active'),
     state: StateType.Active,
     icon: 'filter',
   },
   {
-    title: tr('state.inactive'),
+    title: tr('category_state.inactive'),
     state: StateType.Inactive,
     icon: 'filter-outline',
   },
   {
-    title: tr('state.errored'),
+    title: tr('category_state.errored'),
     state: StateType.Errored,
     icon: 'alert',
   },
@@ -249,7 +249,7 @@ export default class Drawer extends Vue {
     filterGroups.push({
       icon: 'mdi-menu-up',
       'icon-alt': 'mdi-menu-down',
-      title: tr('state._'),
+      title: tr('category_state._'),
       model: null,
       select: 'state',
       children: [

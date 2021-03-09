@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import Axios, { AxiosInstance, AxiosPromise, AxiosResponse } from 'axios';
-import { RssNode, RssRule, SearchPlugin, ApiCategory, SearchTaskResponse, Preferences } from '@/types';
+import {
+  RssNode,
+  RssRule,
+  SearchPlugin,
+  ApiCategory,
+  SearchTaskResponse,
+  Preferences,
+  MainData,
+} from '@/types'
 
 const apiEndpoint = 'api/v2';
 
@@ -62,7 +70,7 @@ class Api {
     return this.axios.post('/app/shutdown');
   }
 
-  public getMainData(rid?: number) {
+  public getMainData(rid?: number): AxiosPromise<MainData> {
     const params = {
       rid,
     };

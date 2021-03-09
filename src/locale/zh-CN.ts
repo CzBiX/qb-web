@@ -45,6 +45,7 @@ export default {
   added_on: '添加时间',
 
   settings: '设置',
+
   logs: '日志',
   light: '亮色',
   dark: '暗色',
@@ -63,6 +64,36 @@ export default {
   plugin: '插件',
   action: '操作',
   search_engine: '搜索引擎',
+
+  preferences: {
+    downloads: '下载',
+    adding_torrent: '添加 torrent 时',
+    create_subfolder_enabled: '为多个文件的 Torrent 创建子目录',
+    start_paused_enabled: '不要自动开始下载',
+    auto_delete_mode: '完成后删除 .torrent 文件',
+    preallocate_all: '为所有文件预分配磁盘空间',
+    incomplete_files_ext: '为不完整的文件添加扩展名 .!qB',
+
+    speed: '速度',
+    global_rate_limits: '全局速度限制',
+    alternate_rate_limits: '备用速度限制',
+    alternate_schedule_enable_time: '设置备用速度限制的启用时间',
+    apply_speed_limit: '设置速度限制',
+    dl_limit: '下载 (KiB/s)',
+    up_limit: '上传 (KiB/s)',
+    zero_for_unlimited: '0 为无限制',
+    schedule_from: '从',
+    schedule_to: '到',
+    scheduler_days: '时间',
+    limit_utp_rate: '对 µTP 协议进行速度限制',
+    limit_tcp_overhead: '对传送总开销进行速度限制',
+    limit_lan_peers: '对本地网络用户进行速度限制',
+
+    connection: '连接',
+    bittorrent: 'BitTorrent',
+    webui: 'Web UI',
+    display_speed_in_title: '在网页标题显示当前速度',
+  },
 
   title: {
     _: '标题',
@@ -153,7 +184,7 @@ export default {
     },
   },
 
-  state: {
+  category_state: {
     _: '状态',
 
     downloading: '下载',
@@ -164,5 +195,27 @@ export default {
     active: '活动',
     inactive: '空闲',
     errored: '错误',
+  },
+
+  torrent_state: {
+    error: '错误',
+    missingFiles: '文件丢失',
+    uploading: '上传',
+    pausedUP: '完成',
+    queuedUP: '排队中',
+    stalledUP: '上传暂停',
+    checkingUP: '校验中',
+    forcedUP: '',
+    allocating: '',
+    downloading: '',
+    metaDL: '',
+    pausedDL: '',
+    queuedDL: '',
+    stalledDL: '暂停下载',
+    checkingDL: '',
+    forceDL: '',
+    checkingResumeData: '',
+    moving: '',
+    unknown: '',
   },
 }

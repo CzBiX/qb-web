@@ -67,6 +67,36 @@ export default {
   plugin_manager: 'Plugin manager',
   update_plugins: 'Update plugins',
 
+  preferences: {
+    downloads: 'Downloads',
+    adding_torrent: 'When adding a torrent',
+    create_subfolder_enabled: 'Create subfolder for torrents with multiple files',
+    start_paused_enabled: 'Do not start the download automatically',
+    auto_delete_mode: 'Delete .torrent files afterwards',
+    preallocate_all: 'Pre-allocate disk space for all files',
+    incomplete_files_ext: 'Append .!qB extension to incomplete files',
+
+    speed: 'Speed',
+    global_rate_limits: 'Global Rate Limits',
+    alternate_rate_limits: 'Alternative Rate Limits',
+    alternate_schedule_enable_time: 'Schedule the use of alternative rate limits',
+    apply_speed_limit: 'Rate Limits Settings',
+    dl_limit: 'Download (KiB/s)',
+    up_limit: 'Upload (KiB/s)',
+    zero_for_unlimited: '0 means unlimited',
+    schedule_from: 'From',
+    schedule_to: 'To',
+    scheduler_days: 'When',
+    limit_utp_rate: 'Apply rate limit to µTP protocol',
+    limit_tcp_overhead: 'Apply rate limit to transport overhead',
+    limit_lan_peers: 'Apply rate limit to peers on LAN',
+
+    connection: 'Connections',
+    bittorrent: 'BitTorrent',
+    webui: 'Web UI',
+    display_speed_in_title: 'Display download speed in page title',
+  },
+
   title: {
     _: 'Title',
     add_torrents: 'Add Torrents',
@@ -157,7 +187,7 @@ export default {
     },
   },
 
-  state: {
+  category_state: {
     _: 'State',
 
     downloading: 'Downloading',
@@ -168,5 +198,27 @@ export default {
     active: 'Active',
     inactive: 'Inactive',
     errored: 'Errored',
+  },
+
+  torrent_state: {
+    error: 'error',
+    missingFiles: 'missingFiles',
+    uploading: 'uploading',
+    pausedUP: 'pausedUP',
+    queuedUP: 'queuedUP',
+    stalledUP: 'stalledUP',
+    checkingUP: 'checkingUP',
+    forcedUP: 'forcedUP',
+    allocating: 'allocating',
+    downloading: 'downloading',
+    metaDL: 'metaDL',
+    pausedDL: 'pausedDL',
+    queuedDL: 'queuedDL',
+    stalledDL: 'stalledDL',
+    checkingDL: 'checkingDL',
+    forceDL: 'forceDL',
+    checkingResumeData: 'checkingResumeData',
+    moving: 'moving',
+    unknown: 'unknown',
   },
 }

@@ -82,6 +82,7 @@ import { Watch } from 'vue-property-decorator';
 import { MainData } from './types';
 import { Config } from './store/config';
 import Api from './Api';
+import {formatSize} from '@/filters'
 
 let appWrapEl: HTMLElement;
 
@@ -204,6 +205,18 @@ export default class App extends Vue {
     const resp = await api.getMainData(rid);
     const mainData = resp.data;
 
+    if(this.config.displaySpeedInTitle) {
+      const upInfoSpeed = mainData.server_state.up_info_speed
+      const dlInfoSpeed = mainData.server_state.dl_info_speed
+      let dl = '', up = ''
+      if (dlInfoSpeed > 0) {
+        dl = `D ${formatSize(dlInfoSpeed)}/s`
+      }
+      if (upInfoSpeed > 0) {
+        up = `U ${formatSize(upInfoSpeed)}/s`
+      }
+      document.title = `[${up} ${dl}] qBittorrent Web UI`
+    }
     this.updateMainData(mainData);
 
     this.task = setTimeout(this.getMainData, this.config.updateInterval);

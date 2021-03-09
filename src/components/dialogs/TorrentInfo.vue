@@ -76,17 +76,15 @@
 </template>
 
 <script lang="ts">
-import { chunk, countBy } from 'lodash';
+import {chunk, countBy} from 'lodash'
 
-import api from '../../Api';
-import {
-  formatDuration, formatSize, formatTimestamp, toPrecision,
-} from '@/filters';
+import api from '../../Api'
+import {formatDuration, formatSize, formatTimestamp, toPrecision} from '@/filters'
 
-import { TorrentProperties, Torrent } from '@/types'
-import Component from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
-import BaseTorrentInfo from './baseTorrentInfo';
+import {Torrent, TorrentProperties} from '@/types'
+import Component from 'vue-class-component'
+import {Prop, Watch} from 'vue-property-decorator'
+import BaseTorrentInfo from './baseTorrentInfo'
 
 interface Item {
   label: string;
@@ -118,8 +116,8 @@ export default class TorrentInfo extends BaseTorrentInfo {
     { label: 'Downloaded', value: prop => `${formatSize(prop.total_downloaded_session)}/${formatSize(prop.total_downloaded)}` },
     { label: 'Uploaded', value: prop => `${formatSize(prop.total_uploaded_session)}/${formatSize(prop.total_uploaded)}` },
     { label: 'Seeds', value: prop => `${prop.seeds} (${prop.seeds_total} total)` },
-    { label: 'DL speed', value: prop => `${formatSize(prop.dl_speed)}/s` },
-    { label: 'UP speed', value: prop => `${formatSize(prop.up_speed)}/s` },
+    { label: 'DL speed', value: prop => `${formatSize(prop.dl_speed, 1)}/s` },
+    { label: 'UP speed', value: prop => `${formatSize(prop.up_speed, 1)}/s` },
     { label: 'Peers', value: prop => `${prop.peers} (${prop.peers_total} total)` },
     { label: 'Wasted', value: prop => formatSize(prop.total_wasted) },
     { label: 'Share ratio', value: prop => toPrecision(prop.share_ratio, 3) },
@@ -153,8 +151,7 @@ export default class TorrentInfo extends BaseTorrentInfo {
     el.height = clientHeight;
     /* eslint-enable no-param-reassign */
 
-    const ctx = el.getContext('2d')!;
-    return ctx;
+    return el.getContext('2d')!;
   }
 
   fetchInfo() {
