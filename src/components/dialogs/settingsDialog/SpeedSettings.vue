@@ -102,7 +102,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {MainData, Preferences, ServerState} from '@/types'
+import {Preferences} from '@/types'
 import {Component} from 'vue-property-decorator'
 import {mapActions, mapGetters} from 'vuex'
 
@@ -127,8 +127,6 @@ import {mapActions, mapGetters} from 'vuex'
 })
 export default class SpeedSettings extends Vue {
   preferences!: Preferences
-  mainData!: MainData
-  info!: ServerState
 
   updatePreferencesRequest!: (_: any) => void
 

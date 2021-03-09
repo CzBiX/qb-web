@@ -152,7 +152,7 @@
             ({{ info.dl_rate_limit | formatSize }}/s)
           </template>
           <template v-if="!phoneLayout">
-            [{{ info.dl_info_data | formatSizeFixed }}]
+            [{{ info.dl_info_data | formatSize }}]
           </template>
         </span>
       </div>
@@ -173,7 +173,7 @@
             ({{ info.up_rate_limit | formatSize }}/s)
           </template>
           <template v-if="!phoneLayout">
-            [{{ info.up_info_data | formatSizeFixed }}]
+            [{{ info.up_info_data | formatSize }}]
           </template>
         </span>
       </div>

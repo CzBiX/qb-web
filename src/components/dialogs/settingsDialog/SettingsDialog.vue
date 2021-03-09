@@ -4,6 +4,7 @@
       :value="value"
       @input="$emit('input', $event)"
       scrollable
+      persistent
     >
       <v-card>
         <v-card-title class="headline">
@@ -33,7 +34,7 @@
               type="success"
               v-show="preferenceUpdated"
             >
-              配置已保存
+              {{ $t('preferences.change_applied') }}
             </v-alert>
           </v-fade-transition>
           <v-tabs-items v-model="tab">
@@ -42,9 +43,6 @@
             </v-tab-item>
             <v-tab-item key="speed">
               <speed-settings />
-            </v-tab-item>
-            <v-tab-item key="webui">
-              <web-u-i-settings />
             </v-tab-item>
           </v-tabs-items>
         </v-card-text>
@@ -58,7 +56,6 @@ import Vue from 'vue'
 import {Component, Emit, Prop, Watch} from 'vue-property-decorator'
 import DownloadSettings from './DownloadSettings.vue'
 import SpeedSettings from './SpeedSettings.vue'
-import WebUISettings from './WebUISettings.vue'
 import {mapGetters} from 'vuex'
 import {Preferences} from '@/types'
 
@@ -66,7 +63,6 @@ import {Preferences} from '@/types'
   components: {
     DownloadSettings,
     SpeedSettings,
-    WebUISettings,
   },
   computed: {
     ...mapGetters({
@@ -80,7 +76,7 @@ export default class SettingsDialog extends Vue {
   readonly value!: boolean
   preference!: Preferences
   preferenceUpdated!: boolean
-  tabList = ['downloads', 'speed', 'webui', 'bittorrent', 'connection']
+  tabList = ['downloads', 'speed', 'bittorrent', 'connection']
   tab!: string
 
   constructor() {

@@ -29,25 +29,7 @@ export function formatSize(value: number): string {
   return `${toPrecision(value, 3)} ${unit}`;
 }
 
-export function formatSizeFixed(value: number): string {
-  const units = 'KMGTP';
-  let index = -1;
-
-  while (value >= 1000) {
-    value /= 1024;
-    index++;
-  }
-
-  const unit = index < 0 ? 'B' : `${units[index]}iB`;
-
-  if (index < 0) {
-    return `${value} ${unit}`;
-  }
-  return `${value.toFixed(2)} ${unit}`;
-}
-
 Vue.filter('formatSize', formatSize);
-Vue.filter('formatSizeFixed', formatSizeFixed);
 Vue.filter('size', formatSize);
 
 export interface DurationOptions {

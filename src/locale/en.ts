@@ -68,6 +68,7 @@ export default {
   update_plugins: 'Update plugins',
 
   preferences: {
+    change_applied: 'New preferences saved',
     downloads: 'Downloads',
     adding_torrent: 'When adding a torrent',
     create_subfolder_enabled: 'Create subfolder for torrents with multiple files',
