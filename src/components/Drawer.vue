@@ -151,12 +151,15 @@ export default class Drawer extends Vue {
   @Prop()
   readonly value: any
 
-  basicItems: MenuItem[] = [
-    { icon: 'mdi-cog-box', title: tr('settings'), click: () => this.updateOptions('showSettings', true) },
-  ]
-
   endItems: MenuItem[] = [
     { icon: 'mdi-delta', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
+    { icon: 'mdi-card-search-outline', title: tr('search'), click: () => this.updateOptions('showSearch', true) },
+  ]
+
+  pcItems: MenuItem[] = [
+    { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
+    { icon: 'mdi-cog-box', title: tr('settings'), click: () => this.updateOptions('showSettings', true) },
+    { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
   ]
 
   isDataReady!: boolean
@@ -167,25 +170,11 @@ export default class Drawer extends Vue {
   torrentGroupByState!: {[state: string]: Torrent[]}
 
   created() {
-    const searchMenuItem = {
-      icon: 'mdi-card-search-outline',
-      title: tr('search'),
-      click: () => this.updateOptions('showSearch', true),
-    };
-
    if (this.phoneLayout) {
-      this.endItems = this.endItems.concat([
-        searchMenuItem,
-      ]);
-
       return;
     }
 
-    this.endItems = this.endItems.concat([
-      { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
-      searchMenuItem,
-      { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
-    ])
+    this.endItems = this.endItems.concat(this.pcItems)
   }
 
   get phoneLayout() {
@@ -240,7 +229,7 @@ export default class Drawer extends Vue {
 
   get items() {
     if (!this.isDataReady) {
-      return this.basicItems.concat(this.endItems);
+      return this.endItems
     }
 
     const filterGroups: MenuItem[] = [];
@@ -288,7 +277,7 @@ export default class Drawer extends Vue {
       ],
     });
 
-    return this.basicItems.concat([{filterGroups}] as any, this.endItems);
+    return ([] as MenuItem[]).concat([{filterGroups}] as any, this.endItems);
   }
 
   async switchUi() {
