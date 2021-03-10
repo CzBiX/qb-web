@@ -44,6 +44,9 @@
             <v-tab-item key="speed">
               <speed-settings />
             </v-tab-item>
+            <v-tab-item key="webui">
+              <web-u-i-settings />
+            </v-tab-item>
           </v-tabs-items>
         </v-card-text>
       </v-card>
@@ -58,14 +61,18 @@ import DownloadSettings from './DownloadSettings.vue'
 import SpeedSettings from './SpeedSettings.vue'
 import {mapGetters} from 'vuex'
 import {Preferences} from '@/types'
+import WebUISettings from '@/components/dialogs/settingsDialog/WebUISettings.vue'
+import {Config} from '@/store/config'
 
 @Component({
   components: {
     DownloadSettings,
     SpeedSettings,
+    WebUISettings,
   },
   computed: {
     ...mapGetters({
+      config: ['config'],
       preferences: 'allPreferences',
     }),
   },
@@ -75,11 +82,13 @@ export default class SettingsDialog extends Vue {
   @Prop(Boolean)
   readonly value!: boolean
   preference!: Preferences
+  config!: Config
   preferenceUpdated = false
-  tabList = ['downloads', 'speed', 'bittorrent', 'connection']
+  tabList = ['downloads', 'speed', 'webui', 'bittorrent', 'connection']
   tab = 'speed'
 
   @Watch('preferences')
+  @Watch('config')
   onPreferenceUpdate() {
     this.preferenceUpdated = true
     setTimeout(() => this.preferenceUpdated = false, 3000)

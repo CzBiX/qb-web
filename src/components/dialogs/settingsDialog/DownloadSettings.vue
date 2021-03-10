@@ -38,6 +38,84 @@
         @change="changeSettings('incomplete_files_ext', !preferences.incomplete_files_ext)"
       />
     </v-container>
+    <h4>{{ $t('preferences.saving_management') }}</h4>
+    <v-divider />
+    <v-container
+      class="px-0"
+      fluid
+    >
+      <preference-row i18n-key="auto_tmm_enabled">
+        <v-select
+          :items="torrentMode"
+          :value="preferences.auto_tmm_enabled ? torrentMode[0] : torrentMode[1]"
+          @change="changeSettings('auto_tmm_enabled', $event == torrentMode[0])"
+        />
+      </preference-row>
+      <preference-row i18n-key="torrent_changed_tmm_enabled">
+        <v-select
+          :items="torrentAction"
+          :value="preferences.category_changed_tmm_enabled ? torrentAction[1] : torrentAction[0]"
+          @change="changeSettings('torrent_changed_tmm_enabled', $event == torrentAction[1])"
+        />
+      </preference-row>
+      <preference-row i18n-key="save_path_changed_tmm_enabled">
+        <v-select
+          :items="torrentAction"
+          :value="preferences.category_changed_tmm_enabled ? torrentAction[1] : torrentAction[0]"
+          @change="changeSettings('save_path_changed_tmm_enabled', $event == torrentAction[1])"
+        />
+      </preference-row>
+      <preference-row i18n-key="category_changed_tmm_enabled">
+        <v-select
+          :items="torrentAction"
+          :value="preferences.category_changed_tmm_enabled ? torrentAction[1] : torrentAction[0]"
+          @change="changeSettings('category_changed_tmm_enabled', $event == torrentAction[1])"
+        />
+      </preference-row>
+      <preference-row i18n-key="save_path">
+        <v-text-field
+          :value="preferences.save_path"
+          @change="changeSettings('save_path', $event)"
+          lazy
+        />
+      </preference-row>
+      <preference-row i18n-key="temp_path">
+        <template v-slot:header>
+          <v-checkbox
+            :value="preferences.temp_path_enabled"
+            @change="changeSettings('temp_path_enabled', $event)"
+          />
+        </template>
+        <v-text-field
+          :disabled="!preferences.temp_path_enabled"
+          :value="preferences.temp_path"
+          @change="changeSettings('temp_path', $event)"
+          lazy
+        />
+      </preference-row>
+      <preference-row
+        i18n-key="export_dir"
+        can-be-enabled="true"
+      >
+        <v-text-field
+          :value="preferences.export_dir"
+          @change="changeSettings('export_dir', $event)"
+          lazy
+          clearable
+        />
+      </preference-row>
+      <preference-row
+        i18n-key="export_dir_fin"
+        can-be-enabled="true"
+      >
+        <v-text-field
+          :value="preferences.export_dir_fin"
+          @change="changeSettings('export_dir_fin', $event)"
+          lazy
+          clearable
+        />
+      </preference-row>
+    </v-container>
   </v-container>
 </template>
 
@@ -46,9 +124,12 @@ import Vue from 'vue'
 import {Preferences} from '@/types'
 import {Component} from 'vue-property-decorator'
 import {mapActions, mapGetters} from 'vuex'
+import PreferenceRow from './PreferenceRow'
 
 @Component({
-  components: {},
+  components: {
+    PreferenceRow,
+  },
   computed: {
     ...mapGetters({
       preferences: 'allPreferences',
@@ -62,6 +143,8 @@ import {mapActions, mapGetters} from 'vuex'
 })
 export default class DownloadSettings extends Vue {
   preferences!: Preferences
+  torrentAction = [this.$t('preferences.switch_torrent_mode_to_manual'), this.$t('preferences.move_affected_torrent')]
+  torrentMode = [this.$t('preferences.auto_mode'), this.$t('preferences.manual_mode')]
 
   updatePreferencesRequest!: (_: any) => void
 
