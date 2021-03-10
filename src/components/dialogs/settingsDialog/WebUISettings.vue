@@ -69,40 +69,31 @@
         lazy
       />
     </preference-row>
-    <v-alert
-      color="blue"
-      type="error"
-      dense
-    >
-      <v-row
-        dense
-        align="center"
-      >
-        <v-col cols="auto">
-          <v-subheader>{{ $t("preferences.web_ui_max_auth_fail_count") }}</v-subheader>
-        </v-col>
-        <v-col cols="1">
-          <v-text-field
-            :value="preferences.web_ui_max_auth_fail_count"
-            @change="changeSettings('web_ui_max_auth_fail_count', $event)"
-            lazy
-          />
-        </v-col>
-        <v-col cols="auto">
-          <v-subheader>{{ $t("preferences.web_ui_ban_duration") }}</v-subheader>
-        </v-col>
-        <v-col cols="1">
-          <v-text-field
-            :value="preferences.web_ui_ban_duration"
-            @change="changeSettings('web_ui_ban_duration', $event)"
-            lazy
-          />
-        </v-col>
-        <v-col cols="1">
-          {{ $t("preferences.web_ui_seconds") }}
-        </v-col>
-      </v-row>
-    </v-alert>
+    <v-row dense>
+      <v-col cols="auto">
+        {{ $t("preferences.web_ui_max_auth_fail_count") }}
+      </v-col>
+      <v-col cols="1">
+        <v-text-field
+          :value="preferences.web_ui_max_auth_fail_count"
+          @change="changeSettings('web_ui_max_auth_fail_count', $event)"
+          lazy
+        />
+      </v-col>
+      <v-col cols="auto">
+        {{ $t("preferences.web_ui_ban_duration") }}
+      </v-col>
+      <v-col cols="1">
+        <v-text-field
+          :value="preferences.web_ui_ban_duration"
+          @change="changeSettings('web_ui_ban_duration', $event)"
+          lazy
+        />
+      </v-col>
+      <v-col cols="auto">
+        {{ $t("preferences.web_ui_seconds") }}
+      </v-col>
+    </v-row>
     <v-row dense>
       <v-col>
         <v-checkbox
