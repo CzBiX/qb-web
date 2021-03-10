@@ -5,6 +5,7 @@
       @input="$emit('input', $event)"
       scrollable
       persistent
+      fullscreen
     >
       <v-card>
         <v-card-title class="headline">
@@ -63,6 +64,7 @@ import {mapGetters} from 'vuex'
 import {Preferences} from '@/types'
 import WebUISettings from '@/components/dialogs/settingsDialog/WebUISettings.vue'
 import {Config} from '@/store/config'
+import { timeout } from '@/utils'
 
 @Component({
   components: {
@@ -72,7 +74,7 @@ import {Config} from '@/store/config'
   },
   computed: {
     ...mapGetters({
-      config: ['config'],
+      config: 'config',
       preferences: 'allPreferences',
     }),
   },
@@ -81,17 +83,19 @@ import {Config} from '@/store/config'
 export default class SettingsDialog extends Vue {
   @Prop(Boolean)
   readonly value!: boolean
-  preference!: Preferences
+  preferences!: Preferences
   config!: Config
+
   preferenceUpdated = false
-  tabList = ['downloads', 'speed', 'webui', 'bittorrent', 'connection']
+  tabList = ['downloads', 'speed', 'webui']
   tab = 'speed'
 
   @Watch('preferences')
   @Watch('config')
-  onPreferenceUpdate() {
+  async onPreferenceUpdate() {
     this.preferenceUpdated = true
-    setTimeout(() => this.preferenceUpdated = false, 3000)
+    await timeout(3000)
+    this.preferenceUpdated = false
   }
 
   @Emit('input')

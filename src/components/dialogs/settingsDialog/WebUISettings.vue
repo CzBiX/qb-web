@@ -137,13 +137,14 @@ import {Preferences} from '@/types'
 import {Component} from 'vue-property-decorator'
 import {mapActions, mapGetters, mapMutations} from 'vuex'
 import {Config} from '@/store/config'
+import { ConfigPayload } from '@/store/types';
 import PreferenceRow from '@/components/dialogs/settingsDialog/PreferenceRow.vue'
 
 @Component({
   components: {PreferenceRow},
   computed: {
     ...mapGetters({
-      config: ['config'],
+      config: 'config',
       preferences: 'allPreferences',
     }),
   },
@@ -160,13 +161,14 @@ export default class WebUISettings extends Vue {
   preferences!: Preferences
   config!: Config
 
+  updateConfig!: (_: ConfigPayload) => void
   updatePreferencesRequest!: (_: any) => void
 
   changeSettings(property: string, value: string | boolean) {
     this.updatePreferencesRequest({[property]: value})
   }
 
-  private updateTitleSpeedConfig(event: boolean) {
+  updateTitleSpeedConfig(event: boolean) {
     this.updateConfig({
       key: 'displaySpeedInTitle',
       value: event,

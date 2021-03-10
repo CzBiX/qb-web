@@ -19,14 +19,12 @@
 </template>
 
 <script lang="ts">
-import {Component} from 'vue-property-decorator'
+import {Component, Prop} from 'vue-property-decorator'
 import Vue from 'vue'
 
-@Component({
-  props: {
-    i18nKey: null,
-  },
-})
+@Component
 export default class PreferenceRow extends Vue {
+  @Prop(String)
+  readonly i18nKey?: string
 }
 </script>

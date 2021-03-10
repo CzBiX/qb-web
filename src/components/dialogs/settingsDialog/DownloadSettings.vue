@@ -124,7 +124,8 @@ import Vue from 'vue'
 import {Preferences} from '@/types'
 import {Component} from 'vue-property-decorator'
 import {mapActions, mapGetters} from 'vuex'
-import PreferenceRow from './PreferenceRow'
+import PreferenceRow from './PreferenceRow.vue'
+import { tr } from '@/locale'
 
 @Component({
   components: {
@@ -143,8 +144,8 @@ import PreferenceRow from './PreferenceRow'
 })
 export default class DownloadSettings extends Vue {
   preferences!: Preferences
-  torrentAction = [this.$t('preferences.switch_torrent_mode_to_manual'), this.$t('preferences.move_affected_torrent')]
-  torrentMode = [this.$t('preferences.auto_mode'), this.$t('preferences.manual_mode')]
+  torrentAction = [tr('preferences.switch_torrent_mode_to_manual'), tr('preferences.move_affected_torrent')]
+  torrentMode = [tr('preferences.auto_mode'), tr('preferences.manual_mode')]
 
   updatePreferencesRequest!: (_: any) => void
 
