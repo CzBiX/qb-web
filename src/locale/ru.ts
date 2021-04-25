@@ -94,7 +94,6 @@ export default {
     global_rate_limits: 'Общие ограничения скорости',
     alternate_rate_limits: 'Альтернативные ограничения скорости',
     alternate_schedule_enable_time: 'Запланировать использование особых ограничений скорости',
-    apply_speed_limit: 'Rate Limits Settings', // TODO: May be remove?
     dl_limit: 'Загрузка (KiB/s)',
     up_limit: 'Отдача (KiB/s)',
     zero_for_unlimited: '«0» — без ограничений',
@@ -105,9 +104,6 @@ export default {
     limit_tcp_overhead: 'Применять ограничения скорости к служебному трафику',
     limit_lan_peers: 'Применять ограничения скорости к локальным пирам',
 
-    connection: 'Connections',
-    bittorrent: 'BitTorrent',
-
     webui: 'Веб-интерфейс',
     data_update_interval: 'Интервал обновления (ms)',
     webui_remote_control: 'Веб-интерфейс (удалённое управление)',
@@ -117,8 +113,8 @@ export default {
     authentication: 'Аутентификация',
     web_ui_username: 'Имя пользователя',
     web_ui_password: 'Пароль',
-    bypass_local_auth: 'Bypass authentication for clients on localhost',
-    bypass_auth_subnet_whitelist: 'Bypass authentication for clients on localhost',
+    bypass_local_auth: 'Пропускать аутентификацию клиентов для localhost',
+    bypass_auth_subnet_whitelist: 'Пропускать аутентификацию клиентов для разрешённых подсетей',
     web_ui_session_timeout: 'Таймаут сессии',
     web_ui_max_auth_fail_count: 'Блокировать клиента после серии сбоев',
     web_ui_ban_duration: 'заблокировать на',
