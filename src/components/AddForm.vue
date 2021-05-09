@@ -275,7 +275,8 @@ export default class AddForm extends Vue {
     return this.allCategories.map(c => ({ text: c.name, value: c.key }));
   }
   get defaultPath() {
-    if (this.params.autoTMM && this.params.category) {
+
+    if (this.params.category) {
       const category = this.allCategories.find(c => {
         return c.key === this.params.category;
       });
