@@ -104,6 +104,14 @@
           />
           <v-btn
             icon
+            @click="toggleSequentialTorrents"
+            :title="$t('toggle_sequential')"
+            :disabled="!hasSelected"
+          >
+            <v-icon>mdi-transit-connection-variant</v-icon>
+          </v-btn>
+          <v-btn
+            icon
             @click="setTorrentLocation"
             :title="$t('title.set_location')"
             :disabled="selectedRows.length === 0"
@@ -180,7 +188,7 @@
               <v-progress-linear
                 height="1.4em"
                 :value="row.item.progress * 100"
-                :color="row.item.state | stateColor(true)"
+                :color="row.item.state | stateColor(true, row.item.seq_dl)"
                 class="text-center ma-0"
               >
                 <span :class="getProgressColorClass(row.item.progress)">
@@ -352,10 +360,13 @@ function getStateInfo(state: string) {
       const item = getStateInfo(state);
       return `mdi-${item.icon}`;
     },
-    stateColor(state: string, isProgress?: boolean) {
+    stateColor(state: string, isProgress?: boolean, isSeqDL?: boolean) {
       const item = getStateInfo(state);
       if (!isProgress) {
         return item.color;
+      }
+      if (isSeqDL) {
+        return '#e33371' // icon.color.secondary;
       }
 
       return item.color || '#0008';
@@ -480,6 +491,9 @@ export default class Torrents extends Vue {
     await api.setForceStartTorrents(this.selectedHashes);
   }
 
+  async toggleSequentialTorrents() {
+    await api.toggleSequentialTorrents(this.selectedHashes);
+  }
   async pauseTorrents() {
     await api.pauseTorrents(this.selectedHashes);
   }
