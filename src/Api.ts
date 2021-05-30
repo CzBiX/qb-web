@@ -158,7 +158,7 @@ class Api {
   }
 
   public toggleSequentialTorrents(hashes: string[]) {
-    return this.actionTorrents('toggleSequentialDownload', hashes, { value: 'true' });
+    return this.actionTorrents('toggleSequentialDownload', hashes);
   }
 
   public reannounceTorrents(hashes: string[]) {
