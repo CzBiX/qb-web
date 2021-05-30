@@ -18,6 +18,7 @@ export default {
   resume: 'Resume',
   pause: 'Pause',
   force_start: 'Force Start',
+  toggle_sequential: 'Toggle Sequential Download',
   info: 'Info',
   reset: 'Reset',
   login: 'Login',

@@ -157,6 +157,10 @@ class Api {
     return this.actionTorrents('setForceStart', hashes, { value: 'true' });
   }
 
+  public toggleSequentialTorrents(hashes: string[]) {
+    return this.actionTorrents('toggleSequentialDownload', hashes);
+  }
+
   public reannounceTorrents(hashes: string[]) {
     return this.actionTorrents('reannounce', hashes);
   }
