@@ -5,7 +5,17 @@ import i18n from '@/locale';
 Vue.use(Vuetify);
 
 let locale = i18n.locale();
-locale = locale === 'zh-CN' ? 'zh-Hans' : locale.split('-', 1)[0];
+switch (locale) {
+  case 'zh-CN':
+    locale = 'zh-Hans';
+    break;
+  case 'zh-TW':
+    locale = 'zh-Hant';
+    break;
+  default:
+    locale = locale.split('-', 1)[0];
+    break;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { default: translation } = require('vuetify/src/locale/' + locale);
