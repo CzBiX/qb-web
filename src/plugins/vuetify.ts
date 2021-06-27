@@ -10,7 +10,7 @@ switch (locale) {
     locale = 'zh-Hans';
     break;
   case 'zh-TW':
-    locale = 'zh-Hans';
+    locale = 'zh-Hant';
     break;
   default:
     locale = locale.split('-', 1)[0];
