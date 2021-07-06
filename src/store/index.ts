@@ -1,4 +1,4 @@
-import { cloneDeep, merge, map, groupBy, sortBy } from 'lodash';
+import { merge, map, groupBy, sortBy } from 'lodash';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { computed, Ref } from '@vue/composition-api';
@@ -12,6 +12,8 @@ import { torrentIsState } from '../utils';
 import searchEngineStore from './searchEngine';
 import { RootState } from './types';
 import api from '@/Api';
+import { Torrent } from '@/types';
+import stateMerge from 'vue-object-merge';
 
 Vue.use(Vuex);
 
@@ -39,20 +41,20 @@ const store = new Vuex.Store<RootState>({
         delete payload.full_update;
         state.mainData = payload;
       } else {
-        const tmp: any = cloneDeep(state.mainData);
+        const mainData = state.mainData;
         if (payload.torrents_removed) {
           for (const hash of payload.torrents_removed) {
-            delete tmp.torrents[hash];
+            Vue.delete(mainData!.torrents, hash)
           }
           delete payload.torrents_removed;
         }
         if (payload.categories_removed) {
           for (const key of payload.categories_removed) {
-            delete tmp.categories[key];
+            Vue.delete(mainData!.categories, key)
           }
           delete payload.categories_removed;
         }
-        state.mainData = merge(tmp, payload);
+        stateMerge(mainData, payload)
       }
     },
     updatePreferences(state, payload) {
@@ -82,7 +84,11 @@ const store = new Vuex.Store<RootState>({
         return [];
       }
 
-      return map(state.mainData.torrents, (value, key) => merge({}, value, { hash: key }));
+      const torrents = map(state.mainData.torrents, (value, key) => {
+        Vue.set(value, 'hash', key)
+        return value as Torrent
+      });
+      return torrents
     },
     allCategories(state) {
       if (!state.mainData) {

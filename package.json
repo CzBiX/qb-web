@@ -22,6 +22,7 @@
     "roboto-fontface": "*",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
+    "vue-object-merge": "^1.0.0",
     "vue-property-decorator": "^8.4.2",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.20",
