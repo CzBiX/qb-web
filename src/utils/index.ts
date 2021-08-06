@@ -1,5 +1,5 @@
-import { StateType } from './consts';
-import { Torrent } from './types';
+import { StateType } from '@/consts';
+import { Torrent } from '@/types';
 
 const dlState = ['downloading', 'metaDL', 'stalledDL', 'checkingDL', 'pausedDL', 'queuedDL', 'forcedDL', 'allocating'];
 const upState = ['uploading', 'stalledUP', 'checkingUP', 'queuedUP', 'forcedUP'];
