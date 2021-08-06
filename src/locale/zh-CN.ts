@@ -106,6 +106,10 @@ export default {
     connection: '连接',
     bittorrent: 'BitTorrent',
 
+    rss_processing_enabled: '启用自动刷新',
+    rss_auto_downloading_enabled: '启用自动下载种子',
+    rss_refresh_interval: '订阅刷新间隔',
+
     webui: 'Web UI',
     data_update_interval: '数据更新频率(ms)',
     webui_remote_control: 'Web 用户界面(远程控制)',

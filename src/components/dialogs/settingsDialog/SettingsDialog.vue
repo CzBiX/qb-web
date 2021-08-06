@@ -5,7 +5,7 @@
       @input="$emit('input', $event)"
       scrollable
       persistent
-      fullscreen
+      max-width="720px"
     >
       <v-card>
         <v-card-title class="headline">
@@ -45,6 +45,9 @@
             <v-tab-item key="speed">
               <speed-settings />
             </v-tab-item>
+            <v-tab-item key="rss">
+              <rss-settings />
+            </v-tab-item>
             <v-tab-item key="webui">
               <web-u-i-settings />
             </v-tab-item>
@@ -62,7 +65,8 @@ import DownloadSettings from './DownloadSettings.vue'
 import SpeedSettings from './SpeedSettings.vue'
 import {mapGetters} from 'vuex'
 import {Preferences} from '@/types'
-import WebUISettings from '@/components/dialogs/settingsDialog/WebUISettings.vue'
+import WebUISettings from './WebUISettings.vue'
+import RssSettings from './RssSettings.vue'
 import {Config} from '@/store/config'
 import { timeout } from '@/utils'
 
@@ -71,6 +75,7 @@ import { timeout } from '@/utils'
     DownloadSettings,
     SpeedSettings,
     WebUISettings,
+    RssSettings,
   },
   computed: {
     ...mapGetters({
@@ -87,8 +92,8 @@ export default class SettingsDialog extends Vue {
   config!: Config
 
   preferenceUpdated = false
-  tabList = ['downloads', 'speed', 'webui']
-  tab = 'speed'
+  tabList = ['downloads', 'speed', 'rss', 'webui']
+  tab = 'download'
 
   @Watch('preferences')
   @Watch('config')

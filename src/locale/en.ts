@@ -109,6 +109,11 @@ export default {
     connection: 'Connections',
     bittorrent: 'BitTorrent',
 
+    rss: 'RSS',
+    rss_processing_enabled: 'Enable fetching RSS feeds',
+    rss_auto_downloading_enabled: 'Enable auto downloading of RSS torrents',
+    rss_refresh_interval: 'Feeds refresh interval',
+
     webui: 'Web UI',
     data_update_interval: 'Data Update Interval (ms)',
     webui_remote_control: 'Web User Interface (Remote control)',
