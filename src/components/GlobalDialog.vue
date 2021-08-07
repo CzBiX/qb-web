@@ -117,7 +117,7 @@ export default {
       }
 
       clickBtn(null);
-    }, { lazy: true });
+    });
 
     const btns = computed(() => {
       const c = config.value;
