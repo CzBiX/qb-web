@@ -6,7 +6,7 @@ import { isPlainObject } from 'lodash';
 export const stateMerge = function(state: any, value: any, propName?: string, ignoreNull?: boolean) {
 	if (isPlainObject(state) && (propName == null || propName in state)) {
 		const o = propName == null ? state : state[propName];
-		if (o != null) {
+		if (o != null && isPlainObject(value)) {
 			for (const prop in value) {
 				stateMerge(o, value[prop], prop, ignoreNull);
 			}
