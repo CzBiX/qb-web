@@ -174,13 +174,7 @@ class Api {
   }
 
   public getTorrentTracker(hash: string) {
-    const params = {
-      hash,
-    };
-
-    return this.axios.get('/torrents/trackers', {
-      params,
-    }).then(Api.handleResponse);
+    return this.actionTorrent('trackers', hash);
   }
 
   public getTorrentPeers(hash: string, rid?: number) {
@@ -195,7 +189,7 @@ class Api {
   }
 
   public editTracker(hash: string, origUrl: string, newUrl: string) {
-    return this.actionTorrents('editTracker', [hash], { origUrl, newUrl });
+    return this.actionTorrent('editTracker', hash, { origUrl, newUrl });
   }
 
   public setTorrentLocation(hashes: string[], location: string) {
@@ -349,6 +343,15 @@ class Api {
     });
 
     return this.axios.post('/search/enablePlugin', body).then(Api.handleResponse);
+  }
+
+  private actionTorrent(action: string, hash: string, extra?: any) {
+    const params: any = {
+      hash,
+      ...extra,
+    };
+    const data = new URLSearchParams(params);
+    return this.axios.post(`/torrents/${action}`, data).then(Api.handleResponse);
   }
 
   private actionTorrents(action: string, hashes: string[], extra?: any) {
