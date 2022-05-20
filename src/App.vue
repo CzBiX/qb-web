@@ -5,7 +5,7 @@
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
       v-class:phone-layout="phoneLayout"
-      width="300"
+      width="400"
     >
       <drawer v-model="drawerOptions" />
 

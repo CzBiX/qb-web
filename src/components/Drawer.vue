@@ -65,7 +65,7 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
 import { tr } from '@/locale';
-import { Torrent, Category } from '@/types';
+import { Torrent, Category, RootPath } from '@/types';
 import FilterGroup from './drawer/FilterGroup.vue';
 import api from '../Api';
 import { formatSize } from '@/filters';
@@ -144,6 +144,7 @@ interface MenuChildrenItem extends MenuItem {
       'torrentGroupByCategory',
       'torrentGroupBySite',
       'torrentGroupByState',
+      'torrentGroupBySavePath',
     ]),
   },
 })
@@ -168,6 +169,7 @@ export default class Drawer extends Vue {
   torrentGroupByCategory!: {[category: string]: Torrent[]}
   torrentGroupBySite!: {[site: string]: Torrent[]}
   torrentGroupByState!: {[state: string]: Torrent[]}
+  torrentGroupBySavePath!: RootPath
 
   created() {
    if (this.phoneLayout) {
@@ -227,6 +229,20 @@ export default class Drawer extends Vue {
     }), 'title');
   }
 
+
+  buildSavePathGroup(): MenuChildrenItem[] {
+    return sortBy(Object.entries(this.torrentGroupBySavePath.link).map(([key, value]) => {
+      const size = formatSize(value.size);
+      const realSize = formatSize(value.realSize);
+      const title = `${key} (${value.torrents.length})`;
+      const icon = value.torrents.length ? 'mdi-folder' : 'mdi-folder-outline';
+      const append = `[${realSize} | ${size}]`;
+      return {
+        icon, title, key, append,
+      };
+    }), 'title');
+  }
+
   get items() {
     if (!this.isDataReady) {
       return this.endItems
@@ -275,6 +291,15 @@ export default class Drawer extends Vue {
         },
         ...this.buildSiteGroup(),
       ],
+    });
+
+    filterGroups.push({
+      icon: 'mdi-menu-up',
+      'icon-alt': 'mdi-menu-down',
+      title: tr('savePath'),
+      model: null,
+      select: 'savePath',
+      children: this.buildSavePathGroup(),
     });
 
     return ([] as MenuItem[]).concat([{filterGroups}] as any, this.endItems);

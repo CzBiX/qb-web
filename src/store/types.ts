@@ -27,6 +27,7 @@ export interface TorrentFilter {
   category: string;
   site: string;
   query: string;
+  savePath: string | null;
 }
 
 export interface ConfigState {

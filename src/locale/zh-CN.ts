@@ -55,6 +55,7 @@ export default {
   uncategorized: '未分类',
   others: '其他',
   sites: '站点',
+  savePath: '保存路径',
   files: '文件',
   less: '更少',
   more: '更多',

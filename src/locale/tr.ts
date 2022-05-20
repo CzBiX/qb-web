@@ -54,6 +54,7 @@ export default {
   uncategorized: 'Kategorilenmemiş',
   others: 'Diğerleri',
   sites: 'Siteler',
+  savePath: 'Dizini Kaydet',
   files: 'Dosyalar',
   less: 'Daha Az',
   more: 'Daha Çok',

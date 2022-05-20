@@ -14,6 +14,7 @@ export interface Config {
     category: string | null;
     site: string | null;
     query: string | null;
+    savePath: string | null;
   };
   locale: string | null;
   darkMode: string | null;
@@ -31,6 +32,7 @@ const defaultConfig = {
     category: null,
     site: null,
     query: null,
+    savePath: null,
   },
   locale: null,
   darkMode: null,

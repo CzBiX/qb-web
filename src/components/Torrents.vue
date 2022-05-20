@@ -248,7 +248,7 @@ import api from '../Api'
 import { formatSize } from '@/filters'
 import { DialogType, TorrentFilter, ConfigPayload, DialogConfig, SnackBarConfig } from '@/store/types'
 import Component from 'vue-class-component'
-import { Torrent, Category } from '@/types'
+import { Torrent, Category, RootPath } from '@/types'
 import { Watch } from 'vue-property-decorator'
 
 function getStateInfo(state: string) {
@@ -341,6 +341,7 @@ function getStateInfo(state: string) {
       'torrentGroupByCategory',
       'torrentGroupBySite',
       'torrentGroupByState',
+      'torrentGroupBySavePath',
     ]),
     ...mapState({
       filter(state, getters) {
@@ -416,6 +417,7 @@ export default class Torrents extends Vue {
   torrentGroupByCategory!: {[category: string]: Torrent[]}
   torrentGroupBySite!: {[site: string]: Torrent[]}
   torrentGroupByState!: {[state: string]: Torrent[]}
+  torrentGroupBySavePath!: RootPath
   filter!: TorrentFilter
 
   updateConfig!: (_: ConfigPayload) => void
@@ -446,6 +448,12 @@ export default class Torrents extends Vue {
     }
     if (this.filter.state !== null) {
       list = intersection(list, this.torrentGroupByState[this.filter.state]);
+    }
+    if (this.filter.savePath !== null) {
+      list = intersection(list, this.torrentGroupBySavePath.link[this.filter.savePath].torrents);
+      // walkdir(this.torrentGroupBySavePath.link[this.filter.savePath], dir => {
+      //   list = intersection(list, dir.torrents);
+      // });
     }
     if (this.filter.query) {
       const q = this.filter.query.toLowerCase();

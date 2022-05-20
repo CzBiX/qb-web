@@ -55,6 +55,7 @@ export default {
   uncategorized: 'Uncategorized',
   others: 'Others',
   sites: 'Sites',
+  savePath: 'Save Path',
   files: 'Files',
   less: 'Less',
   more: 'More',

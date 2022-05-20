@@ -54,6 +54,7 @@ export default {
   uncategorized: 'Без категории',
   others: 'Другие',
   sites: 'Сайты',
+  savePath: 'Путь сохранения',
   files: 'Файлы',
   less: 'Меньше',
   more: 'Больше',

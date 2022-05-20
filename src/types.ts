@@ -48,6 +48,19 @@ export interface Torrent extends BaseTorrent {
   hash: string;
 }
 
+export interface SavePlace {
+  key: string;
+  dirname: [string,...string[]];
+  torrents: Torrent[];
+  size: number;
+  realSize: number;
+  subdirs: SavePlace[];
+}
+
+export interface RootPath extends SavePlace {
+  link: Record<string, SavePlace>;
+}
+
 export interface Category {
   key: string;
   name: string;

@@ -56,6 +56,7 @@ export default {
   others: '其他',
   sites: '站點',
   files: '文件',
+  savePath: '保存路徑',
   less: '更少',
   more: '更多',
   feed: '訂閱',
