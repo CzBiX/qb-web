@@ -124,7 +124,7 @@ export default {
     web_ui_username: 'Username',
     web_ui_password: 'Password',
     bypass_local_auth: 'Bypass authentication for clients on localhost',
-    bypass_auth_subnet_whitelist: 'Bypass authentication for clients on localhost',
+    bypass_auth_subnet_whitelist: 'Bypass authentication for clients in whitelisted IP subnets',
     web_ui_session_timeout: 'Session timeout',
     web_ui_max_auth_fail_count: 'Ban client after consecutive failures',
     web_ui_ban_duration: 'ban for',
