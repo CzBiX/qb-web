@@ -66,6 +66,11 @@ export interface SimpleCategory {
   savePath?: string;
 }
 
+export interface Tag {
+  key: string;
+  name: string;
+}
+
 export interface ServerState {
   alltime_dl: number;
   alltime_ul: number;
@@ -95,6 +100,7 @@ export interface ServerState {
 
 export interface MainData {
   categories: Record<string, Category>;
+  tags: [string];
   server_state: ServerState;
   torrents: Record<string, BaseTorrent>;
 }
