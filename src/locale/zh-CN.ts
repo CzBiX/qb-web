@@ -53,6 +53,8 @@ export default {
   all: '全部',
   category: '分类',
   uncategorized: '未分类',
+  tag: '标签',
+  untagged: '无标签',
   others: '其他',
   sites: '站点',
   files: '文件',

@@ -53,6 +53,12 @@ const store = new Vuex.Store<RootState>({
           }
           delete payload.categories_removed;
         }
+        if (payload.tags_removed) {
+          for (const key of payload.tags_removed) {
+            Vue.delete(mainData, key);
+          }
+          delete payload.categories_removed;
+        }
         stateMerge(mainData, payload);
       }
     },
@@ -94,8 +100,37 @@ const store = new Vuex.Store<RootState>({
         (value, key) => merge({}, value, { key }));
       return sortBy(categories, 'name');
     },
+    allTags(state) {
+      if (!state.mainData) {
+        return [];
+      }
+
+      const finalTags: any[] = []
+      for (const tag of state.mainData.tags) {
+        finalTags.push({
+          "key": tag,
+          "name": tag,
+        });
+      }
+      return sortBy(finalTags, 'name');
+    },
     torrentGroupByCategory(state, getters) {
       return groupBy(getters.allTorrents, torrent => torrent.category);
+    },
+    torrentGroupByTag(state, getters) {
+      const result: any = {}
+      for (const torrent of getters.allTorrents) {
+        const tags: any[] = torrent.tags.split(",");
+        tags.forEach(tag => {
+          let list: any[] = result[tag]
+          if (!list) {
+            list = []
+            result[tag] = list;
+          }
+          list.push(torrent);
+        });
+      }
+      return result;
     },
     torrentGroupBySite(state, getters) {
       return groupBy(getters.allTorrents, (torrent) => {

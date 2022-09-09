@@ -65,7 +65,7 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
 import { tr } from '@/locale';
-import { Torrent, Category } from '@/types';
+import { Torrent, Category, Tag } from '@/types';
 import FilterGroup from './drawer/FilterGroup.vue';
 import api from '../Api';
 import { formatSize } from '@/filters';
@@ -141,7 +141,9 @@ interface MenuChildrenItem extends MenuItem {
       'isDataReady',
       'allTorrents',
       'allCategories',
+      'allTags',
       'torrentGroupByCategory',
+      'torrentGroupByTag',
       'torrentGroupBySite',
       'torrentGroupByState',
     ]),
@@ -165,7 +167,9 @@ export default class Drawer extends Vue {
   isDataReady!: boolean
   allTorrents!: Torrent[]
   allCategories!: Category[]
+  allTags!: Tag[]
   torrentGroupByCategory!: {[category: string]: Torrent[]}
+  torrentGroupByTag!: {[tag: string]: Torrent[]}
   torrentGroupBySite!: {[site: string]: Torrent[]}
   torrentGroupByState!: {[state: string]: Torrent[]}
 
@@ -210,6 +214,24 @@ export default class Drawer extends Vue {
       const append = `[${size}]`;
       return {
         icon: 'mdi-folder', title, key: category.key, append,
+      };
+    });
+  }
+
+  buildTagGroup(): MenuChildrenItem[] {
+    return [{
+      key: '',
+      name: tr('untagged'),
+    }].concat(this.allTags).map((tag) => {
+      let value = this.torrentGroupByTag[tag.key];
+      if (isUndefined(value)) {
+        value = [];
+      }
+      const size = formatSize(sumBy(value, 'size'));
+      const title = `${tag.name} (${value.length})`;
+      const append = `[${size}]`;
+      return {
+        icon: 'mdi-folder', title, key: tag.key, append,
       };
     });
   }
@@ -260,6 +282,20 @@ export default class Drawer extends Vue {
           icon: 'mdi-folder', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
         },
         ...this.buildCategoryGroup(),
+      ],
+    });
+
+    filterGroups.push({
+      icon: 'mdi-menu-up',
+      'icon-alt': 'mdi-menu-down',
+      title: tr('tag', 0),
+      model: null,
+      select: 'tag',
+      children: [
+        {
+          icon: 'mdi-folder', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+        },
+        ...this.buildTagGroup(),
       ],
     });
 

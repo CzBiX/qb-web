@@ -25,6 +25,7 @@ export interface AddFormState {
 export interface TorrentFilter {
   state: string;
   category: string;
+  tag: string;
   site: string;
   query: string;
 }

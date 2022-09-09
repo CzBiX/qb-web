@@ -248,7 +248,7 @@ import api from '../Api'
 import { formatSize } from '@/filters'
 import { DialogType, TorrentFilter, ConfigPayload, DialogConfig, SnackBarConfig } from '@/store/types'
 import Component from 'vue-class-component'
-import { Torrent, Category } from '@/types'
+import { Torrent, Category, Tag } from '@/types'
 import { Watch } from 'vue-property-decorator'
 
 function getStateInfo(state: string) {
@@ -337,8 +337,10 @@ function getStateInfo(state: string) {
     ...mapGetters([
       'isDataReady',
       'allTorrents',
+      'allTags',
       'allCategories',
       'torrentGroupByCategory',
+      'torrentGroupByTag',
       'torrentGroupBySite',
       'torrentGroupByState',
     ]),
@@ -413,7 +415,9 @@ export default class Torrents extends Vue {
   isDataReady!: boolean
   allTorrents!: Torrent[]
   allCategories!: Category[]
+  allTags!: Tag[]
   torrentGroupByCategory!: {[category: string]: Torrent[]}
+  torrentGroupByTag!: {[tag: string]: Torrent[]}
   torrentGroupBySite!: {[site: string]: Torrent[]}
   torrentGroupByState!: {[state: string]: Torrent[]}
   filter!: TorrentFilter
@@ -443,6 +447,9 @@ export default class Torrents extends Vue {
     }
     if (this.filter.category !== null) {
       list = intersection(list, this.torrentGroupByCategory[this.filter.category]);
+    }
+    if (this.filter.tag !== null) {
+      list = intersection(list, this.torrentGroupByTag[this.filter.tag]);
     }
     if (this.filter.state !== null) {
       list = intersection(list, this.torrentGroupByState[this.filter.state]);
