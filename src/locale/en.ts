@@ -53,6 +53,8 @@ export default {
   all: 'All',
   category: 'Category |||| Categories',
   uncategorized: 'Uncategorized',
+  tag: 'Tag',
+  untagged: 'Untagged',
   others: 'Others',
   sites: 'Sites',
   files: 'Files',
