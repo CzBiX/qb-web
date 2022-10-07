@@ -3,9 +3,15 @@ import Vue from 'vue';
 
 /* eslint-disable no-param-reassign */
 export function toPrecision(value: number, precision: number) {
-  if (value >= (10 ** precision)) {
+  const limit = 10 ** precision;
+  if (value >= limit) {
     return value.toString();
-  } if (value >= 1) {
+  }
+  if (value >= 1) {
+    if (value >= limit - 1) {
+      return limit.toString();
+    }
+
     return value.toPrecision(precision);
   }
 
@@ -14,18 +20,20 @@ export function toPrecision(value: number, precision: number) {
 
 export function formatSize(value: number): string {
   const units = 'KMGTP';
-  let index = -1;
+  let index = value ? Math.floor(Math.log2(value) / 10) : 0;
 
-  while (value >= 1000) {
+  value = value / (1024 ** index);
+  if (value >= 999) {
     value /= 1024;
     index++;
   }
 
-  const unit = index < 0 ? 'B' : `${units[index]}iB`;
+  const unit = index === 0 ? 'B' : `${units[index - 1]}iB`;
 
-  if (index < 0) {
+  if (index === 0) {
     return `${value} ${unit}`;
   }
+
   return `${toPrecision(value, 3)} ${unit}`;
 }
 
