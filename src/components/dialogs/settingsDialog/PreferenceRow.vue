@@ -3,17 +3,18 @@
     align="center"
     dense
   >
-    <v-col cols="3">
-      <v-subheader v-text="$t('preferences.' + this.$props.i18nKey)" />
-    </v-col>
-    <v-col cols="4">
-      <slot />
-    </v-col>
     <v-col
       cols="auto"
       v-if="$slots.header"
+      class="header"
     >
       <slot name="header" />
+    </v-col>
+    <v-col>
+      <span v-text="$t('preferences.' + this.$props.i18nKey)" />
+    </v-col>
+    <v-col>
+      <slot />
     </v-col>
   </v-row>
 </template>
@@ -28,3 +29,9 @@ export default class PreferenceRow extends Vue {
   readonly i18nKey?: string
 }
 </script>
+
+<style lang="scss" scoped>
+.header {
+  height: 48px;
+}
+</style>

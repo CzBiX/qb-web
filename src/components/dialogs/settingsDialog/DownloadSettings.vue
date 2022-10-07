@@ -46,6 +46,7 @@
     >
       <preference-row i18n-key="auto_tmm_enabled">
         <v-select
+          dense
           :items="torrentMode"
           :value="preferences.auto_tmm_enabled ? torrentMode[0] : torrentMode[1]"
           @change="changeSettings('auto_tmm_enabled', $event == torrentMode[0])"
@@ -53,6 +54,7 @@
       </preference-row>
       <preference-row i18n-key="torrent_changed_tmm_enabled">
         <v-select
+          dense
           :items="torrentAction"
           :value="preferences.category_changed_tmm_enabled ? torrentAction[1] : torrentAction[0]"
           @change="changeSettings('torrent_changed_tmm_enabled', $event == torrentAction[1])"
@@ -60,6 +62,7 @@
       </preference-row>
       <preference-row i18n-key="save_path_changed_tmm_enabled">
         <v-select
+          dense
           :items="torrentAction"
           :value="preferences.category_changed_tmm_enabled ? torrentAction[1] : torrentAction[0]"
           @change="changeSettings('save_path_changed_tmm_enabled', $event == torrentAction[1])"
@@ -67,6 +70,7 @@
       </preference-row>
       <preference-row i18n-key="category_changed_tmm_enabled">
         <v-select
+          dense
           :items="torrentAction"
           :value="preferences.category_changed_tmm_enabled ? torrentAction[1] : torrentAction[0]"
           @change="changeSettings('category_changed_tmm_enabled', $event == torrentAction[1])"
@@ -74,6 +78,7 @@
       </preference-row>
       <preference-row i18n-key="save_path">
         <v-text-field
+          dense
           :value="preferences.save_path"
           @change="changeSettings('save_path', $event)"
           lazy
@@ -82,6 +87,7 @@
       <preference-row i18n-key="temp_path">
         <template v-slot:header>
           <v-checkbox
+            dense
             :value="preferences.temp_path_enabled"
             @change="changeSettings('temp_path_enabled', $event)"
           />
@@ -91,6 +97,7 @@
           :value="preferences.temp_path"
           @change="changeSettings('temp_path', $event)"
           lazy
+          dense
         />
       </preference-row>
       <preference-row
