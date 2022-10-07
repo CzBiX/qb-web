@@ -53,7 +53,7 @@ export default {
   all: 'All',
   category: 'Category |||| Categories',
   uncategorized: 'Uncategorized',
-  tag: 'Tag',
+  tag: 'Tag |||| Tags',
   untagged: 'Untagged',
   others: 'Others',
   sites: 'Sites',
