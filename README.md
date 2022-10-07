@@ -17,7 +17,7 @@ see: [Wiki](https://github.com/CzBiX/qb-web/wiki/How-to-use)
 
 ## Wiki
 
-[Use Nginx to running multi WebUI at the same time](https://github.com/CzBiX/qb-web/wiki/Use-Nginx-to-running-multi-WebUI-at-the-same-time)
+[Running multi WebUI at the same time](https://github.com/CzBiX/qb-web/wiki/Running-multi-WebUI-at-the-same-time)
 
 ## Screenshot
 
