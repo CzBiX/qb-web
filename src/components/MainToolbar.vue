@@ -45,12 +45,11 @@ import { mapMutations } from 'vuex';
 
 import Component from 'vue-class-component';
 import { Prop, Emit } from 'vue-property-decorator';
-import { ConfigPayload } from '@/store/types';
 
 @Component({
   methods: {
     ...mapMutations([
-      'updateConfig',
+      'setQuery',
     ]),
   },
 })
@@ -58,12 +57,12 @@ export default class MainToolbar extends Vue {
   @Prop(Boolean)
   readonly value!: boolean
 
-  updateConfig!: (_: ConfigPayload) => void
+  setQuery!: (_: string | null) => void
 
   focusedSearch = false
 
   get searchQuery() {
-    return this.$store.getters.config.filter.query;
+    return this.$store.state.query;
   }
 
   get phoneLayout() {
@@ -82,12 +81,7 @@ export default class MainToolbar extends Vue {
   onSearch = throttle(async (v: string) => {
     // avoid input lag
     await this.$nextTick();
-    this.updateConfig({
-      key: 'filter',
-      value: {
-        query: v,
-      },
-    });
+    this.setQuery(v || null);
   }, 400)
 }
 </script>

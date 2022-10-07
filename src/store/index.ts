@@ -30,6 +30,7 @@ const store = new Vuex.Store<RootState>({
     preferences: null,
     pasteUrl: null,
     needAuth: false,
+    query: null,
   },
   mutations: {
     /* eslint-disable no-param-reassign */
@@ -71,6 +72,9 @@ const store = new Vuex.Store<RootState>({
     },
     updateNeedAuth(state, payload) {
       state.needAuth = payload;
+    },
+    setQuery(state, payload) {
+      state.query = payload;
     },
     /* eslint-enable no-param-reassign */
   },

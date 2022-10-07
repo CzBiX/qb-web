@@ -13,7 +13,6 @@ export interface Config {
     state: string | null;
     category: string | null;
     site: string | null;
-    query: string | null;
   };
   locale: string | null;
   darkMode: string | null;
@@ -30,7 +29,6 @@ const defaultConfig = {
     state: null,
     category: null,
     site: null,
-    query: null,
   },
   locale: null,
   darkMode: null,

@@ -348,6 +348,9 @@ function getStateInfo(state: string) {
       filter(state, getters) {
         return getters.config.filter;
       },
+      query(state: any) {
+        return state.query;
+      },
     }),
   },
   filters: {
@@ -421,6 +424,7 @@ export default class Torrents extends Vue {
   torrentGroupBySite!: {[site: string]: Torrent[]}
   torrentGroupByState!: {[state: string]: Torrent[]}
   filter!: TorrentFilter
+  query!: string | null
 
   updateConfig!: (_: ConfigPayload) => void
   showSnackBar!: (_: SnackBarConfig) => void
@@ -454,8 +458,8 @@ export default class Torrents extends Vue {
     if (this.filter.state !== null) {
       list = intersection(list, this.torrentGroupByState[this.filter.state]);
     }
-    if (this.filter.query) {
-      const q = this.filter.query.toLowerCase();
+    if (this.query) {
+      const q = this.query.toLowerCase();
 
       list = list.filter(t => {
         return t.name.toLowerCase().includes(q) ||

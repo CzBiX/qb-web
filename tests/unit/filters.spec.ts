@@ -44,7 +44,7 @@ describe('format duration', () => {
 
 describe('format timestamp', () => {
   test.each([
-    // [948602096, '2000-01-23 12:34:56'], # comment for timezone issue
+    // [948602096, '2000-01-23 12:34:56'], # commented out due to timezone issue
     [null, ''],
     [-1, ''],
   ])('case %#', (value, result) => {
