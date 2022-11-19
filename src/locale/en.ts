@@ -182,30 +182,30 @@ export default {
       text: 'Are you sure you want to exit qBittorrent?',
     },
     add_torrents: {
-      placeholder: 'Upload torrents by drop them here,\nor click attachment button at right to select.',
+      placeholder: 'Upload torrents by dropping them here,\nor click attachment button at right to select.',
       hint: 'One link per line',
     },
     delete_torrents: {
-      msg: 'Are you sure to delete selected torrents from transfer list?',
+      msg: 'Are you sure you want to delete selected torrents from transfer list?',
       also_delete_same_name_torrents: 'Also delete one same named torrent |||| Also delete %{smart_count} same named torrents',
     },
     set_category: {
-      move: 'Are you sure to move selected torrents to category %{category}?',
-      reset: 'Are you sure to reset category of selected torrents?',
+      move: 'Are you sure you want to move selected torrents to category %{category}?',
+      reset: 'Are you sure you want to reset category of selected torrents?',
       also_move_same_name_torrents: 'Also move one same named torrent |||| Also move %{smart_count} same named torrents',
     },
     switch_locale: {
-      msg: 'Are you sure to switch language to %{lang}?\nThis action will reload page.',
+      msg: 'Are you sure you want to switch language to %{lang}?\nThis action will reload page.',
     },
     recheck_torrents: {
-      msg: 'Are you sure want to recheck torrents?',
+      msg: 'Are you sure you want to recheck torrents?',
     },
     rss: {
       add_feed: 'Add Feed',
       feed_url: 'Feed URL',
       auto_refresh: 'Auto Refresh',
       auto_download: 'Auto Download',
-      delete_feeds: 'Are you sure to delete selected feeds?',
+      delete_feeds: 'Are you sure you want to delete selected feeds?',
       date_format: '%{date} (%{duration} ago)',
     },
     rss_rule: {
