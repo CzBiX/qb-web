@@ -11,13 +11,14 @@ export interface SiteInfo {
   icon: string;
 }
 
+// 遵循 PTPP 站点命名, 若果
 const sites: {[key: string]: SiteInfo} = {
   'tracker.m-team.cc': {
     name: 'M-Team',
     icon: getSiteIcon('m-team'),
   },
   'tracker.keepfrds.com': {
-    name: 'FRDS',
+    name: 'PT@KEEPFRDS',
     icon: getSiteIcon('keepfrds'),
   },
   'springsunday.net': {
@@ -57,11 +58,11 @@ const sites: {[key: string]: SiteInfo} = {
     icon: getSiteIcon('oshen'),
   },
   'pt.soulvoice.club': {
-    name: 'soulvoice',
+    name: '铃音Club',
     icon: getSiteIcon('soulvoice'),
   },
   'ourbits.club': {
-    name: 'ourbits',
+    name: 'OurBits',
     icon: getSiteIcon('ourbits'),
   },
   'pt.btschool.club': {
@@ -69,19 +70,19 @@ const sites: {[key: string]: SiteInfo} = {
     icon: getSiteIcon('btschool'),
   },
   'ptsbao.club': {
-    name: 'ptsbao',
+    name: '烧包',
     icon: getSiteIcon('ptsbao'),
   },
   'tp.msg.vg': {
-    name: 'msg',
+    name: 'PTMSG',
     icon: getSiteIcon('msg'),
   },
   'tracker.pterclub.com': {
-    name: 'pterclub',
+    name: 'PTer',
     icon: getSiteIcon('pterclub'),
   },
   'tracker.hdtime.org': {
-    name: 'hdtime',
+    name: 'HDTime',
     icon: getSiteIcon('hdtime'),
   },
   'www.hddolby.com': {
@@ -93,7 +94,7 @@ const sites: {[key: string]: SiteInfo} = {
     icon: getSiteIcon('leaguehd'),
   },
   'club.hares.top': {
-    name: 'hares',
+    name: 'HaresClub',
     icon: getSiteIcon('hares'),
   },
   'tracker.hd.ai': {
@@ -105,7 +106,7 @@ const sites: {[key: string]: SiteInfo} = {
     icon: getSiteIcon('pthome'),
   },
   't.pthome.net': {
-    name: 'pthome',
+    name: 'PTHome',
     icon: getSiteIcon('pthome'),
   },
   'tracker.hdsky.me': {
@@ -125,15 +126,15 @@ const sites: {[key: string]: SiteInfo} = {
     icon: getSiteIcon('hdzone'),
   },
   'tracker.open.cd': {
-    name: 'opencd',
+    name: 'OpenCD',
     icon: getSiteIcon('opencd'),
   },
   '1ptba.com': {
-    name: '1ptba',
+    name: '1PTBar',
     icon: getSiteIcon('1ptba'),
   },
   'announce.haidan.video': {
-    name: 'haidan',
+    name: 'HaiDan',
     icon: getSiteIcon('haidan'),
   },
   'www.pttime.org': {
@@ -141,8 +142,20 @@ const sites: {[key: string]: SiteInfo} = {
     icon: getSiteIcon('pttime'),
   },
   'www.beitai.pt': {
-    name: 'beitai',
+    name: '备胎',
     icon: getSiteIcon('beitai'),
+  },
+  'kamept.com': {
+    name: 'kamept',
+    icon: getSiteIcon('kamept'),
+  },
+  'www.nicept.net': {
+    name: 'NicePT',
+    icon: getSiteIcon('nicept'),
+  },
+  'pt.2xfree.org': {
+    name: '2xfree',
+    icon: getSiteIcon('2xfree'),
   },
 };
 
