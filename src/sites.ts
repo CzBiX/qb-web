@@ -1,31 +1,22 @@
 function getSiteIcon(name: string): string {
-  try {
-    return require(`@/assets/site_icons/${name}.png`);
-  } catch (e) {
-    return require(`@/assets/logo.png`);
-  }
+  return require(`@/assets/site_icons/${name}.png`);
 }
 
 export interface SiteInfo {
   name: string;
-  icon: string;
+  icon?: string;
 }
 
-// 遵循 PTPP 站点命名, 若果
 const sites: {[key: string]: SiteInfo} = {
-  'tracker.m-team.cc': {
+  'm-team.cc': {
     name: 'M-Team',
     icon: getSiteIcon('m-team'),
   },
-  'tracker.keepfrds.com': {
+  'keepfrds.com': {
     name: 'PT@KEEPFRDS',
     icon: getSiteIcon('keepfrds'),
   },
   'springsunday.net': {
-    name: 'SSD',
-    icon: getSiteIcon('springsunday'),
-  },
-  'on.springsunday.net': {
     name: 'SSD',
     icon: getSiteIcon('springsunday'),
   },
@@ -39,25 +30,25 @@ const sites: {[key: string]: SiteInfo} = {
   },
   'hdhome.org': {
     name: 'HDHome',
-    icon: getSiteIcon('hdhome'),
+    icon: getSiteIcon('nexusphp'),
   },
-  'u2.dmhy.org': {
+  'dmhy.org': {
     name: 'U2',
     icon: getSiteIcon('u2'),
   },
-  'daydream.dmhy.best': {
+  'dmhy.best': {
     name: 'U2',
     icon: getSiteIcon('u2'),
   },
-  'tracker.totheglory.im': {
+  'totheglory.im': {
     name: 'TTG',
     icon: getSiteIcon('totheglory'),
   },
-  'www.oshen.win': {
-    name: 'oshen',
-    icon: getSiteIcon('oshen'),
+  'oshen.win': {
+    name: 'OshenPT',
+    icon: getSiteIcon('nexusphp'),
   },
-  'pt.soulvoice.club': {
+  'soulvoice.club': {
     name: '铃音Club',
     icon: getSiteIcon('soulvoice'),
   },
@@ -65,95 +56,77 @@ const sites: {[key: string]: SiteInfo} = {
     name: 'OurBits',
     icon: getSiteIcon('ourbits'),
   },
-  'pt.btschool.club': {
-    name: 'btschool',
-    icon: getSiteIcon('btschool'),
+  'btschool.club': {
+    name: 'BTSCHOOL',
   },
   'ptsbao.club': {
     name: '烧包',
     icon: getSiteIcon('ptsbao'),
   },
-  'tp.msg.vg': {
-    name: 'PTMSG',
-    icon: getSiteIcon('msg'),
-  },
-  'tracker.pterclub.com': {
+  'pterclub.com': {
     name: 'PTer',
     icon: getSiteIcon('pterclub'),
   },
-  'tracker.hdtime.org': {
+  'hdtime.org': {
     name: 'HDTime',
     icon: getSiteIcon('hdtime'),
   },
-  'www.hddolby.com': {
-    name: 'hddolby',
-    icon: getSiteIcon('hddolby'),
+  'hddolby.com': {
+    name: 'HD Dolby',
   },
-  'announce.leaguehd.com': {
-    name: 'leaguehd',
-    icon: getSiteIcon('leaguehd'),
+  'lemonhd.org': {
+    name: 'LemonHD',
+    icon: getSiteIcon('lemonhd'),
   },
-  'club.hares.top': {
+  'hares.top': {
     name: 'HaresClub',
     icon: getSiteIcon('hares'),
   },
-  'tracker.hd.ai': {
-    name: 'haidai',
-    icon: getSiteIcon('haidai'),
-  },
-  'www.pthome.net': {
-    name: 'pthome',
+  'pthome.net': {
+    name: 'PTHOME',
     icon: getSiteIcon('pthome'),
   },
-  't.pthome.net': {
-    name: 'PTHome',
-    icon: getSiteIcon('pthome'),
-  },
-  'tracker.hdsky.me': {
-    name: 'hdsky',
+  'hdsky.me': {
+    name: 'HDSky',
     icon: getSiteIcon('hdsky'),
   },
   'hdfans.org': {
-    name: 'hdfans',
-    icon: getSiteIcon('hdfans'),
+    name: 'HDFans',
+    icon: getSiteIcon('nexusphp'),
   },
   'hdatmos.club': {
-    name: 'hdatmos',
-    icon: getSiteIcon('hdatmos'),
+    name: 'HDAtmos',
+    icon: getSiteIcon('nexusphp'),
   },
   'hdzone.me': {
-    name: 'hdzone',
-    icon: getSiteIcon('hdzone'),
+    name: 'HDZone',
+    icon: getSiteIcon('nexusphp'),
   },
-  'tracker.open.cd': {
+  'open.cd': {
     name: 'OpenCD',
     icon: getSiteIcon('opencd'),
   },
   '1ptba.com': {
     name: '1PTBar',
-    icon: getSiteIcon('1ptba'),
+    icon: getSiteIcon('nexusphp'),
   },
-  'announce.haidan.video': {
-    name: 'HaiDan',
-    icon: getSiteIcon('haidan'),
-  },
-  'www.pttime.org': {
-    name: 'pttime',
+  'pttime.org': {
+    name: 'PTTime',
     icon: getSiteIcon('pttime'),
   },
-  'www.beitai.pt': {
+  'beitai.pt': {
     name: '备胎',
-    icon: getSiteIcon('beitai'),
+    icon: getSiteIcon('nexusphp'),
   },
   'kamept.com': {
     name: 'kamept',
     icon: getSiteIcon('kamept'),
   },
-  'www.nicept.net': {
+  'nicept.net': {
     name: 'NicePT',
-    icon: getSiteIcon('nicept'),
+    icon: getSiteIcon('nexusphp'),
   },
-  'pt.2xfree.org': {
+  '2xfree.org': {
     name: '2xfree',
     icon: getSiteIcon('2xfree'),
   },

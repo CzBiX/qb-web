@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { sortBy, sumBy, defaultTo, isUndefined } from 'lodash';
+import { sortBy, sumBy, isUndefined } from 'lodash';
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 
@@ -130,6 +130,14 @@ interface MenuItem {
 interface MenuChildrenItem extends MenuItem {
   key: string | null;
   append?: string;
+}
+
+function getTopDomain(host: string) {
+  const parts = host.split('.');
+  if (parts.length > 2) {
+    return parts.slice(-2).join('.');
+  }
+  return host;
 }
 
 @Component({
@@ -239,9 +247,10 @@ export default class Drawer extends Vue {
   buildSiteGroup(): MenuChildrenItem[] {
     return sortBy(Object.entries(this.torrentGroupBySite).map(([key, value]) => {
       const size = formatSize(sumBy(value, 'size'));
-      const site = SiteMap[key];
+      const domain = getTopDomain(key);
+      const site = SiteMap[domain];
       const title = `${site ? site.name : (key || tr('others'))} (${value.length})`;
-      const icon = defaultTo(site ? site.icon : null, 'mdi-server');
+      const icon = site?.icon ?? 'mdi-server';
       const append = `[${size}]`;
       return {
         icon, title, key, append,
