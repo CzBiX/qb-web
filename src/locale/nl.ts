@@ -18,7 +18,7 @@ export default {
     resume: 'Hervat',
     pause: 'Pauzeren',
     force_start: 'Forceer Starten',
-    toggle_sequential: 'InToggle Sequential Download',
+    toggle_sequential: 'Sequentiële Downloads Inschakelen',
     info: 'Informatie',
     reset: 'Reset',
     login: 'Inloggen',
@@ -35,7 +35,7 @@ export default {
   
     name: 'Naam',
     size: 'Grootte',
-    progress: 'Voortgang',
+    progress: 'Vooruitgang',
     status: 'Status',
     seeds: 'Seeds',
     peers: 'Peers',
@@ -65,9 +65,9 @@ export default {
     query: 'Aanvraag',
     plugin: 'Plugin |||| Plugins',
     action: 'Actie |||| Acties',
-    search_engine: 'Zoek machine',
-    usage: 'verbruik',
-    plugin_manager: 'Plugin Beheren',
+    search_engine: 'Zoekmachine',
+    usage: 'Gebruik',
+    plugin_manager: 'Plugins Beheren',
     update_plugins: 'Plugins Updaten',
   
     preferences: {
