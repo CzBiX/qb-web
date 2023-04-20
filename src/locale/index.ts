@@ -4,6 +4,7 @@ import langRu from './ru';
 import langTr from './tr';
 import langZhCn from './zh-CN';
 import langZhTw from './zh-TW';
+import langNl from './nl';
 
 import { loadConfig } from '@/store/config';
 
@@ -13,6 +14,7 @@ export const translations = {
   'tr': langTr,
   'zh-CN': langZhCn,
   'zh-TW': langZhTw,
+  'nl': langNl,
 }
 
 export type LocaleKey = keyof typeof translations | null;
