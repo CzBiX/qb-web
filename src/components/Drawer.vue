@@ -182,10 +182,6 @@ export default class Drawer extends Vue {
   torrentGroupByState!: {[state: string]: Torrent[]}
 
   created() {
-   if (this.phoneLayout) {
-      return;
-    }
-
     this.endItems = this.endItems.concat(this.pcItems)
   }
 

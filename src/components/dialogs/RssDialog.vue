@@ -544,6 +544,16 @@ export default class RssDialog extends HasTask {
 
     display: flex;
   }
+
+}
+
+@media (max-width: 800px) {
+  .content {
+      .content-inner {
+        display: grid;
+        grid-template-rows: auto auto 1fr auto;
+      }
+  }
 }
 
 .rss-items {
