@@ -6,10 +6,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js
-      uses: actions/setup-node@v1
-    - uses: actions/cache@v2
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+    - uses: actions/cache@v3
       id: cache
       with:
         path: node_modules
