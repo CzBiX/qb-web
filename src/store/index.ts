@@ -13,6 +13,7 @@ import searchEngineStore from './searchEngine';
 import { RootState } from './types';
 import stateMerge from '@/utils/vue-object-merge';
 import api from '@/Api';
+import { Torrent } from '@/types'
 
 Vue.use(Vuex);
 
@@ -122,11 +123,11 @@ const store = new Vuex.Store<RootState>({
       return groupBy(getters.allTorrents, torrent => torrent.category);
     },
     torrentGroupByTag(state, getters) {
-      const result: any = {}
+      const result: Record<string, Torrent[]> = {}
       for (const torrent of getters.allTorrents) {
-        const tags: any[] = torrent.tags.split(",");
+        const tags: string[] = torrent.tags.split(', ');
         tags.forEach(tag => {
-          let list: any[] = result[tag]
+          let list: Torrent[] = result[tag]
           if (!list) {
             list = []
             result[tag] = list;
