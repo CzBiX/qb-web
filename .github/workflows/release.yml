@@ -15,7 +15,9 @@ jobs:
         with:
           node-version: '16'
           cache: yarn
-      - run: yarn install --frozen-lockfile
+      - run: |
+          corepack enable
+          yarn install --frozen-lockfile
       
       - name: Set env
         run: echo "RELEASE_FILE=qb-web-${GITHUB_REF#refs/*/}.zip" >> $GITHUB_ENV

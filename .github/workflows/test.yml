@@ -12,7 +12,9 @@ jobs:
       with:
         node-version: '16'
         cache: yarn
-    - run: yarn install --frozen-lockfile
+    - run: |
+        corepack enable
+        yarn install --frozen-lockfile
 
     - run: yarn run lint --no-fix --max-warnings 0
     - run: yarn run test:unit
