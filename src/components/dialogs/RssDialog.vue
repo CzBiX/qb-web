@@ -76,118 +76,119 @@
           </v-btn>
         </div>
         <v-divider />
-        <div class="content">
-          <div class="content-inner">
-            <div
-              v-if="!rssNode"
-              class="loading"
-            >
-              <v-progress-circular indeterminate />
-            </div>
-            <template v-else>
-              <div class="rss-items">
-                <v-treeview
-                  open-on-click
-                  open-all
-                  :items="rssTree"
-                  item-key="path"
-                  activatable
-                  dense
-                  @update:active="selectNode = $event[0]"
-                >
-                  <template v-slot:prepend="row">
-                    <v-progress-circular
-                      v-if="isItemLoading(row)"
-                      indeterminate
-                      size="22"
-                      width="2"
-                    />
-                    <v-icon
-                      v-else
-                      v-text="getRowIcon(row)"
-                    />
-                  </template>
-                  <template v-slot:label="row">
-                    {{ row.item.name }}
-                    <template v-if="row.item.children">
-                      ({{ row.item.children.length }})
-                    </template>
-                  </template>
-                </v-treeview>
-              </div>
-              <v-divider vertical />
-              <div class="rss-details">
-                <div class="rss-info">
-                  <p>
-                    {{ $t('title._') }}:
-                    <a
-                      v-if="selectItem"
-                      target="_blank"
-                      :href="selectItem.url"
-                    >{{ selectItem.title }}</a>
-                  </p>
-                  <p>{{ $t('date') }}: {{ (selectItem ? selectItem.lastBuildDate : null) | date }}</p>
-                </div>
-                <v-divider />
-                <div class="list-wrapper">
-                  <v-list
-                    v-if="selectItem"
-                    dense
-                  >
-                    <v-list-item-group
-                      v-model="selectArticle"
-                      color="primary"
-                    >
-                      <v-list-item
-                        v-for="article in sortArticles(selectItem.articles)"
-                        :key="article.id"
-                        :value="article"
-                      >
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            <span
-                              :title="article.title"
-                              v-text="article.title"
-                            />
-                          </v-list-item-title>
-                        </v-list-item-content>
-                        <v-list-item-action>
-                          <v-btn
-                            icon
-                            @click.stop="downloadTorrent(article)"
-                          >
-                            <v-icon>mdi-download</v-icon>
-                          </v-btn>
-                        </v-list-item-action>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </div>
-              </div>
-              <v-divider vertical />
-              <div class="rss-desc">
-                <div class="rss-info">
-                  <p>
-                    {{ $t('title._') }}:
-                    <a
-                      v-if="selectArticle"
-                      target="_blank"
-                      :href="selectArticle.link"
-                    >{{ selectArticle.title }}</a>
-                  </p>
-                  <p>{{ `${$t('category', 1)}: ${selectArticle ? selectArticle.category: ''}` }}</p>
-                  <p>{{ $t('date') }}: {{ (selectArticle ? selectArticle.date: null) | date }}</p>
-                </div>
-                <v-divider />
-                <iframe
-                  class="iframe"
-                  sandbox="allow-same-origin"
-                  v-if="selectArticle"
-                  v-body="selectArticle.description"
-                />
-              </div>
-            </template>
+        <div
+          class="content"
+          :class="{phone: $vuetify.breakpoint.smAndDown}"
+        >
+          <div
+            v-if="!rssNode"
+            class="loading"
+          >
+            <v-progress-circular indeterminate />
           </div>
+          <template v-else>
+            <div class="rss-items">
+              <v-treeview
+                open-on-click
+                open-all
+                :items="rssTree"
+                item-key="path"
+                activatable
+                dense
+                @update:active="selectNode = $event[0]"
+              >
+                <template v-slot:prepend="row">
+                  <v-progress-circular
+                    v-if="isItemLoading(row)"
+                    indeterminate
+                    size="22"
+                    width="2"
+                  />
+                  <v-icon
+                    v-else
+                    v-text="getRowIcon(row)"
+                  />
+                </template>
+                <template v-slot:label="row">
+                  {{ row.item.name }}
+                  <template v-if="row.item.children">
+                    ({{ row.item.children.length }})
+                  </template>
+                </template>
+              </v-treeview>
+            </div>
+            <v-divider :vertical="!phoneLayout" />
+            <div class="rss-details">
+              <div class="rss-info">
+                <p>
+                  {{ $t('title._') }}:
+                  <a
+                    v-if="selectItem"
+                    target="_blank"
+                    :href="selectItem.url"
+                  >{{ selectItem.title }}</a>
+                </p>
+                <p>{{ $t('date') }}: {{ (selectItem ? selectItem.lastBuildDate : null) | date }}</p>
+              </div>
+              <v-divider />
+              <div class="list-wrapper">
+                <v-list
+                  v-if="selectItem"
+                  dense
+                >
+                  <v-list-item-group
+                    v-model="selectArticle"
+                    color="primary"
+                  >
+                    <v-list-item
+                      v-for="article in sortArticles(selectItem.articles)"
+                      :key="article.id"
+                      :value="article"
+                    >
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          <span
+                            :title="article.title"
+                            v-text="article.title"
+                          />
+                        </v-list-item-title>
+                      </v-list-item-content>
+                      <v-list-item-action>
+                        <v-btn
+                          icon
+                          @click.stop="downloadTorrent(article)"
+                        >
+                          <v-icon>mdi-download</v-icon>
+                        </v-btn>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-list>
+              </div>
+            </div>
+            <v-divider :vertical="!phoneLayout" />
+            <div class="rss-desc">
+              <div class="rss-info">
+                <p>
+                  {{ $t('title._') }}:
+                  <a
+                    v-if="selectArticle"
+                    target="_blank"
+                    :href="selectArticle.link"
+                  >{{ selectArticle.title }}</a>
+                </p>
+                <p>{{ `${$t('category', 1)}: ${selectArticle ? selectArticle.category: ''}` }}</p>
+                <p>{{ $t('date') }}: {{ (selectArticle ? selectArticle.date: null) | date }}</p>
+              </div>
+              <v-divider />
+              <iframe
+                class="iframe"
+                sandbox="allow-same-origin"
+                v-if="selectArticle"
+                v-body="selectArticle.description"
+              />
+            </div>
+          </template>
         </div>
       </v-card-text>
     </v-card>
@@ -288,6 +289,10 @@ export default class RssDialog extends HasTask {
   asyncShowDialog!: (_: DialogConfig) => Promise<string | undefined>
   showSnackBar!: (_: SnackBarConfig) => void
   closeSnackBar!: () => void
+
+  get phoneLayout() {
+    return this.$vuetify.breakpoint.smAndDown;
+  }
 
   get rssTree() {
     if (!this.rssNode) {
@@ -535,14 +540,10 @@ export default class RssDialog extends HasTask {
 
 .content {
   flex: 1;
-  position: relative;
+  display: flex;
 
-  .content-inner {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-
-    display: flex;
+  &.phone {
+    flex-direction: column;
   }
 }
 

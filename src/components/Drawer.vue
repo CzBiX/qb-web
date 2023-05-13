@@ -164,10 +164,10 @@ export default class Drawer extends Vue {
   endItems: MenuItem[] = [
     { icon: 'mdi-delta', title: tr('logs'), click: () => this.updateOptions('showLogs', true) },
     { icon: 'mdi-card-search-outline', title: tr('search'), click: () => this.updateOptions('showSearch', true) },
+    { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
   ]
 
   pcItems: MenuItem[] = [
-    { icon: 'mdi-rss-box', title: 'RSS', click: () => this.updateOptions('showRss', true) },
     { icon: 'mdi-cog-box', title: tr('settings'), click: () => this.updateOptions('showSettings', true) },
     { icon: 'mdi-history', title: tr('label.switch_to_old_ui'), click: this.switchUi },
   ]
