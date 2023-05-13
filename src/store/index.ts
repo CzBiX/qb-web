@@ -111,7 +111,8 @@ const store = new Vuex.Store<RootState>({
       }
 
       const finalTags: any[] = []
-      for (const tag of state.mainData.tags) {
+      const tags = state.mainData.tags ?? [];
+      for (const tag of tags) {
         finalTags.push({
           "key": tag,
           "name": tag,
@@ -125,6 +126,10 @@ const store = new Vuex.Store<RootState>({
     torrentGroupByTag(state, getters) {
       const result: Record<string, Torrent[]> = {}
       for (const torrent of getters.allTorrents) {
+        if (!torrent.tags) {
+          continue;
+        }
+
         const tags: string[] = torrent.tags.split(', ');
         tags.forEach(tag => {
           let list: Torrent[] = result[tag]
