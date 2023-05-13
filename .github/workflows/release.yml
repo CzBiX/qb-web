@@ -14,13 +14,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - uses: actions/cache@v3
-        id: cache
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          cache: yarn
       - run: yarn install --frozen-lockfile
-        if: steps.cache.outputs.cache-hit != 'true'
       
       - name: Set env
         run: echo "RELEASE_FILE=qb-web-${GITHUB_REF#refs/*/}.zip" >> $GITHUB_ENV

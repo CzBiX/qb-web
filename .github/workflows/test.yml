@@ -11,13 +11,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '16'
-    - uses: actions/cache@v3
-      id: cache
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        cache: yarn
     - run: yarn install --frozen-lockfile
-      if: steps.cache.outputs.cache-hit != 'true'
 
     - run: yarn run lint --no-fix --max-warnings 0
     - run: yarn run test:unit

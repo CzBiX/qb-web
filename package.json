@@ -60,5 +60,6 @@
     "*.{js,vue,ts}": [
       "vue-cli-service lint"
     ]
-  }
+  },
+  "packageManager": "yarn@3.5.0"
 }
