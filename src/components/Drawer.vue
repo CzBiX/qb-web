@@ -152,6 +152,7 @@ function getTopDomain(host: string) {
       'allTags',
       'torrentGroupByCategory',
       'torrentGroupByTag',
+      'torrentGroupBySavePath',
       'torrentGroupBySite',
       'torrentGroupByState',
     ]),
@@ -178,6 +179,7 @@ export default class Drawer extends Vue {
   allTags!: Tag[]
   torrentGroupByCategory!: {[category: string]: Torrent[]}
   torrentGroupByTag!: {[tag: string]: Torrent[]}
+  torrentGroupBySavePath!: {[savepath: string]: Torrent[]}
   torrentGroupBySite!: {[site: string]: Torrent[]}
   torrentGroupByState!: {[state: string]: Torrent[]}
 
@@ -258,6 +260,24 @@ export default class Drawer extends Vue {
     }), 'title');
   }
 
+  buildSavePathGroup(): MenuChildrenItem[] {
+    this.allTorrents.map((torrent) => {
+      let value = this.torrentGroupBySavePath[torrent.save_path];
+      if (isUndefined(value)) {
+        value = [];
+      }
+    });
+    return sortBy(Object.entries(this.torrentGroupBySavePath).map(([key, value]) => {
+      const size = formatSize(sumBy(value, 'size'));
+      const title = key;
+      const icon = 'mdi-folder';
+      const append = `[${size}]`;
+      return {
+        icon, title, key, append,
+      };
+    }), 'title');
+  }
+
   get items() {
     if (!this.isDataReady) {
       return this.endItems
@@ -319,6 +339,20 @@ export default class Drawer extends Vue {
           icon: 'mdi-server', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
         },
         ...this.buildSiteGroup(),
+      ],
+    });
+
+    filterGroups.push({
+      icon: 'mdi-menu-up',
+      'icon-alt': 'mdi-menu-down',
+      title: tr('save_path'),
+      model: null,
+      select: 'savepath',
+      children: [
+        {
+          icon: 'mdi-folder', title: `${tr('all')} (${this.allTorrents.length})`, key: null, append: `[${totalSize}]`,
+        },
+        ...this.buildSavePathGroup(),
       ],
     });
 

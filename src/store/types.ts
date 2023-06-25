@@ -29,6 +29,7 @@ export interface TorrentFilter {
   tag: string;
   site: string;
   query: string;
+  savepath: string;
 }
 
 export interface ConfigState {
