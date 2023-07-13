@@ -1,7 +1,7 @@
 <template>
   <div class="torrent-info">
     <div class="progress">
-      <span>Progress:</span>
+      <span>{{ $t('properties_widget.progress') }}:</span>
       <canvas
         ref="canvas"
         class="progress-inner"
@@ -9,7 +9,7 @@
       <span>{{ torrent.progress | progress }}</span>
     </div>
     <fieldset>
-      <legend>Transfer</legend>
+      <legend>{{ $t('properties_widget.transfer') }}</legend>
       <v-container
         v-if="properties"
         class="pa-1"
@@ -41,7 +41,7 @@
       </v-container>
     </fieldset>
     <fieldset>
-      <legend>Information</legend>
+      <legend>{{ $t('properties_widget.information') }}</legend>
       <v-container
         v-if="properties"
         class="pa-1"
@@ -85,6 +85,7 @@ import {Torrent, TorrentProperties} from '@/types'
 import Component from 'vue-class-component'
 import {Prop, Watch} from 'vue-property-decorator'
 import BaseTorrentInfo from './baseTorrentInfo'
+import { tr } from '@/locale'
 
 interface Item {
   label: string;
@@ -108,33 +109,33 @@ export default class TorrentInfo extends BaseTorrentInfo {
 
   transfer: Item[] = [
     {
-      label: 'Time active',
-      value: prop => formatDuration(prop.time_elapsed) + (prop.seeding_time ? ` (seeded ${formatDuration(prop.seeding_time)})` : ''),
+      label: tr('properties_widget.timeActive'),
+      value: prop => formatDuration(prop.time_elapsed) + (prop.seeding_time ? ` ($tr('properties_widget.seeded') ${formatDuration(prop.seeding_time)})` : ''),
     },
-    { label: 'ETA', value: prop => formatDuration(prop.eta, { dayLimit: 100 }) },
-    { label: 'Connections', value: prop => `${prop.nb_connections} (${prop.nb_connections_limit} max)` },
-    { label: 'Downloaded', value: prop => `${formatSize(prop.total_downloaded_session)}/${formatSize(prop.total_downloaded)}` },
-    { label: 'Uploaded', value: prop => `${formatSize(prop.total_uploaded_session)}/${formatSize(prop.total_uploaded)}` },
-    { label: 'Seeds', value: prop => `${prop.seeds} (${prop.seeds_total} total)` },
-    { label: 'DL speed', value: prop => `${formatSize(prop.dl_speed)}/s` },
-    { label: 'UP speed', value: prop => `${formatSize(prop.up_speed)}/s` },
-    { label: 'Peers', value: prop => `${prop.peers} (${prop.peers_total} total)` },
-    { label: 'Wasted', value: prop => formatSize(prop.total_wasted) },
-    { label: 'Share ratio', value: prop => toPrecision(prop.share_ratio, 3) },
-    { label: 'Reannounce', value: prop => formatDuration(prop.reannounce) },
-    { label: 'Last seen', value: prop => formatTimestamp(prop.last_seen) },
+    { label: tr('properties_widget.eta'), value: prop => formatDuration(prop.eta, { dayLimit: 100 }) },
+    { label: tr('properties_widget.connections'), value: prop => `${prop.nb_connections} (${prop.nb_connections_limit} ${tr('properties_widget.max')})` },
+    { label: tr('properties_widget.downloaded'), value: prop => `${formatSize(prop.total_downloaded_session)}/${formatSize(prop.total_downloaded)}` },
+    { label: tr('properties_widget.uploaded'), value: prop => `${formatSize(prop.total_uploaded_session)}/${formatSize(prop.total_uploaded)}` },
+    { label: tr('properties_widget.seeds'), value: prop => `${prop.seeds} (${prop.seeds_total} ${tr('properties_widget.total')})` },
+    { label: tr('properties_widget.downloadSpeed'), value: prop => `${formatSize(prop.dl_speed)}/${tr('properties_widget.second')}` },
+    { label: tr('properties_widget.uploadSpeed'), value: prop => `${formatSize(prop.up_speed)}/${tr('properties_widget.second')}` },
+    { label: tr('properties_widget.peers'), value: prop => `${prop.peers} (${prop.peers_total} ${tr('properties_widget.total')})` },
+    { label: tr('properties_widget.wasted'), value: prop => formatSize(prop.total_wasted) },
+    { label: tr('properties_widget.shareRatio'), value: prop => toPrecision(prop.share_ratio, 3) },
+    { label: tr('properties_widget.reannounce'), value: prop => formatDuration(prop.reannounce) },
+    { label: tr('properties_widget.lastSeen'), value: prop => formatTimestamp(prop.last_seen) },
   ]
 
   information: Item[] = [
-    { label: 'Total size', value: prop => formatSize(prop.total_size) },
-    { label: 'Pieces', value: prop => `${prop.pieces_num} x ${formatSize(prop.piece_size)} (have ${prop.pieces_have})` },
-    { label: 'Created by', value: prop => prop.created_by },
-    { label: 'Created on', value: prop => formatTimestamp(prop.creation_date) },
-    { label: 'Added on', value: prop => formatTimestamp(prop.addition_date) },
-    { label: 'Completed on', value: prop => formatTimestamp(prop.completion_date) },
-    { label: 'Torrent hash', value: () => this.torrent.hash },
-    { label: 'Save path', value: prop => prop.save_path },
-    { label: 'Comment', value: prop => prop.comment },
+    { label: tr('properties_widget.totalSize'), value: prop => formatSize(prop.total_size) },
+    { label: tr('properties_widget.pieces'), value: prop => `${prop.pieces_num} x ${formatSize(prop.piece_size)} (${tr('properties_widget.have')} ${prop.pieces_have})` },
+    { label: tr('properties_widget.createdBy'), value: prop => prop.created_by },
+    { label: tr('properties_widget.createdOn'), value: prop => formatTimestamp(prop.creation_date) },
+    { label: tr('properties_widget.addedOn'), value: prop => formatTimestamp(prop.addition_date) },
+    { label: tr('properties_widget.completedOn'), value: prop => formatTimestamp(prop.completion_date) },
+    { label: tr('properties_widget.torrentHash'), value: () => this.torrent.hash },
+    { label: tr('properties_widget.savePath'), value: prop => prop.save_path },
+    { label: tr('properties_widget.comment'), value: prop => prop.comment },
   ]
   pieces: PieceState[] = []
   canvas: CanvasRenderingContext2D | null = null

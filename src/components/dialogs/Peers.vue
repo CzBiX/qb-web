@@ -50,6 +50,7 @@ import { formatSize } from '../../filters';
 import BaseTorrentInfo from './baseTorrentInfo';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
+import { tr } from '@/locale'
 
 @Component({
   filters: {
@@ -74,17 +75,17 @@ export default class Peers extends BaseTorrentInfo {
   readonly hash!: string
 
   headers = [
-    { text: 'IP', value: 'ip' },
-    { text: 'Connection', value: 'connection' },
-    { text: 'Flags', value: 'flags' },
-    { text: 'Client', value: 'client' },
-    { text: 'Progress', value: 'progress' },
-    { text: 'DL Speed', value: 'dl_speed' },
-    { text: 'Downloaded', value: 'downloaded' },
-    { text: 'UP Speed', value: 'up_speed' },
-    { text: 'Uploaded', value: 'uploaded' },
-    { text: 'Relevance', value: 'relevance' },
-    { text: 'Files', value: 'files' },
+    { text: tr('properties_widget.ip'), value: 'ip' },
+    { text: tr('properties_widget.connection'), value: 'connection' },
+    { text: tr('properties_widget.flags'), value: 'flags' },
+    { text: tr('properties_widget.client'), value: 'client' },
+    { text: tr('properties_widget.progress'), value: 'progress' },
+    { text: tr('properties_widget.downloadSpeed'), value: 'dl_speed' },
+    { text: tr('properties_widget.downloaded'), value: 'downloaded' },
+    { text: tr('properties_widget.uploadSpeed'), value: 'up_speed' },
+    { text: tr('properties_widget.uploaded'), value: 'uploaded' },
+    { text: tr('properties_widget.relevance'), value: 'relevance' },
+    { text: tr('properties_widget.files'), value: 'files' },
   ]
 
   peersObj: any = null

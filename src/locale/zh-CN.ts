@@ -18,6 +18,7 @@ export default {
   resume: '恢复',
   pause: '暂停',
   force_start: '强制继续',
+  toggle_sequential: '切换顺序下载',
   info: '信息',
   reset: '重置',
   login: '登录',
@@ -45,7 +46,6 @@ export default {
   added_on: '添加时间',
 
   settings: '设置',
-
   logs: '日志',
   light: '亮色',
   dark: '暗色',
@@ -66,6 +66,9 @@ export default {
   plugin: '插件',
   action: '操作',
   search_engine: '搜索引擎',
+  usage: '用法',
+  plugin_manager: '插件管理',
+  update_plugins: '更新插件',
 
   preferences: {
     change_applied: '配置已保存',
@@ -108,6 +111,7 @@ export default {
     connection: '连接',
     bittorrent: 'BitTorrent',
 
+    rss: 'RSS',
     rss_processing_enabled: '启用自动刷新',
     rss_auto_downloading_enabled: '启用自动下载种子',
     rss_refresh_interval: '订阅刷新间隔',
@@ -165,6 +169,7 @@ export default {
     reannounced: '已重新通告',
     rechecking: '重新检查中…',
     dht_nodes: '%{smart_count} 节点',
+    base_url: 'Base URL',
   },
 
   msg: {
@@ -254,5 +259,69 @@ export default {
     checkingResumeData: '快速校验',
     moving: '移动中',
     unknown: '未知',
+  },
+
+  prop_tab_bar: {
+    general: '普通',
+    trackers: 'Tracker',
+    peers: '用户',
+    // httpSource: 'HTTP 源',
+    content: '内容',
+  },
+  properties_widget: {
+    disabled: '禁用',
+    notContracted: '未联系',
+    working: '工作',
+    updating: '更新...',
+    notWorking: '未工作',
+
+    tier: '层级',
+    url: 'URL',
+    status: '状态',
+    numPeers: '用户',
+    numSeeds: '种子',
+    numLeeches: '下载',
+    numDownloaded: '下载次数',
+    msg: '消息',
+
+    progress: '进度',
+    transfer: '传输',
+    information: '信息',
+
+    timeActive: '活动时间',
+    eta: '剩余时间',
+    connections: '连接',
+    downloaded: '已下载',
+    uploaded: '已上传',
+    seeds: '种子',
+    downloadSpeed: '下载速度',
+    uploadSpeed: '上传速度',
+    peers: '用户',
+    wasted: '已丢弃',
+    shareRatio: '分享率',
+    reannounce: '下次汇报',
+    lastSeen: '最后完整可见',
+    totalSize: '总大小',
+    pieces: '区块',
+    createdBy: '创建',
+    createdOn: '创建于',
+    addedOn: '添加于',
+    completedOn: '完成于',
+    torrentHash: '种子哈希',
+    savePath: '保存路径',
+    comment: '注释',
+
+    ip: 'IP',
+    connection: '连接',
+    flags: '标志',
+    client: '客户端',
+    relevance: '文件关联',
+    files: '文件',
+
+    seeded: '已做种',
+    second: '秒',
+    total: '总计',
+    max: '最大',
+    have: '已完成',
   },
 }

@@ -15,16 +15,16 @@
       <v-card-text>
         <v-tabs v-model="tabSync">
           <v-tab href="#general">
-            General
+            {{ $t("prop_tab_bar.general") }}
           </v-tab>
           <v-tab href="#trackers">
-            Trackers
+            {{ $t("prop_tab_bar.trackers") }}
           </v-tab>
           <v-tab href="#peers">
-            Peers
+            {{ $t("prop_tab_bar.peers") }}
           </v-tab>
           <v-tab href="#content">
-            Content
+            {{ $t("prop_tab_bar.content") }}
           </v-tab>
         </v-tabs>
         <v-tabs-items
