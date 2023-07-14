@@ -25,16 +25,17 @@ import api from '../../Api';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 import BaseTorrentInfo from './baseTorrentInfo';
+import { tr } from '@/locale'
 
 @Component({
   filters: {
     formatTrackerStatus(status: number) {
       const map = [
-        'Disabled',
-        'Not contacted',
-        'Working',
-        'Updating',
-        'Not working',
+        tr('properties_widget.disabled'),
+        tr('properties_widget.notContracted'),
+        tr('properties_widget.working'),
+        tr('properties_widget.updating'),
+        tr('properties_widget.notWorking'),
       ];
 
       return map[status];
@@ -53,14 +54,14 @@ export default class Trackers extends BaseTorrentInfo {
   readonly hash!: string
 
   readonly headers = [
-    { text: '#', value: 'tier' },
-    { text: 'URL', value: 'url' },
-    { text: 'Status', value: 'status' },
-    { text: 'Peers', value: 'num_peers' },
-    { text: 'Seeds', value: 'num_seeds' },
-    { text: 'Leeches', value: 'num_leeches' },
-    { text: 'Downloaded', value: 'num_downloaded' },
-    { text: 'Message', value: 'msg' },
+    { text: tr('properties_widget.tier'), value: 'tier' },
+    { text: tr('properties_widget.url'), value: 'url' },
+    { text: tr('properties_widget.status'), value: 'status' },
+    { text: tr('properties_widget.numPeers'), value: 'num_peers' },
+    { text: tr('properties_widget.numSeeds'), value: 'num_seeds' },
+    { text: tr('properties_widget.numLeeches'), value: 'num_leeches' },
+    { text: tr('properties_widget.numDownloaded'), value: 'num_downloaded' },
+    { text: tr('properties_widget.msg'), value: 'msg' },
   ]
 
   trackers = []
