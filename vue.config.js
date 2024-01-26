@@ -15,9 +15,6 @@ module.exports = {
       maskIcon: null,
       msTileImage: null,
     },
-    workboxOptions: {
-      importWorkboxFrom: 'local',
-    },
   },
 
   devServer: {
