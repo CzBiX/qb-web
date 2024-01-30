@@ -43,6 +43,7 @@ export default {
   eta: '剩餘時間',
   ratio: '分享率',
   added_on: '添加時間',
+  save_path: '儲存路徑',
 
   settings: '設定',
 

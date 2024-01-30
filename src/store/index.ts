@@ -142,6 +142,9 @@ const store = new Vuex.Store<RootState>({
       }
       return result;
     },
+    torrentGroupBySavePath(state, getters) {
+      return groupBy(getters.allTorrents, torrent => torrent.save_path);
+    },
     torrentGroupBySite(state, getters) {
       return groupBy(getters.allTorrents, (torrent) => {
         if (!torrent.tracker) {
